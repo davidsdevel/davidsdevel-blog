@@ -26,8 +26,8 @@ class Search extends Component {
 				search = req.query.q;
 			}
 			const preq = await fetch(`${url}?q=${search}`);
+			console.log(await preq.text());
 			query = await preq.json();
-			console.log(url);
 
 		} else {
 			if (!req)

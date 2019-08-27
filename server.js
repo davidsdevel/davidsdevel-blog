@@ -138,16 +138,6 @@ async function Init() {
 			}
 			res.json(queryData);
 		})
-		.get("/search", async (req, res) => {
-			try {
-				const {q, page} = req.query;
-				const searchRequest = await fetch(`https://www.googleapis.com/blogger/v3/blogs/7044473803573631794/posts/search?q=${q}&key=${API_KEY}`)
-				const data = await searchRequest.json();
-			} catch(err) {
-				console.log(err);	
-			}
-			return app.render(req, res, "/search", req.query);
-		})
 		.get("/manifest.json", (req, res) => {
 			res.json({
 				gcm_sender_id: "103953800507"
@@ -192,7 +182,6 @@ async function Init() {
 			} catch(err) {
 				console.log(err);
 			}
-			return app.render(req, res, "/", queryData);
 		})
 		.get("*", (req, res) => handle(req, res))
 		.listen(PORT, err => {
