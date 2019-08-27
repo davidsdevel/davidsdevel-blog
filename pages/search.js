@@ -10,24 +10,27 @@ import Footer from '../components/index/footer';
 import {setBanner, asideBanner} from "../lib/banners";
 
 class Search extends Component {
-	static async getInitialProps({req, res, asPath}) {
-		var query;
+	constructor() {
+		super();
+		this.state = {
+			items: []
+		}
+		this.viewMore = this.viewMore.bind(this);
+		this.componentDidUpdate = this.componentDidUpdate.bind(this);
+		this.componentDidMount = this.componentDidMount.bind(this);
+	}
+	static async getInitialProps({req, res, asPath, pathname}) {
 		if (/\/?q=.*/.test(asPath)) {
 			var search;
-			var url;
-			if (!req) {
-				url = `${location.origin}/find-posts`;
-
+			if (!req)
 				search = asPath.match(/=.*(?=&|$)/)[0].replace("=", "");
-			} else {
-				console.log(req.headers)
-				url = `http://localhost:3000/find-posts`;
-
+			else
 				search = req.query.q;
-			}
-			const preq = await fetch(`${url}?q=${search}`);
-			console.log(await preq.text());
-			query = await preq.json();
+
+			return {
+				search,
+				pathname
+			};
 
 		} else {
 			if (!req)
@@ -35,51 +38,96 @@ class Search extends Component {
 			else
 				res.redirect(301, "/");
 		}
+	}
+	async viewMore() {
+		try {
+			const req = await fetch(`http://localhost:3000/find-post?q=${this.props.search}&pageToken${this.state.nextPageToken}`);
+			const data = await req.json();
+			console.log(1, this.state.items)
 
-		return query;
+			this.setState({
+				items: Object.assign([], this.state.items, data.items),
+				nextPageToken: data.nextPageToken
+			});
+			console.log(2, this.state.items)
+		} catch(err) {
+			console.log(err);
+		}
+	}
+	async componentDidMount() {
+		try {
+			const req = await fetch(`http://localhost:3000/find-post?q=${this.props.search}`);
+			const data = await req.json();
+
+			this.setState({
+				items: data.items,
+				nextPageToken: data.nextPageToken,
+				actualSearch: this.props.search
+			});
+		} catch(err) {
+			console.log(err);
+		}
+	}
+	async componentDidUpdate(a, b) {
+		console.log(this.props.search, a.search);
+		if (this.state.actualSearch !== a.search) {
+
+			try {
+				const req = await fetch(`http://localhost:3000/find-post?q=${this.props.search}`);
+				const data = await req.json();
+	
+				this.setState({
+					items: data.items,
+					nextPageToken: data.nextPageToken
+				});
+			} catch(err) {
+				console.log(err);
+			}
+		}
 	}
 	render() {
+		const {search, pathname} = this.props;
+		const {items, nextPageToken} = this.state;
 		return (
 			<div>
 				<Head title="David's Devel" url={pathname}/>
 				<Nav title="David's Devel"/>
-        		<h1>David's Devel</h1>
+        		<h1>Busquedas para el termino: {search}</h1>
         		<div className="banner-container">
         		  {setBanner()}
         		</div>
 				<div id="posts-container">
-          <span style={{marginLeft: "5%", display: "block"}}>Entradas</span>
-					{this.props.items.map(({content, title, image, url}, i) => {
-						url = url.replace("http://davidsdevel.blogspot.com", "").replace(".html", "");
-						return <Card
-             key={`blog-index-${i}`}
-             title={title}
-             content={content}
-             url={url}
-             image={image}
-            />
+					<span style={{marginLeft: "5%", display: "block"}}>Entradas</span>
+					{items.map(({content, title, image, url}, i) => {
+					url = url.replace("http://davidsdevel.blogspot.com", "").replace(".html", "");
+					return <Card
+        		    	 key={`blog-index-${i}`}
+        		    	 title={title}
+        		    	 content={content}
+        		    	 url={url}
+        		    	 image={image}
+        		    	/>
 					})}
 				</div>
-        <aside>
-          {asideBanner()}
-          {asideBanner()}
-        </aside>
-				<button onClick={this.viewMore}>Ver Más</button>
-        <div className="banner-container">
-          {setBanner()}
-        </div>
+        		<aside>
+        		  {asideBanner()}
+        		  {asideBanner()}
+        		</aside>
+        		{
+        			!!nextPageToken &&
+					<button onClick={this.viewMore}>Ver Más</button>
+        		}
+        		<div className="banner-container">
+        		  {setBanner()}
+        		</div>
 				<Footer/>
 				<style jsx>{`
           h1 {
-            margin: 50px 0 20px;
+            margin: 100px 0 20px;
           }
-          h1, h2 {
+          h1 {
             text-align: center;
 
-          }
-          h2 {
-            width: 90%;
-            margin: auto;
           }
           .banner-container {
             margin 50px 0;

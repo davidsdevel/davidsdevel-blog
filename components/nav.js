@@ -159,7 +159,11 @@ class Nav extends Component {
         <div id="input" style={{background: this.state.inputBackground}}>
           <img className="inline" onClick={this.toggleSearch} style={{float: "left"}}src="/static/assets/search.svg"/>
           <input value={this.state.search} className="inline" style={this.state.inputStyle} type="text" placeholder="Busqueda" onChange={this.handleInput}/>
-          <img className="inline" id="arrow" style={{...this.state.arrowStyle, float: "right"}} src="/static/assets/arrow.svg" />
+          <Link href={`http://localhost:3000/search?q=${this.state.search}`}>
+            <a>
+              <img className="inline" id="arrow" style={{...this.state.arrowStyle, float: "right"}} src="/static/assets/arrow.svg" />
+            </a>
+          </Link>
         </div>
       </div>
       <div id="shadow" style={this.state.shadowStyle} onClick={this.toggleMenu}></div>

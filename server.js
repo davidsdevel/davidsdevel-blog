@@ -170,7 +170,7 @@ async function Init() {
 				const {q, pageToken} = query;
 				var searchRequest;
 				if (pageToken)
-					searchRequest = await fetch(`${SEARCH_URL}&q=${q}&nextPageToken=${pageToken}`);
+					searchRequest = await fetch(`${SEARCH_URL}&q=${q}&pageToken=${pageToken}`);
 				else
 					searchRequest = await fetch(`${SEARCH_URL}&q=${q}`);
 
