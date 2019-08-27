@@ -1,0 +1,22 @@
+{
+  "name": "davidsdevel-blog",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "set NODE_ENV=development&&node server",
+    "build": "next build",
+    "start": "next build && set NODE_ENV=production&& node server"
+  },
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "isomorphic-fetch": "^2.2.1",
+    "next": "9.0.3",
+    "node-html-parser": "^1.1.16",
+    "react": "16.9.0",
+    "react-dom": "16.9.0"
+  },
+  "engines": {
+    "node": "10.x"
+  }
+}
