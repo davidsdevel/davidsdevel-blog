@@ -41,7 +41,7 @@ class Search extends Component {
 	}
 	async viewMore() {
 		try {
-			const req = await fetch(`http://localhost:3000/find-post?q=${this.props.search}&pageToken${this.state.nextPageToken}`);
+			const req = await fetch(`http://localhost:3000/find-post?q=${this.props.search}&pageToken=${this.state.nextPageToken}`);
 			const data = await req.json();
 			console.log(1, this.state.items)
 
