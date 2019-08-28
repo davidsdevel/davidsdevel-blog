@@ -3,9 +3,9 @@ import Link from 'next/link'
 import {string} from "prop-types";
 
 const links = [
-	{ href: '/about', label: 'Acerca de mi' },
-	{ href: '/terms', label: 'Terminos de Uso' },
-	{ href: "/policy", label: "Politicas de Privacidad"}
+	{ href: '/acerca', label: 'Acerca de mi' },
+	{ href: '/terminos', label: 'Terminos de Uso' },
+	{ href: "/privacidad", label: "Politicas de Privacidad"}
 ].map(link => {
 	link.key = `nav-link-${link.href}-${link.label}`
 	return link
@@ -177,7 +177,7 @@ class Nav extends Component {
 				<div id="input" style={{background: this.state.inputBackground}}>
 					<img className="inline" onClick={this.toggleSearch} style={{float: "left"}}src="/static/assets/search.svg"/>
 					<input value={this.state.search} className="inline" style={this.state.inputStyle} type="text" placeholder="Busqueda" onChange={this.handleInput}/>
-					<Link href={`http://localhost:3000/search?q=${this.state.search}`}>
+					<Link href={`https://davidsdevel-blog.herokuapp.com/search?q=${this.state.search}`}>
 						<a>
 							<img className="inline" id="arrow" style={{...this.state.arrowStyle, float: "right"}} src="/static/assets/arrow.svg" />
 						</a>

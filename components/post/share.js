@@ -3,7 +3,7 @@ import React from "react";
 const Share = ({url, title}) => {
 	const encodedURL = encodeURI("https://blog.davidsdevel.com" + url);
 	return <div id="share-container">
-		<span style={{fontSize: "18px", fontWeight: "bold"}}>¿Te gusto?</span>
+		<span style={{fontSize: "18px", fontWeight: "bold"}}>¿Te gustó?</span>
 		<br/>
 		<span>¡Compartelo con tus amigos!</span>
 		<div>

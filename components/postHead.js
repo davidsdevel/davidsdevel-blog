@@ -2,9 +2,9 @@ import React from "react";
 import NextHead from "next/head";
 import { string, array } from "prop-types";
 
-const defaultDescription = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
-const defaultOGURL = "https://oieniv-website.firebaseapp.com/";
-const defaultOGImage = "https://oieniv-website.firebaseapp.com/static/image.jpg";
+const defaultDescription = "JavaScript, tecnología, informática y mas JavaScript en este blog. Un simple blog de un desarrollador JavaScript Venezolano.";
+const defaultOGURL = "https://davidsdevel-blog.herokuapp.com";
+const defaultOGImage = "https://davidsdevel-blog.herokuapp.com/static/images/og.jpg";
 
 const Head = props => (
 	<NextHead>
@@ -21,7 +21,7 @@ const Head = props => (
 	    <link rel="icon" href="/static/favicon.ico" />
 
 	    <link href={props.image || defaultOGImage} rel='image_src'/>
-	    <link rel="canonical" href={props.url}/>
+	    <link rel="canonical" href={props.url ? "https://davidsdevel-blog.herokuapp.com" + props.url: defaultOGURL}/>
 
 	    <meta property="og:site_name" content="David's Devel - Blog" />
 	    <meta content='100000619759917' property='fb:admins'/>
@@ -51,9 +51,9 @@ const Head = props => (
 		<meta content={props.image || defaultOGImage} name='twitter:image'/>
     	<meta content={props.image || defaultOGImage} itemProp='image'/>
 
-    	<meta content={props.url} itemProp='url'/>
-    	<meta content={props.url} property='og:url'/>
-    	<meta content={props.url} name='twitter:url'/>
+    	<meta content={props.url ? "https://davidsdevel-blog.herokuapp.com" + props.url: defaultOGURL} itemProp='url'/>
+    	<meta content={props.url ? "https://davidsdevel-blog.herokuapp.com" + props.url: defaultOGURL} property='og:url'/>
+    	<meta content={props.url ? "https://davidsdevel-blog.herokuapp.com" + props.url: defaultOGURL} name='twitter:url'/>
 
   		<link rel="manifest" href="/manifest.json"/>
 	</NextHead>

@@ -22,9 +22,12 @@ class Post extends Component {
 		return query;
 	}
 	componentDidMount() {
-		if (this.props.isClient) {
+		if (this.props.isClient)
 			FB.XFBML.parse();
-		}
+	}
+	componentDidUpdate(a, b) {
+		if (a.pathname !== this.props.pathname)
+			FB.XFBML.parse();
 	}
 	render() {
 		const {pathname, image, content, title, labels, published} = this.props;
@@ -68,9 +71,6 @@ class Post extends Component {
 			 data-width="100%"
 			 data-numposts="20"
 			></div>`}}/>
-			
-
-			/*Recomendacion*/
 			<Footer/>
 			<script src='https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=sunburst'/>
 			<style jsx>{`
@@ -102,6 +102,7 @@ class Post extends Component {
 				}
 				main {
 					padding: 0 5%;
+					margin-bottom: 20px;
 				}
 				#tags {
 					margin: 0 0 20px;
@@ -120,6 +121,9 @@ class Post extends Component {
 				#comments-container {
 					width: 90%;
 					margin: auto;
+				}
+				aside {
+					display: none;
 				}
 				@media screen and (min-width: 720px) {
 					main {
@@ -164,6 +168,14 @@ class Post extends Component {
 					width: auto;
 					max-width: calc(100% - 32px);
 					height: auto;
+				}
+				main ul {
+					padding: 0 0 0 20px;
+					margin: 10px 0;
+				}
+				main ul li {
+					margin: 5px 0;
+					list-style: initial;
 				}
 				blockquote {
 					font-style: italic;

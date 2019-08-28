@@ -2,6 +2,7 @@ const express = require('express');
 const next = require('next');
 const fetch = require("isomorphic-fetch");
 const {parse} = require("node-html-parser");
+const convert = require('xml-js');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -85,6 +86,7 @@ async function Init() {
 		console.log("Prepared");
 
 		server
+		/*--------ROUTES------------*/
 		.get("/", async (req, res) => {
 			try {
 
@@ -124,6 +126,47 @@ async function Init() {
 			}
 			return app.render(req, res, "/post", queryData);
 		})
+
+		/*-------FILES----------*/
+		.get("/manifest.json", (req, res) => {
+			res.json({
+				gcm_sender_id: "103953800507"
+			})
+		})
+		.get("/sitemap.xml", async (req, res) => {
+			try {
+				const preq = await fetch("https://davidsdevel.blogspot.com/atom.xml?redirect=false&start-index=1&max-results=500");
+				const xml = await preq.text();
+				const json = convert.xml2json(xml, {compact: true, spaces: 4});
+				const parsed = JSON.parse(json);
+				const mapped = parsed.feed.entry.map(({title, link, updated}) => {
+					return `<url><changefreq>monthly</changefreq><loc>${link[3]._attributes.href.replace("davidsdevel.blogspot.com", "blog.davidsdevel.com").replace(/\.html$/, "")}</loc><lastmod>${updated._text}</lastmod><priority>1</priority></url>`;
+				});
+				const finalXML = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://blog.davidsdevel.com</loc><changefreq>monthly</changefreq><priority>1</priority></url><url><loc>https://blog.davidsdevel.com/search</loc><changefreq>monthly</changefreq><priority>0.2</priority></url><url><loc>https://blog.davidsdevel.com/terminos</loc><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://blog.davidsdevel.com/privacidad</loc><changefreq>monthly</changefreq><priority>0.6</priority></url><url><loc>https://blog.davidsdevel.com/acerca</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>${mapped.join("")}</urlset>`
+				res.set({
+					"Content-Type": "application/xml"
+				})
+				res.send(finalXML);
+			} catch(err) {
+				res.status(500).send(err);
+			}
+		})
+		.get("/robots.txt", (req, res) => {
+			res.set({
+				"Content-Type": "text/plain"
+			})
+			res.send(`User-agent: *
+Disallow: /privacidad
+Disallow: /terminos
+Disallow: /search
+
+Allow: /
+
+Sitemap: https://blog.davidsdevel.com/sitemap.xml
+`)
+		})
+
+		/*----------API----------*/
 		.get("/client-posts", async ({query}, res) => {
 			try {
 
@@ -138,11 +181,6 @@ async function Init() {
 				console.log(err);
 			}
 			res.json(queryData);
-		})
-		.get("/manifest.json", (req, res) => {
-			res.json({
-				gcm_sender_id: "103953800507"
-			})
 		})
 		.get("/client-single-post", async ({query}, res) => {
 			const {url} = query;
@@ -187,7 +225,6 @@ async function Init() {
 		.get("*", (req, res) => handle(req, res))
 		.listen(PORT, err => {
 			if (err) throw new Error(err);
-
 			console.log(`> App Listen on Port: ${PORT}`);
 		});
 
@@ -199,15 +236,6 @@ async function Init() {
 Init();
 
 /*
-Payoneer Referidos
-https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2
-
-Plazi Referidos
-https://platzi.com/r/david-gonzalez218/
-
-
-
-
 fetch("https://fcm.googleapis.com/fcm/send", {
 	method: "POST",
 	headers: {
@@ -244,42 +272,5 @@ Par de claves FCM: BALgWQbVzq62qWHC0CCmJqV7sPgljfaoT0NaYNKV3kHF48ZVLPRAQb-aTquSb
 
 manifest.json: {
   "gcm_sender_id": "103953800507"
-}
-
-fields=kind,items(title,characteristics/length)
-// Search 
-//GET 
-{
-	"kind": "blogger#postList",
-	"nextPageToken": "CgkIChiAj86CpB8QzJTEAQ",
-	"prevPageToken": "CgkIChDBq5v24yYQzJTEAQ",
-	"items": [
-	{
-		"kind": "blogger#post",
-		"id": "1387873546480002228",
-		"blog": {
-			"id": "3213900"
-		},
-		"published": "2012-03-23T01:58:00-07:00",
-		"updated": "2012-03-23T01:58:12-07:00",
-		"url": "http://code.blogger.com/2012/03/blogger-documentation-has-moved-to.html",
-		"selfLink": "https://www.googleapis.com/blogger/v3/blogs/3213900/posts/1387873546480002228",
-		"title": "Blogger Documentation has moved to developers.google.com",
-		"content": "content elided for readability",
-		"author": {
-			"id": "16258312240222542576",
-			"displayName": "Brett Morgan",
-			"url": "http://www.blogger.com/profile/16258312240222542576",
-			"image": {
-				"url": "https://resources.blogblog.com/img/b16-rounded.gif"
-			}
-		},
-		"replies": {
-			"totalItems": "0",
-			"selfLink": "https://www.googleapis.com/blogger/v3/blogs/3213900/posts/1387873546480002228/comments"
-		}
-	},
-	...
-	]
 }
 */

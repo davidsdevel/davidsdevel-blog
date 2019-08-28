@@ -66,7 +66,8 @@ class Card extends Component  {
 					width: 90%;
 					margin: 50px auto;
 					border-radius: 10px;
-    				box-shadow: grey 1px 1px 5px
+    				box-shadow: grey 1px 1px 5px;
+    				position: relative;
 				}
 				.blog-card .card-header-image {
 					height: 200px;
