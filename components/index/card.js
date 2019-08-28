@@ -56,13 +56,17 @@ class Card extends Component  {
 				</div>
 			}
 			<p>{content}</p>
-			<div dangerouslySetInnerHTML={{__html: `<span class="fb-comments-count" data-href="https://blog.davidsdevel.com${url}"></span><img src="/static/assets/bubbles.svg" />`}} />
+			<div className="comment-container" dangerouslySetInnerHTML={{__html: `<span class="fb-comments-count" style="font-size: 18px; font-weight: bold;" data-href="https://blog.davidsdevel.com${url}"></span><img src="/static/assets/bubbles.svg" style="height: 18px;margin: 0 10px;"/>`}} />
 			<div>
 				<button className="view-more" onClick={() => {Router.push(url); FB.AppEvents.logEvent('View Post On Button')}}>Ver Mas</button>
 				<button className="share" onFocus={this.toggleShare} onBlur={this.toggleShare}>Compartir</button>
 			</div>
 			<Share style={{opacity: this.state.shareOpacity, display: this.state.shareDisplay}} title={title} url={`https://blog.davidsdevel.com${url}`}/>
 			<style jsx>{`
+				.comment-container {
+					padding: 20px;
+					text-align: right;
+				}
 				.blog-card {
 					width: 90%;
 					margin: 50px auto;
