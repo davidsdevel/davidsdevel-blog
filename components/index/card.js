@@ -40,7 +40,7 @@ class Card extends Component  {
 		const {image, content, title, url} = this.props; 
 		return <div className="blog-card">
 			<Link href={url} prefetch>
-				<a>
+				<a onClick={() => FB.AppEvents.logEvent('View Post On Image')}>
 					{ image ?
 						<div className="card-header-image" style={{backgroundImage: `url(${image})`}}></div>
 						:
@@ -56,8 +56,9 @@ class Card extends Component  {
 				</div>
 			}
 			<p>{content}</p>
+			<div dangerouslySetInnerHTML={{__html: `<span class="fb-comments-count" data-href="https://blog.davidsdevel.com${url}"></span><img src="/static/assets/bubbles.svg" />`}} />
 			<div>
-				<button className="view-more" onClick={() => Router.push(url)}>Ver Mas</button>
+				<button className="view-more" onClick={() => {Router.push(url); FB.AppEvents.logEvent('View Post On Button')}}>Ver Mas</button>
 				<button className="share" onFocus={this.toggleShare} onBlur={this.toggleShare}>Compartir</button>
 			</div>
 			<Share style={{opacity: this.state.shareOpacity, display: this.state.shareDisplay}} title={title} url={`https://blog.davidsdevel.com${url}`}/>

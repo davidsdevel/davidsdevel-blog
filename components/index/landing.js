@@ -19,7 +19,7 @@ class Landing extends Component {
 			<header style={{height: this.state.clientHeight}}>
 				<link href="//cdn-images.mailchimp.com/embedcode/horizontal-slim-10_7.css" rel="stylesheet" type="text/css"/>
 				<div id="mc_embed_signup">
-					<form action="https://gmail.us3.list-manage.com/subscribe/post?u=da9c6653a8444ded1b1b39374&amp;id=fe4b144b89" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
+					<form onSubmit={() => FB.AppEvents.logEvent('Subscribe')} action="https://gmail.us3.list-manage.com/subscribe/post?u=da9c6653a8444ded1b1b39374&amp;id=fe4b144b89" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate" target="_blank" noValidate>
 					    <div id="mc_embed_signup_scroll">
 							<label htmlFor="mce-EMAIL">Suscribete</label>
 							<input type="email" name="EMAIL" className="email" id="mce-EMAIL" placeholder="Correo Electronico" required/>
@@ -27,12 +27,12 @@ class Landing extends Component {
 					    		<input type="text" name="b_da9c6653a8444ded1b1b39374_fe4b144b89" tabIndex="-1"/>
 					    	</div>
 					    	<div className="clear">
-					    		<input style={{marginTop: "10px"}}type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" className="button"/>
+					    		<input style={{marginTop: "10px"}} type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" className="button"/>
 					    	</div>
 					    </div>
 					</form>
 				</div>
-				<button onClick={() => scroll(0, this.state.clientHeight - 70)}>
+				<button onClick={() => {scroll(0, this.state.clientHeight - 70); FB.AppEvents.logEvent('Landing Scroll')}}>
 					<img src="/static/assets/arrow.svg" />
 				</button>
 				<div id="header-shadow">

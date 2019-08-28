@@ -30,6 +30,9 @@ class Home extends Component {
     query.page = page;
 		return query;
 	}
+  componentDidMount() {
+    initializeFB();
+  } 
 	render() {
     const {pathname, page} = this.props;
 		const generatePagesCount = () => {

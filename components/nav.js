@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import Link from 'next/link'
+import Link from 'next/link';
+import Router from "next/router";
 import {string} from "prop-types";
 
 const links = [
@@ -167,18 +168,22 @@ class Nav extends Component {
 			}
 		}
 	}
+	find({code}) {
+		if (code === "Enter") {
+			Router.push(`/search?q=${this.state.search}`);
+			FB.AppEvents.logEvent('Search');
+		}
+	}
 	render() {
 		return <nav id="nav">
-			<div id="fb-root"></div>
-			<script async defer crossOrigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v4.0&appId=337231497026333&autoLogAppEvents=1"/>
 			<div id="mobile-bar" style={this.state.mobileBar}>
 				<img onClick={this.toggleMenu} id="menu-icon" src="/static/assets/menu.svg"/>
 				<span id="title" style={{opacity: this.state.titleOpacity}}>{this.props.title}</span>
 				<div id="input" style={{background: this.state.inputBackground}}>
 					<img className="inline" onClick={this.toggleSearch} style={{float: "left"}}src="/static/assets/search.svg"/>
-					<input value={this.state.search} className="inline" style={this.state.inputStyle} type="text" placeholder="Busqueda" onChange={this.handleInput}/>
+					<input onKeyUp={this.find} value={this.state.search} className="inline" style={this.state.inputStyle} type="text" placeholder="Busqueda" onChange={this.handleInput}/>
 					<Link href={`https://davidsdevel-blog.herokuapp.com/search?q=${this.state.search}`}>
-						<a>
+						<a onClick={() => FB.AppEvents.logEvent('Search')}>
 							<img className="inline" id="arrow" style={{...this.state.arrowStyle, float: "right"}} src="/static/assets/arrow.svg" />
 						</a>
 					</Link>

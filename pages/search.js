@@ -44,13 +44,11 @@ class Search extends Component {
 		try {
 			const req = await fetch(`${location.origin}/find-post?q=${this.props.search}&pageToken=${this.state.nextPageToken}`);
 			const data = await req.json();
-			console.log(1, this.state.items)
 
 			this.setState({
 				items: Object.assign([], this.state.items, data.items),
 				nextPageToken: data.nextPageToken
 			});
-			console.log(2, this.state.items)
 		} catch(err) {
 			console.log(err);
 		}

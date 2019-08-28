@@ -22,12 +22,7 @@ class Post extends Component {
 		return query;
 	}
 	componentDidMount() {
-		if (this.props.isClient)
-			FB.XFBML.parse();
-	}
-	componentDidUpdate(a, b) {
-		if (a.pathname !== this.props.pathname)
-			FB.XFBML.parse();
+		initializeFB();
 	}
 	render() {
 		const {pathname, image, content, title, labels, published} = this.props;

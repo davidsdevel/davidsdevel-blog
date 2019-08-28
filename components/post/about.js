@@ -14,28 +14,28 @@ const About = () => {
 			<a 
 				href="https://www.facebook.com/davidsdevel"
 				target="_blank"
-				onClick={() => console.log("Facebook Follow")}
+				onClick={() => FB.AppEvents.logEvent('View Profile on Facebook')}
 			>
 				<img src="/static/assets/facebook.svg"/>
 			</a>
 			<a 
 				href="https://twitter.com/intent/user?screen_name=davidsdevel"
 				target="_blank"
-				onClick={() => console.log("Twitter Follow")}
+				onClick={() => FB.AppEvents.logEvent('View Profile on Twitter')}
 			>
 				<img src="/static/assets/twitter.svg" />
 			</a>
 			<a
 				href="https://www.linkedin.com/in/davidsdevel"
 				target="_blank"
-				onClick={() => console.log("Linkedin Follow")}
+				onClick={() => FB.AppEvents.logEvent('View Profile on LinkedIn')}
 			>
 				<img src="/static/assets/linkedin.svg" />
 			</a>
 			<a
 				href="https://www.instagram.com/davidsdevel"
 				target="_blank"
-				onClick={() => console.log("Instagram Follow")}
+				onClick={() => FB.AppEvents.logEvent('View Profile on Instagram')}
 			>
 				<img src="/static/assets/instagram.svg" />
 			</a>

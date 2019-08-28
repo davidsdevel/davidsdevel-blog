@@ -10,21 +10,21 @@ const Share = ({url, title}) => {
 			<a 
 				href={`https://www.facebook.com/sharer/sharer.php?u=${encodedURL}&t=${encodeURI(title)}`}
 				target="_blank"
-				onClick={() => console.log("Facebook Share")}
+				onClick={() => FB.AppEvents.logEvent('Post - Share on Facebook')}
 			>
 				<img src="/static/assets/facebook.svg"/>
 			</a>
 			<a 
 				href={`https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fblog.davidsdevel.com&ref_src=twsrc%5Etfw&text=${encodeURI("Esta entrada me gusto, puede que a ti también te interese." + title)}&tw_p=tweetbutton&url=${encodedURL}&via=davidsdevel`}
 				target="_blank"
-				onClick={() => console.log("Twitter Share")}
+				onClick={() => FB.AppEvents.logEvent('Post - Share on Twitter')}
 			>
 				<img src="/static/assets/twitter.svg" />
 			</a>
 			<a
 				href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodedURL}`}
 				target="_blank"
-				onClick={() => console.log("Linkedin Share")}
+				onClick={() => FB.AppEvents.logEvent('Post - Share on LinkedIn')}
 			>
 				<img src="/static/assets/linkedin.svg" />
 			</a>

@@ -8,7 +8,7 @@ const defaultOGImage = "https://davidsdevel-blog.herokuapp.com/static/images/og.
 
 const Head = props => (
 	<NextHead>
-		<title>{props.title || "David's Devel"}</title>
+		<title>{props.title || "David's Devel - blog"}</title>
 		<meta
 			name="description"
 			content={props.description || defaultDescription}
@@ -49,6 +49,7 @@ const Head = props => (
 		<meta content={props.url ? "https://davidsdevel-blog.herokuapp.com" + props.url: defaultOGURL} name='twitter:url'/>
 
 		<link rel="manifest" href="/manifest.json"/>
+		<script src="/static/FB.js"/>
 	</NextHead>
 );
 
