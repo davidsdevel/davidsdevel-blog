@@ -15,10 +15,14 @@ class Post extends Component {
       		const preq = await fetch(url);
       		query = await preq.json();
     	}
+    	query = {
+    		...query,
+    		isClient: !req ? true : false
+    	}
 		return query;
 	}
 	componentDidMount() {
-		if (!!FB) {
+		if (this.props.isClient) {
 			FB.XFBML.parse();
 		}
 	}

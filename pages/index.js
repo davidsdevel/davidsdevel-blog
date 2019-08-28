@@ -144,7 +144,7 @@ class Home extends Component {
             #pagination-container {
               width: 50%;
               background: #ccc;
-              margin: 5% 0 0 0;
+              margin: 0 0 0 10%;
               padding: 5px;
               border-radius: 50px;
               display: flex;

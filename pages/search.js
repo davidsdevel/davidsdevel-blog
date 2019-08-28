@@ -8,6 +8,7 @@ import Landing from '../components/index/landing';
 import Card from '../components/index/card';
 import Footer from '../components/index/footer';
 import {setBanner, asideBanner} from "../lib/banners";
+import {string} from "prop-types";
 
 class Search extends Component {
 	constructor() {
@@ -41,7 +42,7 @@ class Search extends Component {
 	}
 	async viewMore() {
 		try {
-			const req = await fetch(`http://localhost:3000/find-post?q=${this.props.search}&pageToken=${this.state.nextPageToken}`);
+			const req = await fetch(`${location.origin}/find-post?q=${this.props.search}&pageToken=${this.state.nextPageToken}`);
 			const data = await req.json();
 			console.log(1, this.state.items)
 
@@ -56,7 +57,7 @@ class Search extends Component {
 	}
 	async componentDidMount() {
 		try {
-			const req = await fetch(`http://localhost:3000/find-post?q=${this.props.search}`);
+			const req = await fetch(`${location.origin}/find-post?q=${this.props.search}`);
 			const data = await req.json();
 
 			this.setState({
@@ -69,11 +70,10 @@ class Search extends Component {
 		}
 	}
 	async componentDidUpdate(a, b) {
-		console.log(this.props.search, a.search);
 		if (this.state.actualSearch !== a.search) {
 
 			try {
-				const req = await fetch(`http://localhost:3000/find-post?q=${this.props.search}`);
+				const req = await fetch(`${location.origin}/find-post?q=${this.props.search}`);
 				const data = await req.json();
 	
 				this.setState({
@@ -92,7 +92,7 @@ class Search extends Component {
 			<div>
 				<Head title="David's Devel" url={pathname}/>
 				<Nav title="David's Devel"/>
-        		<h1>Busquedas para el termino: {search}</h1>
+        		<span id="title">Busquedas para el termino: <b>{decodeURI(search)}</b></span>
         		<div className="banner-container">
         		  {setBanner()}
         		</div>
@@ -122,77 +122,82 @@ class Search extends Component {
         		</div>
 				<Footer/>
 				<style jsx>{`
-          h1 {
-            margin: 100px 0 20px;
-          }
-          h1 {
-            text-align: center;
-
-          }
-          .banner-container {
-            margin 50px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-          aside {
-            display: none;
-          }
-          #pagination-container {
-            width: 80%;
-            background: #ccc;
-            margin: auto;
-            padding: 5px;
-            border-radius: 50px;
-            display: flex;
-            justify-content: space-between;
-          }
-          :global(#pagination-container a) {
-            background: #ccc;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 50%;
-            display: inline-block;
-            font-weight: bold;
-          }
-          :global(#pagination-container a.page-active) {
-            background: white;
-            color: #03A9F4;
-          }
-          @media screen and (min-width: 720px) {
-            h2 {
-              width: 60%;
-            }
-            aside {
-              float: right;
-              margin-right: 5%;
-              display: flex;
-              justify-content: center;
-              float: right;
-              flex-direction: column;
-              margin-top: 50px;
-            }
-            aside iframe {
-              margin 20px 0;
-            }
-            #posts-container {
-              display: inline-block;
-              width: 75%;
-            }
-            #pagination-container {
-              width: 50%;
-              background: #ccc;
-              margin: 5% 0 0 0;
-              padding: 5px;
-              border-radius: 50px;
-              display: flex;
-              justify-content: space-between;
-            }
-          }
+					#title {
+						margin: 100px 0 20px;
+						text-align: center;
+						display: block;
+						font-size: 28px;
+					}
+					.banner-container {
+						margin 50px 0;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+					}
+					aside {
+						display: none;
+					}
+					#pagination-container {
+						width: 80%;
+						background: #ccc;
+						margin: auto;
+						padding: 5px;
+						border-radius: 50px;
+						display: flex;
+						justify-content: space-between;
+					}
+					:global(#pagination-container a) {
+						background: #ccc;
+						color: white;
+						padding: 10px 15px;
+						border-radius: 50%;
+						display: inline-block;
+						font-weight: bold;
+					}
+					:global(#pagination-container a.page-active) {
+						background: white;
+						color: #03A9F4;
+					}
+					@media screen and (min-width: 720px) {
+						h2 {
+							width: 60%;
+						}
+						aside {
+							float: right;
+							margin-right: 5%;
+							display: flex;
+							justify-content: center;
+							float: right;
+							flex-direction: column;
+							margin-top: 50px;
+						}
+						aside iframe {
+							margin 20px 0;
+						}
+						#posts-container {
+							display: inline-block;
+							width: 75%;
+						}
+						#pagination-container {
+							width: 50%;
+							background: #ccc;
+							margin: 5% 0 0 0;
+							padding: 5px;
+							border-radius: 50px;
+							display: flex;
+							justify-content: space-between;
+						}
+					}
 				`}</style>
 			</div>
 		)
 	}
+}
+
+
+Search.propTypes = {
+	search: string,
+	pathname: string
 }
 
 export default Search;

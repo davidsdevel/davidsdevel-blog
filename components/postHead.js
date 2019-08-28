@@ -21,6 +21,7 @@ const Head = props => (
 	    <link rel="icon" href="/static/favicon.ico" />
 
 	    <link href={props.image || defaultOGImage} rel='image_src'/>
+	    <link rel="canonical" href={props.url}/>
 
 	    <meta property="og:site_name" content="David's Devel - Blog" />
 	    <meta content='100000619759917' property='fb:admins'/>

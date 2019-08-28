@@ -81,6 +81,22 @@ class Landing extends Component {
 				header label {
 					font-size: 24px !important;
 				}
+				header button {
+					border-radius: 50%;
+    				padding: 0;
+    				width: 60px;
+    				border: 0;
+    				height: 60px;
+    				box-shadow: rgba(0, 0, 0, .5) 2px 2px 3px;
+    				position: absolute;
+    				top: ${this.state.clientHeight - 90}px;
+    				right: 50%;
+    				margin-right: -30px;
+    				cursor: pointer;
+				}
+				header button img {
+					width: 40%;
+				}
 				@media screen and (min-width: 480px) {
 					#header-shadow img {
 						width: 20%;
@@ -116,26 +132,14 @@ class Landing extends Component {
     					width: 30%;
     					text-align: left;
 					}
+					header button {
+						top: ${this.state.clientHeight - 150}px;
+					}
 				}
 				@media screen and (min-width: 960px) {
 					header {
 						background-image: url(/static/images/landing-desktop-960p.jpg);
 					}
-				}
-				header button {
-					border-radius: 50%;
-    				padding: 0;
-    				width: 60px;
-    				border: 0;
-    				height: 60px;
-    				box-shadow: rgba(0, 0, 0, .5) 2px 2px 3px;
-    				position: absolute;
-    				top: ${this.state.clientHeight - 90}px;
-    				right: 50%;
-    				margin-right: -30px;
-				}
-				header button img {
-					width: 40%;
 				}
 			`}</style>
 		</div>

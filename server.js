@@ -12,7 +12,8 @@ const PORT = process.env.PORT || 3000;
 const API_KEY = "AIzaSyD9FkcifZlREnl8pdaRZN5YTq8ZtEFK-Qs";
 const BLOG_URL = `https://www.googleapis.com/blogger/v3/blogs/7044473803573631794?key=${API_KEY}`;
 const POST_URL = `https://www.googleapis.com/blogger/v3/blogs/7044473803573631794/posts?key=${API_KEY}`;
-const SEARCH_URL = `https://www.googleapis.com/blogger/v3/blogs/7044473803573631794/posts/search?&key=${API_KEY}`
+const SEARCH_URL = `https://www.googleapis.com/blogger/v3/blogs/7044473803573631794/posts/search?&key=${API_KEY}`;
+
 function getPostImage(e, type) {
 	const html = parse(e.content);
 	const img = html.querySelector("img");
