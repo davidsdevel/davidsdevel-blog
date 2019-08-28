@@ -9,13 +9,14 @@ class ErrorPage extends Component {
 			const status = res.statusCode;
 			var message;
 			if (status === 404) {
-				message = <p>Ups. No hay nada por aqui</p>
+				message = <div><p>Ups. No hay nada por aqui</p><span>¿Te perdiste? Bueno dejame llevarte hasta el <Link href="/" prefetch><a>Inicio</a></Link></span></div>
+			} else if (status === 500) {
+				message = <div>¡Lo sentimos!<br/>Hubo un error en el servidor<br/><Link href="/" prefetch><a>Inicio</a></Link></div>
 			}
-			return {message, status};
-		}
-
-		return {
-			message: <p>Ha ocurrido un error, intentelo mas tarde</p>
+			return {
+				message,
+				status
+			};
 		}
 	}
 	render() {
@@ -31,7 +32,7 @@ class ErrorPage extends Component {
 				<div id="container">
 					{status ? <span id="status">{status}</span> : null}
 					{message}
-					<span>¿Te perdiste? Bueno dejame llevarte hasta el <Link href="/" prefetch><a>Inicio</a></Link></span>
+					
 					
 				</div>
 				<Footer/>

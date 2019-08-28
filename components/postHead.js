@@ -8,8 +8,7 @@ const defaultOGImage = "https://davidsdevel-blog.herokuapp.com/static/images/og.
 
 const Head = props => (
 	<NextHead>
-		<meta charSet="UTF-8" />
-	    <title>{props.title + " - David's Devel" || "David's Devel"}</title>
+	    <title>{props.title + " - David's Devel" || "David's Devel - Blog"}</title>
 	    <meta
 	      name="description"
 	      content={props.description || defaultDescription}

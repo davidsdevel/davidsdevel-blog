@@ -26,7 +26,6 @@ const Post = () =>  (
         		  {setBanner()}
         		</div>
 				<main>
-					<h2 style={{textAlign: "center"}}>Acerca de Mi.</h2>
 					Hola Un gusto.
 					<br />
 					<br />

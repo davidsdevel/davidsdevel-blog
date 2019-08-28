@@ -47,7 +47,7 @@ class Home extends Component {
 		}
 		return (
 			<div>
-				<Head title="David's Devel" url={pathname}/>
+				<Head title="David's Devel - Blog"/>
 				<Nav title="David's Devel"/>
 				<Landing/>
         <h1>David's Devel</h1>
