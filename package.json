@@ -10,6 +10,7 @@
   "main": "server.js",
   "dependencies": {
     "express": "^4.17.1",
+    "feed": "^4.0.0",
     "isomorphic-fetch": "^2.2.1",
     "next": "9.0.3",
     "node-html-parser": "^1.1.16",
