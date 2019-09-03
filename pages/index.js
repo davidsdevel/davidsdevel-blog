@@ -26,6 +26,8 @@ class Home extends Component {
     }
     if (/\/?page=\d*/.test(asPath))
       page = parseInt(asPath.match(/\d/)[0]);
+    else
+      page = 1;
 
     query.page = page;
 		return query;
@@ -38,15 +40,36 @@ class Home extends Component {
 		const generatePagesCount = () => {
 			var pages = [];
 			const totalPages = Math.floor(this.props.totalItems / 10) + 1;
-			for (let i = 1; i <= totalPages; i++) {
-				var href;
-				if (i === 1)
-					href = "/";
-				else
-					href = `/?page=${i}`;
-				pages.push(<Link href={href} prefetch key={`pagination-${i}`}><a className={page === i ? "page-active" : undefined}>{i}</a></Link>);
-			}
-			return pages;
+
+      if (page === 1 && totalPages > 1)
+        return (<Link href={`/?page=2`} prefetch key={`pagination-2`}>
+          <a className="next">
+            <img style={{transform: "rotate(270deg)"}} src="/static/assets/arrow-white.svg"/>
+          </a>
+        </Link>);
+      else if (page === 1 && totalPages === 1) 
+        return;
+
+      else if (page > 1 && page < totalPages)
+        return (<div>
+          <Link href={`/?page=${page - 1}`} prefetch>
+            <a className="prev">
+              <img style={{transform: "rotate(90deg)"}} src="/static/assets/arrow-white.svg"/>
+            </a>
+          </Link>
+          <Link href={`/?page=${page + 1}`} prefetch>
+            <a className="next">
+              <img style={{transform: "rotate(270deg)"}} src="/static/assets/arrow-white.svg"/>
+            </a>
+          </Link>
+        </div>);
+
+      else if (page > 1 && page === totalPages)
+        return (<Link href={`/?page=${page - 1}`} prefetch>
+          <a className="prev">
+            <img style={{transform: "rotate(90deg)"}} src="/static/assets/arrow-white.svg"/>
+          </a>
+        </Link>);
 		}
 		return (
 			<div>
@@ -104,25 +127,25 @@ class Home extends Component {
             display: none;
           }
           #pagination-container {
+            position: relative;
             width: 80%;
-            background: #ccc;
-            margin: auto;
+            margin: 0 auto 100px;
             padding: 5px;
-            border-radius: 50px;
-            display: flex;
-            justify-content: space-between;
           }
           :global(#pagination-container a) {
-            background: #ccc;
-            color: white;
+            background: #03A9F4;
             padding: 10px 15px;
             border-radius: 50%;
             display: inline-block;
             font-weight: bold;
           }
-          :global(#pagination-container a.page-active) {
-            background: white;
-            color: #03A9F4;
+          :global(.next) {
+            position: absolute;
+            right: 0;
+          }
+          :global(.prev) {
+            position: absolute;
+            left: 0;
           }
           @media screen and (min-width: 720px) {
             h2 {
@@ -146,12 +169,8 @@ class Home extends Component {
             }
             #pagination-container {
               width: 50%;
-              background: #ccc;
               margin: 0 0 0 10%;
               padding: 5px;
-              border-radius: 50px;
-              display: flex;
-              justify-content: space-between;
             }
           }
 				`}</style>

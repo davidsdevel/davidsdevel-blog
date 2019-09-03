@@ -10,13 +10,6 @@ function initializeFB() {
       fjs.parentNode.insertBefore(js, fjs);
     }
 
-    if (!document.getElementById("fb-root")) {
-      const fbRoot = document.createElement("div");
-      fbRoot.id = "fb-root";
-
-      document.body.insertBefore(fbRoot, document.body.firstChild);
-    }
-
 	if(!window.FB) {
 		window.fbAsyncInit = () => {
 			FB.init({
