@@ -10,10 +10,13 @@
   "main": "server.js",
   "dependencies": {
     "express": "^4.17.1",
+    "express-fileupload": "^1.1.5",
+    "express-session": "^1.16.2",
     "feed": "^4.0.0",
     "isomorphic-fetch": "^2.2.1",
     "next": "9.0.3",
     "node-html-parser": "^1.1.16",
+    "pg-promise": "^9.1.2",
     "react": "16.9.0",
     "react-dom": "16.9.0",
     "xml-js": "^1.6.11"

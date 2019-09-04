@@ -3,6 +3,7 @@ const next = require('next');
 const fetch = require("isomorphic-fetch");
 const {parse} = require("node-html-parser");
 const convert = require('xml-js');
+var session = require('express-session');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -14,6 +15,22 @@ const API_KEY = "AIzaSyD9FkcifZlREnl8pdaRZN5YTq8ZtEFK-Qs";
 const BLOG_URL = `https://www.googleapis.com/blogger/v3/blogs/7044473803573631794?key=${API_KEY}`;
 const POST_URL = `https://www.googleapis.com/blogger/v3/blogs/7044473803573631794/posts?key=${API_KEY}`;
 const SEARCH_URL = `https://www.googleapis.com/blogger/v3/blogs/7044473803573631794/posts/search?&key=${API_KEY}`;
+
+var sess = {
+  	secret: 'keyboard cat',
+  	resave: false,
+  	saveUninitialized: true,
+	cookie: {}
+}
+
+if (server.get("env") === "production") {
+	server.set('trust proxy', 1) // trust first proxy
+	sess.cookie.secure = true
+}
+
+server
+	.use(express.urlencoded())
+	.use(session(sess))
 
 function getPostImage(e, type) {
 	const html = parse(e.content);
@@ -244,6 +261,16 @@ Sitemap: https://blog.davidsdevel.com/sitemap.xml
 		})
 
 		/*----------API----------*/
+		.post("/admin-login", (req, res) => {
+			console.log(req.body)
+			const {username, password} = req.body;
+			if (username === "davidsdevel" && password == 1234) {
+				req.session.adminAuth = true;
+				res.redirect(302, "/admin");
+			} else {
+				res.redirect(302, "/admin");
+			}
+		})
 		.get("/client-posts", async ({query}, res) => {
 			try {
 
