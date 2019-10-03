@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "set NODE_ENV=development&&node server",
+    "dev": "set NODE_ENV=development&& node server",
     "build": "next build",
     "start": "next build && set NODE_ENV=production&& node server"
   },

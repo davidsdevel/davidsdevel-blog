@@ -1,19 +1,18 @@
 install
-express-session
-express-fileupload
-pg-promise
+express-session express-fileupload pg-promise
 
 post: {
 	title: String,
 	description: String,
 	tags: Array,
+	category: Strnig,
 	content: String,
 	commentsCount: Int,
-	comments: Array
 	created: Timestamp,
 	updated: Timestamp,
 	image: String,
-	url: String
+	url: String,
+	views: Number
 }
 user: {
 	name: String,
@@ -21,6 +20,18 @@ user: {
 	fcmToken: String,
 	fbToken: String
 }
+comments: {
+	url: String,
+	username: String,
+	userpic: String,
+	content: String
+}
+imges: {
+	imgname: String,
+	img: bytea
+}
+
+insert into category(category_name,category_image) values('tablette', bytea('D:\image.jpg'));
 
 var toolbarOptions = [
 	['bold', 'italic', 'underline', 'strike'],
@@ -99,54 +110,126 @@ Quill.register(SizeStyle, true);
 
 
 const editor_options = {
-    theme: 'snow',
-    modules: {
-        toolbar: {
-            container: [['bold', 'italic', 'underline', 'strike'], ['link', 'image', 'video']],
-            handlers: { image: quill_img_handler },
-        },
-    },
+	theme: 'snow',
+	modules: {
+		toolbar: {
+			container: [['bold', 'italic', 'underline', 'strike'], ['link', 'image', 'video']],
+			handlers: { image: quill_img_handler },
+		},
+	},
 };
 
 function quill_img_handler() {
-    let fileInput = this.container.querySelector('input.ql-image[type=file]');
+	let fileInput = this.container.querySelector('input.ql-image[type=file]');
 
-    if (fileInput == null) {
-        fileInput = document.createElement('input');
-        fileInput.setAttribute('type', 'file');
-        fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon');
-        fileInput.classList.add('ql-image');
-        fileInput.addEventListener('change', () => {
-            const files = fileInput.files;
-            const range = this.quill.getSelection(true);
+	if (fileInput == null) {
+		fileInput = document.createElement('input');
+		fileInput.setAttribute('type', 'file');
+		fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon');
+		fileInput.classList.add('ql-image');
+		fileInput.addEventListener('change', () => {
+			const files = fileInput.files;
+			const range = this.quill.getSelection(true);
 
-            if (!files || !files.length) {
-                console.log('No files selected');
-                return;
-            }
+			if (!files || !files.length) {
+				console.log('No files selected');
+				return;
+			}
 
-            const formData = new FormData();
-            formData.append('file', files[0]);
+			const formData = new FormData();
+			formData.append('file', files[0]);
 
-            this.quill.enable(false);
+			this.quill.enable(false);
 
-            fetch("/upload-image", {
-            		method: "POST",
-            		body: formData
-            	})
-                .then(response => {
-                    this.quill.enable(true);
-                    this.quill.editor.insertEmbed(range.index, 'image', response.data.url_path);
-                    this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
-                    fileInput.value = '';
-                })
-                .catch(error => {
-                    console.log('quill image upload failed');
-                    console.log(error);
-                    this.quill.enable(true);
-                });
-        });
-        this.container.appendChild(fileInput);
-    }
-    fileInput.click();
+			fetch("/upload-image", {
+					method: "POST",
+					body: formData
+				})
+				.then(response => {
+					this.quill.enable(true);
+					this.quill.editor.insertEmbed(range.index, 'image', response.data.url_path);
+					this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
+					fileInput.value = '';
+				})
+				.catch(error => {
+					console.log('quill image upload failed');
+					console.log(error);
+					this.quill.enable(true);
+				});
+		});
+		this.container.appendChild(fileInput);
+	}
+	fileInput.click();
 }
+
+
+DROP TABLE [IF EXISTS] posts;
+
+CREATE TABLE posts(
+	id serial PRIMARY KEY,
+	title TEXT,
+	description TEXT,
+	tags TEXT,
+	content TEXT NOT NULL,
+	comments INT NOT NULL,
+	views INTEGER NOT NULL,
+	created TIMESTAMP,
+	updated TIMESTAMP,
+	image TEXT,
+	url TEXT,
+	category TEXT,
+	status VARCHAR(10) NOT NULL
+) INHERITS posts;
+
+
+
+
+const fileUpload = require('express-fileupload');
+
+//Native Modules
+const {
+	existsSync,
+	writeFileSync,
+	readFileSync
+} = require("fs");
+
+//Middlewares
+app
+	.use(fileUpload());
+
+app
+	.post('/upload-video', (req,res) => {
+
+		let {file} = req.files; //Get File
+		var {title, description, public} = req.body; //Get Title and Description
+
+		//Get Video Mimetype
+		let mime;
+		switch (file.mimetype) {
+			case "video/mp4":
+				mime = ".mp4";
+				break;
+			case "video/3gpp":
+				mime = ".3gp";
+				break;
+			case "video/x-msvideo":
+				mime = ".avi";
+				break;
+			default:
+				mime = ".mp4";
+				break;
+		}
+		var videoPath = join(__dirname, "temp", "video"+mime);
+		file.mv(videoPath, async ()=>{
+			try{
+
+				else {
+					let status = await Upload.uploadVideo(title, description, public, videoPath);
+				}
+			} catch(err) {
+				res.status(500).json({
+					status:err
+				});
+			}
+		});
+	})

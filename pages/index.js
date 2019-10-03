@@ -6,37 +6,31 @@ import Landing from '../components/index/landing';
 import Card from '../components/index/card';
 import Footer from '../components/index/footer';
 import {setBanner, asideBanner} from "../lib/banners";
+import fetch from "isomorphic-fetch";
 
 class Home extends Component {
-  static async getInitialProps({req, query, asPath, pathname}) {
+  static async getInitialProps({req, query, asPath}) {
     var page = 1;
-    if (!req) {
-      var url = `${location.origin}/client-posts`;
-      if (/\/?page=\d*/.test(asPath)) {
-        page = parseInt(asPath.match(/\d/)[0]);
-        url += asPath;
-      }
-      const preq = await fetch(url);
-      query = await preq.json();
 
-      query = {
-        ...query,
-        pathname
-      }
-    }
     if (/\/?page=\d*/.test(asPath))
       page = parseInt(asPath.match(/\d/)[0]);
-    else
-      page = 1;
 
-    query.page = page;
-		return query;
-	}
+    const r = await fetch(`http://localhost:3000/posts/all?page=${page}`);
+    query.data = await r.json();
+    console.log(query.data)
+
+    query = {
+      ...query,
+      page
+    };
+
+    return query;
+  }
   componentDidMount() {
     initializeFB();
   } 
-	render() {
-    const {pathname, page} = this.props;
+  render() {
+    const {page} = this.props;
 		const generatePagesCount = () => {
 			var pages = [];
 			const totalPages = Math.floor(this.props.totalItems / 10) + 1;
@@ -83,14 +77,15 @@ class Home extends Component {
         </div>
 				<div id="posts-container">
           <span style={{marginLeft: "5%", display: "block"}}>Entradas</span>
-					{this.props.items.map(({content, title, image, url}, i) => {
+					{this.props.data.map(({description, title, image, url, views}, i) => {
 						url = url.replace("http://davidsdevel.blogspot.com", "").replace(".html", "");
 						return <Card
              key={`blog-index-${i}`}
              title={title}
-             content={content}
+             content={description}
              url={url}
              image={image}
+             views={views}
             />
 					})}
 				</div>

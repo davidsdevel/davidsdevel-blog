@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import Head from "next/head";
+import fetch from "isomorphic-fetch";
 
 export default class extends Component {
 	constructor() {
@@ -19,15 +20,18 @@ export default class extends Component {
 		this.update = this.update.bind(this);
 	}
 	componentDidMount() {
-
+		console.log(this)
 		const quill = initQuill();
 		// Handlers can also be added post initialization
 		var toolbar = quill.getModule('toolbar');
-		toolbar.addHandler('image', () => imgHandler(react));
+		toolbar.addHandler('image', imgHandler);
 
-		quill.on('text-change', () => this.setState({
-			content: quill.root.innerHTML
-		}));
+		quill.on('text-change', () => {
+			console.log("changed")
+			this.setState({
+				content: quill.root.innerHTML
+			})
+		});
 	}
 	async save() {
 		try {
@@ -54,21 +58,22 @@ export default class extends Component {
 	async publish() {
 		try {
 			const {title, description, tags, content, image, url} = this.state;
-			const req = await fetch("/posts/save", {
+
+			const urlEncoded = new URLSearchParams();
+
+			urlEncoded.append("title", title);
+			urlEncoded.append("description", description);
+			urlEncoded.append("tags", tags);
+			urlEncoded.append("content", content);
+			urlEncoded.append("image", image);
+			urlEncoded.append("url", url);
+
+			const req = await fetch("/manage-post/publish", {
 				method: "POST",
-				header: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
-					title,
-					description,
-					tags,
-					content,
-					image,
-					url
-				})
+				body: urlEncoded
 			});
 			const data = await req.json();
+			console.log(data);
 		} catch(err) {
 			console.error(err);
 		}
@@ -76,7 +81,7 @@ export default class extends Component {
 	async update() {
 		try {
 			const {title, description, tags, content, image, url} = this.state;
-			const req = await fetch("/posts/save", {
+			const req = await fetch("/manage-posts/update", {
 				method: "POST",
 				header: {
 					"Content-Type": "application/json"
@@ -107,13 +112,13 @@ export default class extends Component {
 		return <div>
 			<Head>
 				<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"/>
-				<script src="https://cdn.quilljs.com/1.3.6/quill.js"/>
+				<script src="/static/quill.js"/>
 				<script src="/static/editor.js"/>
 			</Head>
 			<button>Guardar</button>
-			<button>Publicar</button>
+			<button onClick={this.publish}>Publicar</button>
 			<input type="text" name="title" placeholder="Titulo" onChange={this.handleInput}/>
-			<input type="text" name="description" placeholder="Titulo" onChange={this.handleInput}/>
+			<input type="text" name="description" placeholder="Descripcion" onChange={this.handleInput}/>
 			<input type="text" name="url" placeholder="URL" onChange={this.handleInput}/>
 			<input type="text" name="tags" placeholder="Etiquetas" onChange={this.handleInput}/>
 			<div id="editor"/>

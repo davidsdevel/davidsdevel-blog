@@ -47,7 +47,7 @@ function imgHandler(react) {
         fileInput.setAttribute('type', 'file');
         fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon');
         fileInput.classList.add('ql-image');
-        fileInput.onload = () => {
+        fileInput.onchange = () => {
             const files = fileInput.files;
             const range = this.quill.getSelection(true);
 
@@ -58,33 +58,33 @@ function imgHandler(react) {
 
             const formData = new FormData();
             formData.append('file', files[0]);
+            formData.append("name", files[0].name);
+            formData.append("mime", files[0].type);
+            var q = this.quill;
+            q.enable(false);
 
-            this.quill.enable(false);
-
-			/* fetch("/upload-image", {
-            		method: "POST",
-            		body: formData
-            	})
-            	.then(function(req) {return req.json()})
-                .then(function(data) {
-                    this.quill.enable(true);
-                    this.quill.editor.insertEmbed(range.index, 'image', response.data.url_path);
-                    this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
-                    fileInput.value = '';
-                    if (!react.state.image)
-                    	react.setState({
-                    		image: data.image
-                    	});
-                })
-                .catch(error => {
-                    console.log('quill image upload failed');
-                    console.log(error);
-                    this.quill.enable(true);
-                });*/
-                this.quill.enable(true);
-				this.quill.editor.insertEmbed(range.index, 'image', response.data.url_path);
-				this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
-				fileInput.value = '';
+			fetch("/upload/image", {
+            	method: "POST",
+            	body: formData
+            })
+            .then(function(req) {return req.text()})
+            .then(function(data) {
+                q.enable(true);
+                q.editor.insertEmbed(range.index, 'image', data);
+                q.setSelection(range.index + 1, Quill.sources.SILENT);
+                fileInput.value = '';
+                console.log(!$r.state.image);
+                if (!$r.state.image) {
+                    $r.setState({
+                        image: data
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('quill image upload failed');
+                console.error(error);
+                q.enable(true);
+            });
         };
         this.container.appendChild(fileInput);
     }

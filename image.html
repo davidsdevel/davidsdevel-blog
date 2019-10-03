@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hello</title>
+</head>
+<body>
+	<input type="file" name="file" id="file">
+	<script>
+		const file = document.getElementById('file')
+		file.onchange = ({target}) => {
+			console.log(target.files);
+		}
+	</script>
+</body>
+</html>

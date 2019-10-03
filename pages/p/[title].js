@@ -1,33 +1,35 @@
 import React, {Component} from "react";
-import Head from "../components/postHead";
-import Nav from "../components/nav";
-import Footer from '../components/index/footer';
-import Share from '../components/post/share';
-import About from '../components/post/about';
+import Head from "../../components/postHead";
+import Nav from "../../components/nav";
+import Footer from '../../components/index/footer';
+import Share from '../../components/post/share';
+import About from '../../components/post/about';
 import Link from "next/link";
-import {setBanner, asideBanner} from "../lib/banners";
+import {setBanner, asideBanner} from "../../lib/banners";
+import fetch from "isomorphic-fetch";
 
 class Post extends Component {
-	static async getInitialProps({query, req, asPath}) {
-		if (!req) {
-			var url = `${location.origin}/client-single-post?url=${encodeURI(asPath)}`;
+	static async getInitialProps({query, req, asPath, pathname}) {
+		try {
 
-      		const preq = await fetch(url);
-      		query = await preq.json();
-    	}
-    	query = {
-    		...query,
-    		isClient: !req ? true : false
-    	}
-		return query;
+			const r = await fetch(`http://localhost:3000/posts/single?url=${encodeURI(query.title)}`);
+			query = await r.json();
+    		query = {
+    			...query,
+    			pathname
+    		}
+			return query;
+		} catch(err) {
+			console.log(err);
+		}
 	}
 	componentDidMount() {
 		initializeFB();
 	}
 	render() {
-		const {pathname, image, content, title, labels, published} = this.props;
+		const {pathname, image, content, title, tags, published} = this.props;
 		return <div>
-			<Head url={pathname} published={published} title={title} tags={labels} image={image} description={content.replace(/<\w*\s*(\w*(-\w*)*=".*"\s*)*\/*>|<\/\w*>/g, "").replace(/\r|\n|\t/g, "").slice(0, 150) + "..."}/>
+			<Head url={pathname} published={published} title={title} tags={tags} image={image} description={content.replace(/<\w*\s*(\w*(-\w*)*=".*"\s*)*\/*>|<\/\w*>/g, "").replace(/\r|\n|\t/g, "").slice(0, 150) + "..."}/>
 			<Nav/>
 			<header>
 				<div id="header-shadow">
@@ -46,7 +48,7 @@ class Post extends Component {
 				</aside>
 			</div>
 			<ul id="tags">
-				{labels.map(e => (
+				{tags.map(e => (
 					<li  key={`tag-${e}`}>
 						<Link href={`/search?q=${e}`}>
 							<a>{e}</a>

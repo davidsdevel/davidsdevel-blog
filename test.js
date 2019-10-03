@@ -1,7 +1,6 @@
 //Server
 const express = require('express');
 const server = express();
-const next = require('next');
 
 //Express Middlewares
 const session = require('express-session');
@@ -16,8 +15,6 @@ const {existsSync, mkdirSync} = require("fs");
 const {join} = require("path");
 
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
-const handle = app.getRequestHandler();
 
 const DB = dev ? require("./lib/TestDB") : require("./lib/DB");
 const PostsManager = require("./lib/PostsManager");
@@ -37,54 +34,39 @@ if (!dev) {
 }
 const db = new DB();
 const posts = new PostsManager(db);
-
 server
 	.use(express.urlencoded())
 	.use(session(sess))
-	.use(fileUpload())
+	.use(fileUpload(sess))
 
 
 async function Init() {
 	try {
-		console.log("Preparing...");
-		await app.prepare();
-		console.log("Prepared");
 		await db.init(dev);
 
 		server
-		/*-------FILES----------*/
-		.get("/manifest.json", (req, res) => {
-			res.json({
-				gcm_sender_id: "103953800507",
-				theme_color: "#fff"
-			})
-		})
-		.get("/sitemap.xml", (req, res) => router.sitemap({req, res}))
-		.get("/robots.txt", (req, res) => {
-			res.set({
-				"Content-Type": "text/plain"
-			});
-			const robot = `User-agent: *
-				Disallow: /privacidad
-				Disallow: /terminos
-				Disallow: /search
-				Disallow: /feed
-				Allow: /
-				
-				Sitemap: https://blog.davidsdevel.com/sitemap.xml`;
-
-			res.send(robot.replace(/\t/g, ""));
-		})
+		.get("/sitemap", (req, res) => router.sitemap({req, res}))
 		.get("/feed", (req, res) => router.feed({req, res}))
 
 		/*----------API----------*/
 		.post("/admin-login", (req, res) => {
+			console.log(req.body)
 			const {username, password} = req.body;
 			if (username === "davidsdevel" && password == 1234) {
 				req.session.adminAuth = true;
-				res.redirect(302, "/admin");
+				res.redirect(302, "http://localhost:3000/admin");
 			} else {
-				res.redirect(302, "/admin");
+				res.redirect(302, "http://localhost:3000/admin");
+			}
+		})
+		.get("/is-auth", (req, res) => {
+			if (req.session) {
+				if (req.session.adminAuth)
+					res.send("auth");
+				else
+					res.send("no-auth");
+			} else {
+				res.status(403).send("bad-request")
 			}
 		})
 		.get("/posts/:action", async (req, res) => {
@@ -99,7 +81,7 @@ async function Init() {
 				else if (action === "find") {
 					//TODO
 				}
-				console.log(data)
+
 				res.json(data);
 			} catch(err) {
 				console.error(err);
@@ -122,11 +104,10 @@ async function Init() {
 				res.status(500).send(err);
 			}
 		})
-		.get("/:type/:secret/:name", async (req, res, next) => {
+		.get("/:type/:secret/:name", async (req, res) => {
 			try {
 
 				const {type, secret, name} = req.params;
-				if (!/\d*/.test(secret)) return next();
 				const file = await db.getFile(type, secret, name);
 
 				res.set({
@@ -161,10 +142,9 @@ async function Init() {
 				}
 			});
 		})
-		.get("*", (req, res) => handle(req, res))
-		.listen(PORT, err => {
+		.listen(8080, err => {
 			if (err) throw new Error(err);
-			console.log(`> App Listen on Port: ${PORT}`);
+			console.log(`> App Listen on Port: ${8080}`);
 		});
 
 	} catch(err) {
@@ -173,43 +153,3 @@ async function Init() {
 }
 
 Init();
-
-/*
-fetch("https://fcm.googleapis.com/fcm/send", {
-	method: "POST",
-	headers: {
-		Authorization: "key=AAAAJv0rZbw:APA91bGnaLO5-hPfN45LNH1xhvwUbjHHinhk-N4nA4jf1ylEyBNmvEiv2m9XAfok52CFTeKgQ7B5yC30MT8IjHtsbhfKDqZ7fcbj7MlVKZfJkafvh2pa3vuHaCHLWhaf62NW3dTfQ-R6",
-		"Content-Type": "application/json"
-	},
-	body: JSON.stringify({
-		notification: {
-			title: "Portugal vs. Denmark",
-			body: "5 to 1",
-			icon: "/static/images/davidsdevel-black.png",
-			click_action: "http://localhost:8081"
-		},
-		to: "YOUR-IID-TOKEN"
-	})
-})
-
-POST /fcm/send HTTP/1.1
-Host: fcm.googleapis.com
-Authorization: key=AAAAJv0rZbw:APA91bGnaLO5-hPfN45LNH1xhvwUbjHHinhk-N4nA4jf1ylEyBNmvEiv2m9XAfok52CFTeKgQ7B5yC30MT8IjHtsbhfKDqZ7fcbj7MlVKZfJkafvh2pa3vuHaCHLWhaf62NW3dTfQ-R6
-Content-Type: application/json
-
-{
-  "notification": {
-    "title": "Portugal vs. Denmark",
-    "body": "5 to 1",
-    "icon": "firebase-logo.png",
-    "click_action": "http://localhost:8081"
-  },
-  "to": "YOUR-IID-TOKEN"
-}
-
-Par de claves FCM: BALgWQbVzq62qWHC0CCmJqV7sPgljfaoT0NaYNKV3kHF48ZVLPRAQb-aTquSbCtAuqgPBf4w2SUsrE7FY2ILefY
-
-manifest.json: {
-  "gcm_sender_id": "103953800507"
-}
-*/
