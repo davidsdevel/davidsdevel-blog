@@ -5,6 +5,7 @@ const server = express();
 //Express Middlewares
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
+const userAgent = require("express-ua-middleware");
 
 //APIS
 const fetch = require("isomorphic-fetch");
@@ -33,56 +34,13 @@ if (!dev) {
 	sess.cookie.secure = true
 }
 
-const deviceMiddleware = (req, res, next) => {
-	const userAgent = req.headers["user-agent"];
-	var os;
-	if (/Windows NT/.test(userAgent))
-		os = "Windows";
-	else if (/Macintosh/.test(userAgent))
-		os = "MacOS";
-	else if (/iPhone/.test(userAgent))
-		os = "iPhone";
-	else if (/iPad/.test(userAgent))
-		os = "iPad";
-	else if (/Android/.test(userAgent))
-		os = "Android";
-	else if (/Linux/.test(userAgent))
-		os = "Linux";
-	else 
-		os = "Unknown";
-
-
-	var navigator;
-	if (/Chrome/.test(userAgent))
-		navigator = "Chrome";
-	else if (/Firefox/.test(userAgent))
-		navigator = "Firefox";
-	else if (/rv:11|MSIE/.test(userAgent))
-		navigator = "Internet Explorer";
-	else if (/Opera/.test(userAgent))
-		navigator = "Opera";
-	else if (/KHTML,* Like Gecko.*Safari/i.test(userAgent))
-		navigator = "Safari";
-	else if (/Edge/.test(userAgent))
-		navigator = "Edge";
-	else 
-		navigator = "Unknown";
-
-	req.device = {
-		os,
-		navigator
-	};
-
-	next();
-}
-
 const db = new DB();
 const posts = new PostsManager(db);
 server
 	.use(express.urlencoded())
 	.use(session(sess))
 	.use(fileUpload(sess))
-	.use(deviceMiddleware)
+	.use(userAgent)
 
 
 async function Init() {
@@ -121,12 +79,12 @@ async function Init() {
 		.get("/posts/:action", async (req, res) => {
 			try {
 				const {action} = req.params;
-				const {page, url, referer, userAgent} = req.query;
+				const {page, url, referer} = req.query;
 				var data;
 				if (action === "all")
 					data = await posts.all(page);
 				else if (action === "single")
-					data = await posts.single(url, referer, userAgent);
+					data = await posts.single(url, referer, req.userAgent);
 				else if (action === "find") {
 					//TODO
 				}

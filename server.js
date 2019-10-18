@@ -90,12 +90,12 @@ async function Init() {
 		.get("/posts/:action", async (req, res) => {
 			try {
 				const {action} = req.params;
-				const {page, url, referer, userAgent} = req.query;
+				const {page, url, referer} = req.query;
 				var data;
 				if (action === "all")
 					data = await posts.all(page);
 				else if (action === "single")
-					data = await posts.single(url);
+					data = await posts.single(url, referer, req.userAgent);
 				else if (action === "find") {
 					//TODO
 				}
