@@ -48,8 +48,8 @@ async function Init() {
 	try {
 		console.log("Preparing...");
 		await app.prepare();
+		await db.init();
 		console.log("Prepared");
-		await db.init(dev);
 
 		server
 		/*-------FILES----------*/
@@ -90,7 +90,7 @@ async function Init() {
 		.get("/posts/:action", async (req, res) => {
 			try {
 				const {action} = req.params;
-				const {page, url} = req.query;
+				const {page, url, referer, userAgent} = req.query;
 				var data;
 				if (action === "all")
 					data = await posts.all(page);
@@ -99,7 +99,7 @@ async function Init() {
 				else if (action === "find") {
 					//TODO
 				}
-				console.log(data)
+
 				res.json(data);
 			} catch(err) {
 				console.error(err);
@@ -124,9 +124,9 @@ async function Init() {
 		})
 		.get("/:type/:secret/:name", async (req, res, next) => {
 			try {
-
 				const {type, secret, name} = req.params;
-				if (!/\d*/.test(secret)) return next();
+
+				if (!/^\d\d\d\d\d\d\d\d\d\d$/.test(secret)) return next();
 				const file = await db.getFile(type, secret, name);
 
 				res.set({
@@ -149,10 +149,11 @@ async function Init() {
 			if (!existsSync(path))
 				mkdirSync(path);
 
-			file.mv(join(path, name), async () => {
+			const filepath = join(path, name);
+			file.mv(filepath, async () => {
 				try{
-					const url = await db.uploadFile(type, name, mime);
-					res.send(url);
+					const data = await db.uploadFile(type, name, mime, filepath);
+					res.json(data);
 				} catch(err) {
 					console.log(err);
 					res.status(500).json({

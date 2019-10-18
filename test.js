@@ -32,12 +32,57 @@ if (!dev) {
 	server.set('trust proxy', 1) // trust first proxy
 	sess.cookie.secure = true
 }
+
+const deviceMiddleware = (req, res, next) => {
+	const userAgent = req.headers["user-agent"];
+	var os;
+	if (/Windows NT/.test(userAgent))
+		os = "Windows";
+	else if (/Macintosh/.test(userAgent))
+		os = "MacOS";
+	else if (/iPhone/.test(userAgent))
+		os = "iPhone";
+	else if (/iPad/.test(userAgent))
+		os = "iPad";
+	else if (/Android/.test(userAgent))
+		os = "Android";
+	else if (/Linux/.test(userAgent))
+		os = "Linux";
+	else 
+		os = "Unknown";
+
+
+	var navigator;
+	if (/Chrome/.test(userAgent))
+		navigator = "Chrome";
+	else if (/Firefox/.test(userAgent))
+		navigator = "Firefox";
+	else if (/rv:11|MSIE/.test(userAgent))
+		navigator = "Internet Explorer";
+	else if (/Opera/.test(userAgent))
+		navigator = "Opera";
+	else if (/KHTML,* Like Gecko.*Safari/i.test(userAgent))
+		navigator = "Safari";
+	else if (/Edge/.test(userAgent))
+		navigator = "Edge";
+	else 
+		navigator = "Unknown";
+
+	req.device = {
+		os,
+		navigator
+	};
+
+	next();
+}
+
 const db = new DB();
 const posts = new PostsManager(db);
 server
 	.use(express.urlencoded())
 	.use(session(sess))
 	.use(fileUpload(sess))
+	.use(deviceMiddleware)
 
 
 async function Init() {
@@ -45,6 +90,10 @@ async function Init() {
 		await db.init(dev);
 
 		server
+		.get("/", (req, res) => {
+			console.log(req.device);
+			res.send("<div></div>");
+		})
 		.get("/sitemap", (req, res) => router.sitemap({req, res}))
 		.get("/feed", (req, res) => router.feed({req, res}))
 
@@ -72,12 +121,12 @@ async function Init() {
 		.get("/posts/:action", async (req, res) => {
 			try {
 				const {action} = req.params;
-				const {page, url} = req.query;
+				const {page, url, referer, userAgent} = req.query;
 				var data;
 				if (action === "all")
 					data = await posts.all(page);
 				else if (action === "single")
-					data = await posts.single(url);
+					data = await posts.single(url, referer, userAgent);
 				else if (action === "find") {
 					//TODO
 				}
@@ -104,12 +153,14 @@ async function Init() {
 				res.status(500).send(err);
 			}
 		})
-		.get("/:type/:secret/:name", async (req, res) => {
+		.get("/:type/:secret/:name", async (req, res, next) => {
 			try {
-
 				const {type, secret, name} = req.params;
+
+				if (!/^\d\d\d\d\d\d\d\d\d\d$/.test(secret)) return next();
 				const file = await db.getFile(type, secret, name);
 
+				console.log(file)
 				res.set({
 					"Content-Type": file.mime
 				});
@@ -129,10 +180,10 @@ async function Init() {
 			var path = join(__dirname, "files");
 			if (!existsSync(path))
 				mkdirSync(path);
-
-			file.mv(join(path, name), async () => {
+			const filepath = join(path, name);
+			file.mv(filepath, async () => {
 				try{
-					const url = await db.uploadFile(type, name, mime);
+					const url = await db.uploadFile(type, name, mime, filepath);
 					res.send(url);
 				} catch(err) {
 					console.log(err);

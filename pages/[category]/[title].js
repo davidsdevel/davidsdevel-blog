@@ -5,19 +5,19 @@ import Footer from '../../components/index/footer';
 import Share from '../../components/post/share';
 import About from '../../components/post/about';
 import Link from "next/link";
-import {setBanner, asideBanner} from "../../lib/banners";
+import {setBanner} from "../../lib/banners";
 import fetch from "isomorphic-fetch";
 
 class Post extends Component {
 	static async getInitialProps({query, req, asPath, pathname}) {
 		try {
+			const r = await fetch(`http://localhost:3000/posts/single?url=${encodeURI(query.category + "/" + query.title)}&referer=${encodeURI(req.headers.referer || "https://blog.davidsdevel.com")}&userAgent=${encodeURI(req.headers["user-agent"] || navigator.userAgent)}`);
 
-			const r = await fetch(`http://localhost:3000/posts/single?url=${encodeURI(query.title)}`);
 			query = await r.json();
-    		query = {
-    			...query,
-    			pathname
-    		}
+			query = {
+				...query,
+				pathname
+			}
 			return query;
 		} catch(err) {
 			console.log(err);
@@ -25,11 +25,47 @@ class Post extends Component {
 	}
 	componentDidMount() {
 		initializeFB();
+		document.addEventListener("DOMContentLoaded", function() {
+			let lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+			let active = false;
+		
+			const lazyLoad = function() {
+				if (active === false) {
+					active = true;
+		
+					setTimeout(function() {
+						lazyImages.forEach(function(lazyImage) {
+							if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
+								lazyImage.src = lazyImage.dataset.src;
+								lazyImage.srcset = lazyImage.dataset.srcset;
+								lazyImage.classList.remove("lazy");
+		
+								lazyImages = lazyImages.filter(function(image) {
+									return image !== lazyImage;
+								});
+		
+								if (lazyImages.length === 0) {
+									document.removeEventListener("scroll", lazyLoad);
+									window.removeEventListener("resize", lazyLoad);
+									window.removeEventListener("orientationchange", lazyLoad);
+								}
+							}
+						});
+		
+						active = false;
+					}, 200);
+				}
+			};
+		
+			document.addEventListener("scroll", lazyLoad);
+			window.addEventListener("resize", lazyLoad);
+			window.addEventListener("orientationchange", lazyLoad);
+		});
 	}
 	render() {
-		const {pathname, image, content, title, tags, published} = this.props;
+		const {pathname, image, content, title, tags, updated} = this.props;
 		return <div>
-			<Head url={pathname} published={published} title={title} tags={tags} image={image} description={content.replace(/<\w*\s*(\w*(-\w*)*=".*"\s*)*\/*>|<\/\w*>/g, "").replace(/\r|\n|\t/g, "").slice(0, 150) + "..."}/>
+			<Head url={pathname} published={updated} title={title} tags={tags} image={image} description={content.replace(/<\w*\s*(\w*(-\w*)*=".*"\s*)*\/*>|<\/\w*>/g, "").replace(/\r|\n|\t/g, "").slice(0, 150) + "..."}/>
 			<Nav/>
 			<header>
 				<div id="header-shadow">
@@ -38,13 +74,17 @@ class Post extends Component {
 				<img src="/static/images/davidsdevel-rombo.png"/>
 			</header>
 			<div>
-        		<div className="banner-container">
-        		  {setBanner()}
-        		</div>
+				<div className="banner-container">
+				  {setBanner()}
+				</div>
 				<main dangerouslySetInnerHTML={{__html: content}}/>
 				<aside>
-					{asideBanner()}
-					{asideBanner()}
+					<a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
+					  <img src="/static/images/payoneer.jpg" style={{width: "300px"}}/>
+					</a>
+					<a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
+					  <img src="/static/images/platzi.png" style={{width: "300px"}}/>
+					</a>
 				</aside>
 			</div>
 			<ul id="tags">
@@ -59,7 +99,7 @@ class Post extends Component {
 			<Share url={pathname} title={title}/>
 			<div className="banner-container">
 				{setBanner()}
-        	</div>
+			</div>
 			<About/>
 			<h4>Comentarios</h4>
 			<div id="comments-container" dangerouslySetInnerHTML={{__html: `<div
@@ -75,9 +115,9 @@ class Post extends Component {
 					background-image: url(${image});
 					height: 600px;
 					width: 100%;
-    				background-position: center;
-    				background-size: cover;
-    				overflow: hidden;
+					background-position: center;
+					background-size: cover;
+					overflow: hidden;
 				}
 				header img {
 					position: absolute;
@@ -130,7 +170,9 @@ class Post extends Component {
 					aside {
 						display: inline-block;
 						float: right;
-						padding: 0 5%;
+					}
+					aside a {
+						display: block;
 					}
 					header img {
 						position: absolute;
@@ -176,13 +218,13 @@ class Post extends Component {
 				}
 				blockquote {
 					font-style: italic;
-    				color: gray;
-    				font-size: 18px;
-    				margin: 15px auto;
+					color: gray;
+					font-size: 18px;
+					margin: 15px auto;
 				}
 				@media screen and (min-width: 960px) {
 					blockquote {
-    					font-size: 24px;
+						font-size: 24px;
 					}
 				}
 			`}</style>

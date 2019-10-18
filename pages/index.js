@@ -5,7 +5,7 @@ import Head from '../components/head'
 import Landing from '../components/index/landing';
 import Card from '../components/index/card';
 import Footer from '../components/index/footer';
-import {setBanner, asideBanner} from "../lib/banners";
+import {setBanner} from "../lib/banners";
 import fetch from "isomorphic-fetch";
 
 class Home extends Component {
@@ -16,21 +16,19 @@ class Home extends Component {
       page = parseInt(asPath.match(/\d/)[0]);
 
     const r = await fetch(`http://localhost:3000/posts/all?page=${page}`);
-    query.data = await r.json();
-    console.log(query.data)
 
-    query = {
-      ...query,
+    const data = {
+      posts: await r.json(),
       page
-    };
+    }
 
-    return query;
+    return data;
   }
   componentDidMount() {
     initializeFB();
   } 
   render() {
-    const {page} = this.props;
+    const {page, posts} = this.props;
 		const generatePagesCount = () => {
 			var pages = [];
 			const totalPages = Math.floor(this.props.totalItems / 10) + 1;
@@ -77,8 +75,7 @@ class Home extends Component {
         </div>
 				<div id="posts-container">
           <span style={{marginLeft: "5%", display: "block"}}>Entradas</span>
-					{this.props.data.map(({description, title, image, url, views}, i) => {
-						url = url.replace("http://davidsdevel.blogspot.com", "").replace(".html", "");
+					{posts.map(({description, title, image, url, views}, i) => {
 						return <Card
              key={`blog-index-${i}`}
              title={title}
@@ -90,8 +87,12 @@ class Home extends Component {
 					})}
 				</div>
         <aside>
-          {asideBanner()}
-          {asideBanner()}
+          <a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
+            <img src="/static/images/payoneer.jpg" style={{width: "300px"}}/>
+          </a>
+          <a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
+            <img src="/static/images/platzi.png" style={{width: "300px"}}/>
+          </a>
         </aside>
 				<div id="pagination-container">
 					{generatePagesCount()}
@@ -155,8 +156,8 @@ class Home extends Component {
               flex-direction: column;
               margin-top: 50px;
             }
-            aside iframe {
-              margin 20px 0;
+            aside a {
+              display: block;
             }
             #posts-container {
               display: inline-block;
@@ -183,4 +184,10 @@ export default Home;
 
 Like Button
 <div class="fb-like" data-href="https://blog.davidsdevel.com${pathname}" data-width="" data-layout="button_count" data-action="like" data-size="large" data-show-faces="false" data-share="false"></div>
+
+GET PAIDS by MARKETPLACES and Direct clients worldwide
+
+button
+  SIGN UP and EARN 25$
+
 */
