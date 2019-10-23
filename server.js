@@ -38,7 +38,7 @@ if (!dev) {
 	server.set('trust proxy', 1) // trust first proxy
 	sess.cookie.secure = false;
 }
-const db = new DB();
+const db = new DB(process.env.DATABASE_URL);
 const posts = new PostsManager(db);
 const router = new Router(db);
 
