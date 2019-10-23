@@ -2,12 +2,13 @@
 const express = require('express');
 const server = express();
 const next = require('next');
+const Knex = require('knex');
 
 //Express Middlewares
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
 const userAgent = require("express-ua-middleware");
-const pgSession = require('connect-pg-simple')(session);
+const KnexSessionStore = require('connect-session-knex')(session);
 
 //APIS
 const fetch = require("isomorphic-fetch");
@@ -21,22 +22,23 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const DB = dev ? require("./lib/TestDB") : require("./lib/DB");
+const DB = require("./lib/DB");
 const PostsManager = require("./lib/PostsManager");
 
 const PORT = process.env.PORT || 3000;
 
-const db = new DB(process.env.DATABASE_URL);
+const db = new DB(env);
 const posts = new PostsManager(db);
 const router = new Router(db);
 
+const store = new KnexSessionStore({
+    knex: db.db
+});
+
 var sess = {
-	store: new pgSession({
-		pgPromise: db.pgPromise
-	}),
+	store,
   	secret: 'keyboard cat',
   	resave: false,
-  	saveUninitialized: true,
 	cookie: {
 		maxAge: 3600000 * (24 * 365)
 	}
@@ -44,7 +46,7 @@ var sess = {
 
 if (!dev) {
 	server.set('trust proxy', 1) // trust first proxy
-	sess.cookie.secure = true;
+  	sess.cookie.secure: true,
 }
 
 server
