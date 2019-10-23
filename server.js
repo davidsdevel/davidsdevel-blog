@@ -27,7 +27,7 @@ const PostsManager = require("./lib/PostsManager");
 
 const PORT = process.env.PORT || 3000;
 
-const db = new DB(env);
+const db = new DB(dev);
 const posts = new PostsManager(db);
 const router = new Router(db);
 
@@ -46,7 +46,7 @@ var sess = {
 
 if (!dev) {
 	server.set('trust proxy', 1) // trust first proxy
-  	sess.cookie.secure: true,
+  	sess.cookie.secure = true;
 }
 
 server
@@ -87,7 +87,9 @@ async function Init() {
 			res.send(robot.replace(/\t/g, ""));
 		})
 		.get("/feed", (req, res) => router.feed({req, res}))
-
+		.get("/firebase-messaging-sw.js", (req, res) => {
+			res.sendFile(join(__dirname, "fcm-sw.js"));
+		})
 		/*----------API----------*/
 		.post("/admin-login", (req, res) => {
 			const {username, password} = req.body;
@@ -219,8 +221,19 @@ async function Init() {
 				res.status(500).send(err);
 			}
 		})
-		.get("/firebase-messaging-sw.js", (req, res) => {
-			res.sendFile(join(__dirname, "fcm-sw.js"));
+		.get("/set-view", async (req, res) => {
+			try {
+				const {url, referer} = req.query;
+
+				await posts.setView(url, "https://www.google.com", req.userAgent);
+
+				res.send("success");
+			} catch(err) {
+				if (err === "dont-exists")
+					res.status(404).send(err);
+				else
+					res.status(500).send(err);
+			}
 		})
 		.get("*", (req, res) => handle(req, res))
 		.listen(PORT, err => {

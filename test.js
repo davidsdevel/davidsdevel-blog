@@ -1,15 +1,17 @@
 //Server
 const express = require('express');
 const server = express();
+const Knex = require('knex');
 
 //Express Middlewares
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
 const userAgent = require("express-ua-middleware");
+const KnexSessionStore = require('connect-session-knex')(session);
 
 //APIS
 const fetch = require("isomorphic-fetch");
-const router = require("./lib/router");
+const Router = require("./lib/router");
 
 //Native Modules
 const {existsSync, mkdirSync} = require("fs");
@@ -17,10 +19,18 @@ const {join} = require("path");
 
 const dev = process.env.NODE_ENV !== 'production';
 
-const DB = require("./lib/TestDB");
+const DB = require("./lib/DB");
 const PostsManager = require("./lib/PostsManager");
 
 const PORT = process.env.PORT || 3000;
+
+const db = new DB(dev);
+const posts = new PostsManager(db);
+const router = new Router(db);
+
+const store = new KnexSessionStore({
+    knex: db.db
+});
 
 var sess = {
   	secret: 'keyboard cat',
@@ -34,8 +44,6 @@ if (!dev) {
 	sess.cookie.secure = true
 }
 
-const db = new DB();
-const posts = new PostsManager(db);
 server
 	.use(express.urlencoded())
 	.use(session(sess))
@@ -88,7 +96,7 @@ async function Init() {
 					data = await posts.allEdit();
 
 				else if (action === "single")
-					data = await posts.single(url, referer, req.userAgentFromString(userAgent));
+					data = await posts.single(url);
 
 				else if(action === "single-edit")
 					data = await posts.singleEdit(url);
@@ -190,6 +198,20 @@ async function Init() {
 					});
 				}
 			});
+		})
+		.get("/set-view", async (req, res) => {
+			try {
+				const {url, referer} = req.query;
+
+				await posts.setView(url, "https://www.google.com", req.userAgent);
+
+				res.send("success");
+			} catch(err) {
+				if (err === "dont-exists")
+					res.status(404).send(err);
+				else
+					res.status(500).send(err);
+			}
 		})
 		.get("/admin", (req, res) => {
 			res.sendFile(join(__dirname, "editor.html"))

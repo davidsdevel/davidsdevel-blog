@@ -11,22 +11,29 @@ import fetch from "isomorphic-fetch";
 class Post extends Component {
 	static async getInitialProps({query, req, asPath, pathname}) {
 		try {
-			if (req)
-				console.log(req.headers["user-agent"]);
 
-			const r = await fetch(`http://localhost:3000/posts/single?url=${encodeURI(query.category + "/" + query.title)}&referer=${encodeURI(req.headers.referer || "https://blog.davidsdevel.com")}&userAgent=${encodeURI(req.headers["user-agent"] || navigator.userAgent)}&fields=image,content,title,tags,updated`);
+			const r = await fetch(`http://localhost:3000/posts/single?fields=image,content,title,tags,updated`);
 
 			query = await r.json();
 			query = {
 				...query,
-				pathname
+				pathname,
+				referer: encodeURI(req.headers.referer || "https://blog.davidsdevel.com"),
+				viewUrl: query.category + "/" + query.title,
 			}
 			return query;
 		} catch(err) {
 			console.log(err);
 		}
 	}
-	componentDidMount() {
+	async componentDidMount() {
+		try {
+			const req = await fetch(`/set-view?url=${this.props.viewUrl}&referer=${this.props.referer}`);
+			await req.text();
+		} catch(err) {
+			console.error(err);
+		}
+
 		initializeFB();
 
 		let lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
