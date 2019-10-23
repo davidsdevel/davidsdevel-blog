@@ -7,6 +7,7 @@ const next = require('next');
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
 const userAgent = require("express-ua-middleware");
+const pgSession = require('connect-pg-simple')(session);
 
 //APIS
 const fetch = require("isomorphic-fetch");
@@ -26,7 +27,9 @@ const PostsManager = require("./lib/PostsManager");
 const PORT = process.env.PORT || 3000;
 
 var sess = {
-	store: new (require('connect-pg-simple')(session))(process.env.DATABASE_URL),
+	store: new pgSession({
+		conString: process.env.DATABASE_URL
+	}),
   	secret: 'keyboard cat',
   	resave: false,
   	saveUninitialized: true,
