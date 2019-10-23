@@ -36,7 +36,7 @@ var sess = {
 
 if (!dev) {
 	server.set('trust proxy', 1) // trust first proxy
-	sess.cookie.secure = false;
+	sess.cookie.secure = true;
 }
 const db = new DB(process.env.DATABASE_URL);
 const posts = new PostsManager(db);
