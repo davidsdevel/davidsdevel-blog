@@ -20,8 +20,7 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-//const DB = dev ? require("./lib/TestDB") : require("./lib/DB");
-const DB = require("./lib/TestDB");
+const DB = dev ? require("./lib/TestDB") : require("./lib/DB");
 const PostsManager = require("./lib/PostsManager");
 
 const PORT = process.env.PORT || 3000;
