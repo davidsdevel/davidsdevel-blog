@@ -11,7 +11,10 @@ import fetch from "isomorphic-fetch";
 class Post extends Component {
 	static async getInitialProps({query, req, asPath, pathname}) {
 		try {
-			const r = await fetch(`http://localhost:3000/posts/single?url=${encodeURI(query.category + "/" + query.title)}&referer=${encodeURI(req.headers.referer || "https://blog.davidsdevel.com")}&userAgent=${encodeURI(req.headers["user-agent"] || navigator.userAgent)}`);
+			if (req)
+				console.log(req.headers["user-agent"]);
+
+			const r = await fetch(`http://localhost:3000/posts/single?url=${encodeURI(query.category + "/" + query.title)}&referer=${encodeURI(req.headers.referer || "https://blog.davidsdevel.com")}&userAgent=${encodeURI(req.headers["user-agent"] || navigator.userAgent)}&fields=image,content,title,tags,updated`);
 
 			query = await r.json();
 			query = {
@@ -25,42 +28,41 @@ class Post extends Component {
 	}
 	componentDidMount() {
 		initializeFB();
-		document.addEventListener("DOMContentLoaded", function() {
-			let lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
-			let active = false;
+
+		let lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+		let active = false;
+		console.log("> Active ", active);
+		const lazyLoad = () => {
+			if (active === false) {
+				active = true;
 		
-			const lazyLoad = function() {
-				if (active === false) {
-					active = true;
+				setTimeout(() => {
+					lazyImages.forEach(lazyImage => {
+						if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
+							console.log("view ");
+							console.log(lazyImage.dataset)
+							lazyImage.src = lazyImage.dataset.src;
+							lazyImage.classList.remove("lazy");
 		
-					setTimeout(function() {
-						lazyImages.forEach(function(lazyImage) {
-							if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
-								lazyImage.src = lazyImage.dataset.src;
-								lazyImage.srcset = lazyImage.dataset.srcset;
-								lazyImage.classList.remove("lazy");
+							lazyImages = lazyImages.filter(function(image) {
+								return image !== lazyImage;
+							});
 		
-								lazyImages = lazyImages.filter(function(image) {
-									return image !== lazyImage;
-								});
-		
-								if (lazyImages.length === 0) {
-									document.removeEventListener("scroll", lazyLoad);
-									window.removeEventListener("resize", lazyLoad);
-									window.removeEventListener("orientationchange", lazyLoad);
-								}
+							if (lazyImages.length === 0) {
+								document.removeEventListener("scroll", lazyLoad);
+								window.removeEventListener("resize", lazyLoad);
+								window.removeEventListener("orientationchange", lazyLoad);
 							}
-						});
+						}
+					});
+					active = false;
+				}, 200);
+			}
+		};
 		
-						active = false;
-					}, 200);
-				}
-			};
-		
-			document.addEventListener("scroll", lazyLoad);
-			window.addEventListener("resize", lazyLoad);
-			window.addEventListener("orientationchange", lazyLoad);
-		});
+		document.addEventListener("scroll", lazyLoad);
+		window.addEventListener("resize", lazyLoad);
+		window.addEventListener("orientationchange", lazyLoad);
 	}
 	render() {
 		const {pathname, image, content, title, tags, updated} = this.props;
@@ -204,9 +206,11 @@ class Post extends Component {
 					color: black;
 				}
 				main img {
-					width: auto;
 					max-width: calc(100% - 32px);
 					height: auto;
+				}
+				main img.lazy {
+					filter: blur(8px)
 				}
 				main ul {
 					padding: 0 0 0 20px;

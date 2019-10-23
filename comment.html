@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Comment Box</title>
+</head>
+<body>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		#container {
+			width: 60%;
+			position: relative;
+		}
+		#container > div {
+			width: 100%;
+		}
+		#container #head {
+			background: red;
+		}
+		#container #head #head-top {
+			background: blue;
+			position: relative;
+			height: 50px;
+		}
+		#container #head #head-top span,
+		#container #head #head-top button {
+			position: absolute;
+		}
+		#container #head #head-top span {
+			left: 0;
+		}
+		#container #head #head-top button {
+			left: 75%;
+		}
+		.circle-img {
+			border-radius: 50%;
+		}
+	</style>
+	<div id="container">
+		<div>
+			<div id="head">
+				<div id="head-top">
+					<span>0 comentarios</span>
+					<button>Configuracion</button>
+				</div>
+				<hr>
+				<div>
+					<img class="circle-img" src="http://placehold.it/50/000/fff&text=D">
+					<div>
+						<textarea></textarea>
+						<button>Enviar</button>
+					</div>
+				</div>
+			</div>
+			<div id="comments">
+				<ul>
+					<li>
+						<img class="circle-img" src="http://placehold.it/50/000/fff&text=D">
+						<span>
+							Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+							tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+							quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+							consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+							cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+							proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+						</span>
+						<button>Responder</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

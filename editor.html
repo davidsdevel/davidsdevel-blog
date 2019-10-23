@@ -2,12 +2,14 @@
 <html>
 <head>
 	<title>Hola</title>
-	<link href="./static/quill.snow.css" rel="stylesheet"/>
-	<script src="./static/quill.js"></script>
+	<link href="/quill.snow.css" rel="stylesheet"/>
+	<script src="/quill.js"></script>
 </head>
 <body>
 	<div id="editor"></div>
+	<button onclick="send()">Save</button>
 	<script>
+		var data;
 		function initQuill() {
 			const toolbarOptions = [
 				['bold', 'italic', 'underline', 'strike'],
@@ -25,8 +27,8 @@
 				[{ 'align': [] }],
 				['clean']
 			];
-
-
+		
+		
 			const codeBlock = Quill.import('formats/code-block');
 			const AlignStyle = Quill.import('attributors/style/align');
 			const BackgroundStyle = Quill.import('attributors/style/background');
@@ -34,28 +36,27 @@
 			const DirectionStyle = Quill.import('attributors/style/direction');
 			const FontStyle = Quill.import('attributors/style/font');
 			const SizeStyle = Quill.import('attributors/style/size');
-
-
+			const InlineBlot = Quill.import('blots/block');
+		
 			codeBlock.className = "prettyprint";
-
-			var InlineBlot = Quill.import('blots/block');
+		
 			class ImageBlot extends InlineBlot {
-			  static create(data) {
-			    const node = super.create(data);
-			    node.setAttribute('data-src', data.src);
-			    node.setAttribute('src', data.src);
-			    node.setAttribute('data-custom', data.custom);
-			    return node;
-			  }
-			  static value(domNode) {
+				static create(data) {
+					const node = super.create(data);
+					node.setAttribute('data-src', data.dataSrc);
+					node.setAttribute('src', data.src);
+					node.setAttribute('style', `width: ${data.width}px; filter: blur(8px)`);
+					return node;
+				}
+				static value(domNode) {
 					const { src, custom } = domNode.dataset;
 					return { src, custom };
 				}
 			}
 			ImageBlot.blotName = 'imageBlot';
-			ImageBlot.className = 'image-blot lazy';
+			ImageBlot.className = 'lazy';
 			ImageBlot.tagName = 'img';
-
+		
 			Quill.register({ 'formats/imageBlot': ImageBlot });
 			Quill.register(AlignStyle, true);
 			Quill.register(BackgroundStyle, true);
@@ -64,74 +65,120 @@
 			Quill.register(FontStyle, true);
 			Quill.register(SizeStyle, true);
 			Quill.register(codeBlock, true);
+		
+			return new Quill('#editor', {
+				modules: {
+					toolbar: toolbarOptions
+				},
+				theme: 'snow',
+				debug:"info"
+			});
+		}
 
-	return new Quill('#editor', {
-		modules: {
-			toolbar: toolbarOptions
-		},
-		theme: 'snow',
-		debug:"info"
-	});
-}
+		function imgHandler(react) {
+			const container = this.container;
+			let fileInput = container.querySelector('input.ql-image[type=file]');
+		
+			if (fileInput == null) {		
+				fileInput = document.createElement('input');		
+				fileInput.setAttribute('type', 'file');
+				fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon');
+				fileInput.classList.add('ql-image');
+				fileInput.onchange = () => {
+					var width;
 
-function imgHandler(react) {
-    let fileInput = this.container.querySelector('input.ql-image[type=file]');
 
-    if (fileInput == null) {
-        fileInput = document.createElement('input');
-        fileInput.setAttribute('type', 'file');
-        fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon');
-        fileInput.classList.add('ql-image');
-        fileInput.onchange = () => {
-            const files = fileInput.files;
-            const range = this.quill.getSelection(true);
+					const files = fileInput.files;
+					const range = this.quill.getSelection(true);
+		
+					const reader = new FileReader();
+					reader.readAsDataURL(files[0]);
+					reader.onloadend = ({target}) => {
+						let image = new Image();
+						image.src = target.result;
+						setTimeout(() => (width = image.naturalWidth), 100);
+					}
 
-            if (!files || !files.length) {
-                console.log('No files selected');
-                return;
-            }
+					if (!files || !files.length) {
+						console.log('No files selected');
+						return;
+					}
+		
+					const formData = new FormData();
+					formData.append('file', files[0]);
+					formData.append("name", files[0].name);
+					formData.append("mime", files[0].type);
 
-            const formData = new FormData();
-            formData.append('file', files[0]);
-            formData.append("name", files[0].name);
-            formData.append("mime", files[0].type);
-            var q = this.quill;
-            q.enable(false);
-
-			fetch("/upload/image", {
-            	method: "POST",
-            	body: formData
-            })
-            .then(function(req) {return req.text()})
-            .then(function(data) {
-                q.enable(true);
-                q.editor.insertEmbed(range.index, 'imageBlot', {
-                	custom: "custom.png",
-                	src: data
-                });
-                q.setSelection(range.index + 1, Quill.sources.SILENT);
-                fileInput.value = '';
-            })
-            .catch(error => {
-                console.error('quill image upload failed');
-                console.error(error);
-                q.enable(true);
-            });
-        };
-        this.container.appendChild(fileInput);
-    }
-    fileInput.click();
-}
-
-const quill = initQuill();
+					var q = this.quill;
+					q.enable(false);
+		
+					fetch("/upload/image", {
+						method: "POST",
+						body: formData
+					})
+					.then(function(req) {return req.json()})
+					.then(function(data) {
+						q.enable(true);
+						q.editor.insertEmbed(range.index, 'imageBlot', {
+							dataSrc: data.src,
+							src: data.thumb,
+							width
+						});
+						q.setSelection(range.index + 1, Quill.sources.SILENT);
+						fileInput.value = '';
+						setTimeout(() => {
+							const lazy = document.querySelectorAll('.lazy');
+							lazy.forEach(e => {
+								e.oncontextmenu = ev => ev.preventDefault();
+								e.onauxclick = ev => {
+									ev.preventDefault();
+									console.log("Data")
+								}
+								console.log(e)
+							})
+						}, 100);
+					})
+					.catch(error => {
+						console.error('quill image upload failed');
+						console.error(error);
+						q.enable(true);
+					});
+				};
+				this.container.appendChild(fileInput);
+			}
+			fileInput.click();
+		}
+		const quill = initQuill();
 		// Handlers can also be added post initialization
 		var toolbar = quill.getModule('toolbar');
 		toolbar.addHandler('image', imgHandler);
 
 		quill.on('text-change', () => {
+			data = quill.root.innerHTML;
 			console.log("changed")
-			console.log(quill.root.innerHTML)
 		});
+		async function send() {
+			try {
+				const urlEncoded = new URLSearchParams();
+	
+				urlEncoded.append("title", "Hola Mundo");
+				urlEncoded.append("description", "Ejemplo");
+				urlEncoded.append("tags", "hola mundo, ejemplo");
+				urlEncoded.append("content", data);
+				urlEncoded.append("image", "");
+				urlEncoded.append("url", "development/url");
+				urlEncoded.append("category", "development");
+	
+				const req = await fetch("/manage-post/save", {
+					method: "POST",
+					body: urlEncoded
+				});
+				const d = await req.json();
+				console.log(d);
+			} catch(err) {
+				console.error(err);
+			}
+		}
 	</script>
 </body>
 </html>

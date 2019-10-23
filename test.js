@@ -17,7 +17,7 @@ const {join} = require("path");
 
 const dev = process.env.NODE_ENV !== 'production';
 
-const DB = dev ? require("./lib/TestDB") : require("./lib/DB");
+const DB = require("./lib/TestDB");
 const PostsManager = require("./lib/PostsManager");
 
 const PORT = process.env.PORT || 3000;
@@ -41,6 +41,7 @@ server
 	.use(session(sess))
 	.use(fileUpload(sess))
 	.use(userAgent)
+	.use(express.static(join(__dirname, "static")))
 
 
 async function Init() {
@@ -49,8 +50,7 @@ async function Init() {
 
 		server
 		.get("/", (req, res) => {
-			console.log(req.device);
-			res.send("<div></div>");
+			res.sendFile(join(__dirname, "image.html"));
 		})
 		.get("/sitemap", (req, res) => router.sitemap({req, res}))
 		.get("/feed", (req, res) => router.feed({req, res}))
@@ -79,16 +79,51 @@ async function Init() {
 		.get("/posts/:action", async (req, res) => {
 			try {
 				const {action} = req.params;
-				const {page, url, referer} = req.query;
+				const {page, url, referer, userAgent, fields} = req.query;
 				var data;
 				if (action === "all")
 					data = await posts.all(page);
+
+				else if (action === "all-edit")
+					data = await posts.allEdit();
+
 				else if (action === "single")
-					data = await posts.single(url, referer, req.userAgent);
+					data = await posts.single(url, referer, req.userAgentFromString(userAgent));
+
+				else if(action === "single-edit")
+					data = await posts.singleEdit(url);
+
 				else if (action === "find") {
 					//TODO
 				}
+				if (fields) {
+					const parse = postData => {
+						var newData = {};
+						const parsedFields = fields.split(",");
+						Object.entries(postData).forEach(e => {
+							console.log(e)
+						});
+						Object.entries(postData).forEach(e => {
+							for (let i = 0; i < parsedFields.length; i++) {
+								if (e[0] === parsedFields[i]) {
+									newData[e[0]] = e[1];
+								}
+							}
+						});
+						return newData;
+					}
+					if (action === "all-edit" ||
+						action === "all" ||
+						action === "find" ||
+						action === "category" ||
+						action === "category-edit"
+					)
+						data = data.map(e => parse(e));
 
+					else
+						data = parse(data);
+					
+				}
 				res.json(data);
 			} catch(err) {
 				console.error(err);
@@ -102,12 +137,16 @@ async function Init() {
 			try {
 				console.log(req.body);
 				const {action} = req.params;
+				var id;
 				if (action === "publish") {
-					await db.publishPost(req.body);
+					id = await db.publishPost(req.body);
+				} else if (action === "save") {
+					id = await db.savePost(req.body);
 				}
 
-				res.status(200).send("success");
+				res.status(200).send(id);
 			} catch(err) {
+				console.log(err)
 				res.status(500).send(err);
 			}
 		})
@@ -138,11 +177,12 @@ async function Init() {
 			var path = join(__dirname, "files");
 			if (!existsSync(path))
 				mkdirSync(path);
+
 			const filepath = join(path, name);
 			file.mv(filepath, async () => {
 				try{
-					const url = await db.uploadFile(type, name, mime, filepath);
-					res.send(url);
+					const data = await db.uploadFile(type, name, mime, filepath);
+					res.json(data);
 				} catch(err) {
 					console.log(err);
 					res.status(500).json({
@@ -150,6 +190,9 @@ async function Init() {
 					});
 				}
 			});
+		})
+		.get("/admin", (req, res) => {
+			res.sendFile(join(__dirname, "editor.html"))
 		})
 		.listen(8080, err => {
 			if (err) throw new Error(err);

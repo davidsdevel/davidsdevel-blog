@@ -16,9 +16,13 @@ post: {
 }
 user: {
 	name: String,
+	lastname: String,
+	username: String,
+	password: String,
 	pic: String,
 	fcmToken: String,
-	fbToken: String
+	fbToken: String,
+	verified: Boolean
 }
 comments: {
 	url: String,

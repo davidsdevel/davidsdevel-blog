@@ -5,10 +5,18 @@
 </head>
 <body>
 	<input type="file" name="file" id="file">
+	<button onclick="send()">Send</button>
 	<script>
-		const file = document.getElementById('file')
+		const file = document.getElementById('file');
+		var a;
 		file.onchange = ({target}) => {
-			console.log(target.files);
+			const reader = new FileReader();
+			reader.readAsDataURL(target.files[0]);
+			reader.onloadend = ({target}) => {
+				a = new Image();
+				a.src = target.result;
+				setTimeout(() => console.log(a.naturalWidth), 100);
+			}
 		}
 	</script>
 </body>

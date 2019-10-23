@@ -6,7 +6,7 @@ import Share from '../components/post/share';
 import About from '../components/post/about';
 import Link from "next/link";
 import NextHead from "next/head";
-import {setBanner, asideBanner} from "../lib/banners";
+import {setBanner} from "../lib/banners";
 
 const Post = () =>  (
 		<div>
@@ -22,9 +22,9 @@ const Post = () =>  (
 				<img src="/static/images/davidsdevel-rombo.png"/>
 			</header>
 			<div>
-        		<div className="banner-container">
-        		  {setBanner()}
-        		</div>
+				<div className="banner-container">
+				  {setBanner()}
+				</div>
 				<main>
 					Hola Un gusto.
 					<br />
@@ -57,23 +57,27 @@ const Post = () =>  (
 					¡Ahora tengo <a href="https://www.instagram.com/davidsdevel/" target="_blank">Instagram</a>!
 				</main>
 				<aside>
-					{asideBanner()}
-					{asideBanner()}
+					<a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
+						<img src="/static/images/payoneer.png"/>
+					</a>
+					<a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
+						<img src="/static/images/platzi.png"/>
+					</a>
 				</aside>
 			</div>
 			<Share url="/about" title="Conoce más acerca de David's Devel"/>
 			<div className="banner-container">
 				{setBanner()}
-        	</div>
+			</div>
 			<Footer/>
 			<style jsx>{`
 				header {
 					background-image: url(/static/images/og.jpg);
 					height: 600px;
 					width: 100%;
-    				background-position: center;
-    				background-size: cover;
-    				overflow: hidden;
+					background-position: center;
+					background-size: cover;
+					overflow: hidden;
 				}
 				header img {
 					position: absolute;
@@ -164,13 +168,13 @@ const Post = () =>  (
 				}
 				blockquote {
 					font-style: italic;
-    				color: gray;
-    				font-size: 18px;
-    				margin: 15px auto;
+					color: gray;
+					font-size: 18px;
+					margin: 15px auto;
 				}
 				@media screen and (min-width: 960px) {
 					blockquote {
-    					font-size: 24px;
+						font-size: 24px;
 					}
 				}
 			`}</style>

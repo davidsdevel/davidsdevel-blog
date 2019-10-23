@@ -35,14 +35,12 @@ messaging.requestPermission()
   return messaging.getToken();
 })
 .then(function(token) {
-  if (currentToken) {
-    sendTokenToServer(currentToken);
-    updateUIForPushEnabled(currentToken);
+  if (token) {
+    sendTokenToServer(token);
   } else {
     // Show permission request.
     console.log('No Instance ID token available. Request permission to generate one.');
     // Show permission UI.
-    updateUIForPushPermissionRequired();
     setTokenSentToServer(false);
   }
 })
@@ -58,6 +56,7 @@ messaging.requestPermission()
 function sendTokenToServer(currentToken) {
   if (!isTokenSentToServer()) {
     console.log('Sending token to server...');
+    console.log(currentToken.length);
     /**
      * fetch(`http://localhost:3000/fcm/add-token?token=${currentToken}`)
      * .then(function(req) {

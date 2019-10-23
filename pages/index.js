@@ -15,7 +15,7 @@ class Home extends Component {
     if (/\/?page=\d*/.test(asPath))
       page = parseInt(asPath.match(/\d/)[0]);
 
-    const r = await fetch(`http://localhost:3000/posts/all?page=${page}`);
+    const r = await fetch(`http://localhost:3000/posts/all?page=${page}&fields=description,title,image,url,views`);
 
     const data = {
       posts: await r.json(),

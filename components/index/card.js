@@ -42,7 +42,7 @@ class Card extends Component  {
 			<Link href={`/${url}`} prefetch>
 				<a onClick={() => FB.AppEvents.logEvent('View Post On Image')}>
 					{ image ?
-						<div className="card-header-image" style={{backgroundImage: `url(http://localhost:8080${image})`}}></div>
+						<div className="card-header-image" style={{backgroundImage: `url(${image})`}}></div>
 						:
 						<div className="card-header-title">
 							<h3>{title}</h3>

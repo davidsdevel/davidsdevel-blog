@@ -7,7 +7,7 @@ import Head from '../components/head'
 import Landing from '../components/index/landing';
 import Card from '../components/index/card';
 import Footer from '../components/index/footer';
-import {setBanner, asideBanner} from "../lib/banners";
+import {setBanner} from "../lib/banners";
 import {string} from "prop-types";
 
 class Search extends Component {
@@ -90,34 +90,41 @@ class Search extends Component {
 			<div>
 				<Head title="David's Devel" url={pathname}/>
 				<Nav title="David's Devel"/>
-        		<span id="title">Busquedas para el termino: <b>{decodeURI(search)}</b></span>
-        		<div className="banner-container">
-        		  {setBanner()}
-        		</div>
+				<span id="title">Busquedas para el termino: <b>{decodeURI(search)}</b></span>
+				<div className="banner-container">
+				  {setBanner()}
+				</div>
 				<div id="posts-container">
 					<span style={{marginLeft: "5%", display: "block"}}>Entradas</span>
 					{items.map(({content, title, image, url}, i) => {
 					url = url.replace("http://davidsdevel.blogspot.com", "").replace(".html", "");
 					return <Card
-        		    	 key={`blog-index-${i}`}
-        		    	 title={title}
-        		    	 content={content}
-        		    	 url={url}
-        		    	 image={image}
-        		    	/>
+						 key={`blog-index-${i}`}
+						 title={title}
+						 content={content}
+						 url={url}
+						 image={image}
+						/>
 					})}
 				</div>
-        		<aside>
-        		  {asideBanner()}
-        		  {asideBanner()}
-        		</aside>
-        		{
-        			!!nextPageToken &&
+				<aside>
+					<a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
+						<img src="/static/images/payoneer.png"/>
+					</a>
+					{
+						items.lenght > 2 && 
+						<a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
+							<img src="/static/images/platzi.png"/>
+						</a>
+					}
+				</aside>
+				{
+					!!nextPageToken &&
 					<button onClick={this.viewMore}>Ver Más</button>
-        		}
-        		<div className="banner-container">
-        		  {setBanner()}
-        		</div>
+				}
+				<div className="banner-container">
+				  {setBanner()}
+				</div>
 				<Footer/>
 				<style jsx>{`
 					#title {

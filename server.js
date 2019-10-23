@@ -6,10 +6,11 @@ const next = require('next');
 //Express Middlewares
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
+const userAgent = require("express-ua-middleware");
 
 //APIS
 const fetch = require("isomorphic-fetch");
-const router = require("./lib/router");
+const Router = require("./lib/router");
 
 //Native Modules
 const {existsSync, mkdirSync} = require("fs");
@@ -19,7 +20,8 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-const DB = dev ? require("./lib/TestDB") : require("./lib/DB");
+//const DB = dev ? require("./lib/TestDB") : require("./lib/DB");
+const DB = require("./lib/TestDB");
 const PostsManager = require("./lib/PostsManager");
 
 const PORT = process.env.PORT || 3000;
@@ -28,21 +30,24 @@ var sess = {
   	secret: 'keyboard cat',
   	resave: false,
   	saveUninitialized: true,
-	cookie: {}
+	cookie: {
+		maxAge: 3600000 * (24 * 365)
+	}
 }
 
 if (!dev) {
 	server.set('trust proxy', 1) // trust first proxy
-	sess.cookie.secure = true
+	sess.cookie.secure = false;
 }
 const db = new DB();
 const posts = new PostsManager(db);
+const router = new Router(db);
 
 server
 	.use(express.urlencoded())
 	.use(session(sess))
 	.use(fileUpload())
-
+	.use(userAgent)
 
 async function Init() {
 	try {
@@ -80,26 +85,56 @@ async function Init() {
 		/*----------API----------*/
 		.post("/admin-login", (req, res) => {
 			const {username, password} = req.body;
-			if (username === "davidsdevel" && password == 1234) {
+			if (username === "davidsdevel" && password == 1234)
 				req.session.adminAuth = true;
-				res.redirect(302, "/admin");
-			} else {
-				res.redirect(302, "/admin");
-			}
+
+			res.redirect(302, "/admin");
 		})
 		.get("/posts/:action", async (req, res) => {
 			try {
 				const {action} = req.params;
-				const {page, url, referer} = req.query;
+				const {page, url, referer, userAgent, fields} = req.query;
 				var data;
 				if (action === "all")
 					data = await posts.all(page);
+
+				else if (action === "all-edit")
+					data = await posts.allEdit();
+
 				else if (action === "single")
-					data = await posts.single(url, referer, req.userAgent);
+					data = await posts.single(url, referer, req.userAgentFromString(userAgent));
+
+				else if(action === "single-edit")
+					data = await posts.singleEdit(url);
+
 				else if (action === "find") {
 					//TODO
 				}
+				if (fields) {
+					const parse = postData => {
+						var newData = {};
+						const parsedFields = fields.split(",");
+						Object.entries(postData).forEach(e => {
+							for (let i = 0; i < parsedFields.length; i++) {
+								if (e[0] === parsedFields[i]) {
+									newData[e[0]] = e[1];
+								}
+							}
+						});
+						return newData;
+					}
+					if (action === "all-edit" ||
+						action === "all" ||
+						action === "find" ||
+						action === "category" ||
+						action === "category-edit"
+					)
+						data = data.map(e => parse(e));
 
+					else
+						data = parse(data);
+					
+				}
 				res.json(data);
 			} catch(err) {
 				console.error(err);
@@ -111,14 +146,17 @@ async function Init() {
 		})
 		.post("/manage-post/:action", async (req, res) => {
 			try {
-				console.log(req.body);
 				const {action} = req.params;
+				var id;
 				if (action === "publish") {
-					await db.publishPost(req.body);
+					id = await db.publishPost(req.body);
+				} else if (action === "save") {
+					id = await db.savePost(req.body);
 				}
 
-				res.status(200).send("success");
+				res.status(200).send(id.toString());
 			} catch(err) {
+				console.log(err)
 				res.status(500).send(err);
 			}
 		})
@@ -161,6 +199,22 @@ async function Init() {
 					});
 				}
 			});
+		})
+		.get("/fcm/:action", async (req, res) => {
+			try {
+
+				const {action} = req.params;
+
+				if (action === "add-token") {
+					await db.addFCMToken(req.query.token);
+				}
+			} catch(err) {
+				console.error(err);
+				res.status(500).send(err);
+			}
+		})
+		.get("/firebase-messaging-sw.js", (req, res) => {
+			res.sendFile(join(__dirname, "fcm-sw.js"));
 		})
 		.get("*", (req, res) => handle(req, res))
 		.listen(PORT, err => {
