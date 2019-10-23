@@ -26,9 +26,13 @@ const PostsManager = require("./lib/PostsManager");
 
 const PORT = process.env.PORT || 3000;
 
+const db = new DB(process.env.DATABASE_URL);
+const posts = new PostsManager(db);
+const router = new Router(db);
+
 var sess = {
 	store: new pgSession({
-		conString: process.env.DATABASE_URL
+		pgPromise: db.pgPromise
 	}),
   	secret: 'keyboard cat',
   	resave: false,
@@ -42,9 +46,6 @@ if (!dev) {
 	server.set('trust proxy', 1) // trust first proxy
 	sess.cookie.secure = true;
 }
-const db = new DB(process.env.DATABASE_URL);
-const posts = new PostsManager(db);
-const router = new Router(db);
 
 server
 	.use(express.urlencoded())
