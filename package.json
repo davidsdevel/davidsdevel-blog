@@ -11,6 +11,7 @@
   "main": "server.js",
   "dependencies": {
     "bcrypt": "^3.0.6",
+    "connect-pg-simple": "^6.0.1",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.5",
     "express-session": "^1.16.2",
