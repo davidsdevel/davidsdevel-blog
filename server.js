@@ -26,7 +26,7 @@ const PostsManager = require("./lib/PostsManager");
 const PORT = process.env.PORT || 3000;
 
 var sess = {
-	store: new (require('connect-pg-simple')(session))(),
+	store: new (require('connect-pg-simple')(session))(process.env.DATABASE_URL),
   	secret: 'keyboard cat',
   	resave: false,
   	saveUninitialized: true,
