@@ -78,7 +78,7 @@ class Posts extends Component {
 			else {
 				if (posts.length > 0)
 					ui = <ul>
-					{posts.reverse().map(e => <li key={`post-${e.ID}`}>
+					{posts.map(e => <li key={`post-${e.ID}`}>
 						<span>{e.title || "Nuevo Post"}</span>
 						<div>
 							{
