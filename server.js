@@ -163,7 +163,7 @@ async function Init() {
 
 				res.status(200).send(id.toString());
 			} catch(err) {
-				console.log(err)
+				console.error(err)
 				res.status(500).send(err);
 			}
 		})
@@ -200,7 +200,7 @@ async function Init() {
 					const data = await db.uploadFile(type, name, mime, filepath);
 					res.json(data);
 				} catch(err) {
-					console.log(err);
+					console.error(err);
 					res.status(500).json({
 						status:err
 					});
@@ -243,7 +243,7 @@ async function Init() {
 					await db.importPostsFromJson(JSON.parse(req.body.data));
 					res.send("success");
 				} catch(err) {
-					console.log(err);
+					console.error(err);
 					res.status(500).send(err);
 				}
 			}

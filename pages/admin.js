@@ -6,7 +6,6 @@ class Admin extends Component {
 	static async getInitialProps({req}) {
 		var auth = false;
 		if (req) {
-			console.log(req.session)
 			if (req.session) {
 				const {session} = req;
 				if (session.adminAuth) {
