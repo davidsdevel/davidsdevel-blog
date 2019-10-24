@@ -44,9 +44,10 @@ export default class extends Component {
 		toolbar.addHandler('image', imgHandler);
 		console.log(quill)
 		quill.on('text-change', () => {
-			console.log("> Changes")
-			clearTimeout(this.timeout);
-			this.timeout = setTimeout(this.save, 5000);
+			if (this.state.postStatus !== "published") {
+				clearTimeout(this.timeout);
+				this.timeout = setTimeout(this.save, 5000);
+			}
 			this.setState({
 				isSaved: false,
 				content: quill.root.innerHTML
@@ -122,8 +123,8 @@ export default class extends Component {
 		return <div>
 			<div>
 				<input type="text" name="title" value={this.state.title} placeholder="Titulo" onChange={this.handleInput}/>
-				<button disabled={this.state.isSaved} onClick={this.save}>Guardar</button>
-				<button onClick={this.publish}>{this.state.postStatus === "published" ? "Update": "Publicar"}</button>
+				<button disabled={this.state.isSaved} onClick={this.save}>{this.state.postStatus === "published" ? "Cambiar a Borrador": "Guardar"}</button>
+				<button onClick={this.publish}>{this.state.postStatus === "published" ? "Actualizar": "Publicar"}</button>
 				<button onClick={() => this.props.cancel(this.state.isSaved)}>Cancelar</button>
 			</div>
 			<div id="editor-container">

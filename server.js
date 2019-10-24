@@ -31,12 +31,8 @@ const db = new DB(dev);
 const posts = new PostsManager(db);
 const router = new Router(db);
 
-const store = new KnexSessionStore({
-    knex: db.db
-});
 
 var sess = {
-	store,
   	secret: 'keyboard cat',
   	resave: false,
 	cookie: {
@@ -45,6 +41,9 @@ var sess = {
 }
 
 if (!dev) {
+	sess.store = new KnexSessionStore({
+	    knex: db.db
+	});
 	server.set('trust proxy', 1) // trust first proxy
   	sess.cookie.secure = true;
 }

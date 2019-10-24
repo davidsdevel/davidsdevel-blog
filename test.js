@@ -14,7 +14,7 @@ const fetch = require("isomorphic-fetch");
 const Router = require("./lib/router");
 
 //Native Modules
-const {existsSync, mkdirSync} = require("fs");
+const {existsSync, mkdirSync, readFile} = require("fs");
 const {join} = require("path");
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -28,10 +28,6 @@ const db = new DB(dev);
 const posts = new PostsManager(db);
 const router = new Router(db);
 
-const store = new KnexSessionStore({
-    knex: db.db
-});
-
 var sess = {
   	secret: 'keyboard cat',
   	resave: false,
@@ -40,6 +36,9 @@ var sess = {
 }
 
 if (!dev) {
+	sess.store = new KnexSessionStore({
+	    knex: db.db
+	});
 	server.set('trust proxy', 1) // trust first proxy
 	sess.cookie.secure = true
 }
@@ -54,7 +53,9 @@ server
 
 async function Init() {
 	try {
-		await db.init(dev);
+		console.log("Initializing...")
+		await db.init();
+		console.log("Initialized")
 
 		server
 		.get("/", (req, res) => {
@@ -213,8 +214,22 @@ async function Init() {
 					res.status(500).send(err);
 			}
 		})
+		.post("/import-posts", async (req, res) => {
+			if (!req.headers["auth"] === "C@mila") {
+				res.status(401).send("no-auth");
+			}
+			else {
+				try {
+					await db.importPostsFromJson(JSON.parse(req.body.data));
+					res.send("success");
+				} catch(err) {
+					console.log(err);
+					res.status(500).send(err);
+				}
+			}
+		})
 		.get("/admin", (req, res) => {
-			res.sendFile(join(__dirname, "editor.html"))
+			res.sendFile(join(__dirname, "comment.html"))
 		})
 		.listen(8080, err => {
 			if (err) throw new Error(err);

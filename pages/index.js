@@ -11,11 +11,16 @@ import fetch from "isomorphic-fetch";
 class Home extends Component {
   static async getInitialProps({req, query, asPath}) {
     var page = 1;
+    var origin;
+    if (req)
+      origin = req.headers["host"];
+    else
+      origin = location.host;
 
     if (/\/?page=\d*/.test(asPath))
       page = parseInt(asPath.match(/\d/)[0]);
 
-    const r = await fetch(`http://localhost:3000/posts/all?page=${page}&fields=description,title,image,url,views`);
+    const r = await fetch(`${origin.match(/localhost|127\.0\.0\.1|::1/) !== null ? "http:" : "https:"}//${origin}/posts/all?page=${page}&fields=description,title,image,url,views`);
 
     const data = {
       posts: await r.json(),

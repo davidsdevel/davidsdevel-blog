@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import Posts from "./posts";
+import Import from "./import";
 
 export default class extends Component {
 	constructor() {
@@ -18,12 +19,16 @@ export default class extends Component {
 		var tab;
 		if (this.state.tab === "posts")
 			tab = <Posts/>;
+		else if (this.state.tab === "import")
+			tab = <Import/>;
+
 		return <div>
 			<aside>
 				<ul>
 					<li onClick={() => this.changeTab("posts")}>Posts</li>
 					<li onClick={() => this.changeTab("stats")}>Stats</li>
 					<li onClick={() => this.changeTab("social")}>Social Media</li>
+					<li onClick={() => this.changeTab("import")}>Import</li>
 				</ul>
 			</aside>
 			<div id="content">

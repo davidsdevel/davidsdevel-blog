@@ -12,7 +12,7 @@ class Post extends Component {
 	static async getInitialProps({query, req, asPath, pathname}) {
 		try {
 
-			const r = await fetch(`http://localhost:3000/posts/single?fields=image,content,title,tags,updated`);
+			const r = await fetch(`/posts/single?fields=image,content,title,tags,updated`);
 
 			query = await r.json();
 			query = {
