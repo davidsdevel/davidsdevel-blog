@@ -30,7 +30,7 @@ const Head = props => (
 	    <meta content='article' property='og:type'/>
 	    <meta property='article:author' content='https://www.facebook.com/David.ImpulseWD' />
 	    <meta property='article:publisher' content='https://www.facebook.com/davidsdevel' />
-	    <meta content='Technology' property='article:section'/>
+	    <meta content={props.category[0].toUpperCase() + props.category.slice(1)} property='article:section'/>
 	    <meta content={props.published} property='article:published_time'/>
 	    {props.tags.map(e => (<meta key={`tag-${e}`} content={e} property="article:tag"/>))}
 

@@ -11,8 +11,13 @@ import fetch from "isomorphic-fetch";
 class Post extends Component {
 	static async getInitialProps({query, req, asPath, pathname}) {
 		try {
+			var origin;
+			if (req)
+				origin = req.headers["host"];
+			else
+				origin = location.host;
 
-			const r = await fetch(`/posts/single?fields=image,content,title,tags,updated`);
+			const r = await fetch(`${origin.match(/localhost|127\.0\.0\.1|::1/) !== null ? "http:" : "https:"}//${origin}/posts/single?fields=image,content,title,tags,updated,description,category`);
 
 			query = await r.json();
 			query = {
@@ -72,9 +77,9 @@ class Post extends Component {
 		window.addEventListener("orientationchange", lazyLoad);
 	}
 	render() {
-		const {pathname, image, content, title, tags, updated} = this.props;
+		const {pathname, image, content, title, tags, updated, description, category} = this.props;
 		return <div>
-			<Head url={pathname} published={updated} title={title} tags={tags} image={image} description={content.replace(/<\w*\s*(\w*(-\w*)*=".*"\s*)*\/*>|<\/\w*>/g, "").replace(/\r|\n|\t/g, "").slice(0, 150) + "..."}/>
+			<Head url={pathname} category={category} published={updated} title={title} tags={tags} image={image} description={description}/>
 			<Nav/>
 			<header>
 				<div id="header-shadow">
