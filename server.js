@@ -234,6 +234,20 @@ async function Init() {
 					res.status(500).send(err);
 			}
 		})
+		.post("/import-posts", async (req, res) => {
+			if (!req.headers["auth"] === "C@mila") {
+				res.status(401).send("no-auth");
+			}
+			else {
+				try {
+					await db.importPostsFromJson(JSON.parse(req.body.data));
+					res.send("success");
+				} catch(err) {
+					console.log(err);
+					res.status(500).send(err);
+				}
+			}
+		})
 		.get("*", (req, res) => handle(req, res))
 		.listen(PORT, err => {
 			if (err) throw new Error(err);
