@@ -35,6 +35,7 @@ const router = new Router(db);
 var sess = {
   	secret: 'keyboard cat',
   	resave: false,
+  	saveUninitialized: true,
 	cookie: {
 		maxAge: 3600000 * (24 * 365)
 	}

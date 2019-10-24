@@ -17,7 +17,7 @@ class Post extends Component {
 			else
 				origin = location.host;
 
-			const r = await fetch(`${origin.match(/localhost|127\.0\.0\.1|::1/) !== null ? "http:" : "https:"}//${origin}/posts/single?fields=image,content,title,tags,updated,description,category`);
+			const r = await fetch(`${origin.match(/localhost|127\.0\.0\.1|::1/) !== null ? "http:" : "https:"}//${origin}/posts/single?url=${query.category}/${query.title}&fields=image,content,title,tags,updated,description,category`);
 
 			query = await r.json();
 			query = {
