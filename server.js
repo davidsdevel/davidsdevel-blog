@@ -255,11 +255,11 @@ async function Init() {
 			let body = req.body;
 			console.log(req.body)
 			// Checks this is an event from a page subscription
-			if (body.object === 'page') {
+			if (body.object === 'application') {
 		
 				// Iterates over each entry - there may be multiple if batched
 				body.entry.forEach(function(entry) {
-		
+					console.log(entry);
 					// Gets the message. entry.messaging is an array, but 
 					// will only ever contain one message, so we get index 0
 					let webhook_event = entry.messaging[0];
