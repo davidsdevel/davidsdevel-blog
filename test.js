@@ -144,7 +144,6 @@ async function Init() {
 		})
 		.post("/manage-post/:action", async (req, res) => {
 			try {
-				console.log(req.body);
 				const {action} = req.params;
 				var id;
 				if (action === "publish") {
@@ -153,9 +152,9 @@ async function Init() {
 					id = await db.savePost(req.body);
 				}
 
-				res.status(200).send(id);
+				res.status(200).send(id.toString());
 			} catch(err) {
-				console.log(err)
+				console.error(err)
 				res.status(500).send(err);
 			}
 		})

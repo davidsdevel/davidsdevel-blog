@@ -43,6 +43,7 @@ class Posts extends Component {
 		try {
 			const req = await fetch(`/posts/single-edit?url=${url}&fields=ID,title,description,image,postStatus,url,content,category,tags`);
 			const editData = await req.json();
+			console.log(editData);
 			this.setState({
 				editData,
 				editting: true
@@ -84,7 +85,7 @@ class Posts extends Component {
 							{
 								e.postStatus === "published" &&
 								<Link href={`/${e.url}`}>
-									<a>Ver</a>
+									<a target="_blank">Ver</a>
 								</Link>
 							}
 							<button onClick={() => this.edit(e.url)}>Editar</button>

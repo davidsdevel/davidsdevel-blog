@@ -36,13 +36,13 @@ export default class extends Component {
 				category,
 				tags
 			});
-			quill.root.innerHTML = content;
+			quill.clipboard.dangerouslyPasteHTML(content)
 		}
 		window.react = this;
 		// Handlers can also be added post initialization
 		var toolbar = quill.getModule('toolbar');
 		toolbar.addHandler('image', imgHandler);
-		console.log(quill)
+
 		quill.on('text-change', () => {
 			if (this.state.postStatus !== "published") {
 				clearTimeout(this.timeout);

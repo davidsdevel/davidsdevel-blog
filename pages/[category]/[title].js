@@ -78,6 +78,7 @@ class Post extends Component {
 	}
 	render() {
 		const {pathname, image, content, title, tags, updated, description, category} = this.props;
+		console.log(content)
 		return <div>
 			<Head url={pathname} category={category} published={updated} title={title} tags={tags} image={image} description={description}/>
 			<Nav/>
