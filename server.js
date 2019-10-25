@@ -268,15 +268,17 @@ async function Init() {
 						const tokenData = await fetchToken.json();
 
 						const fetchUrl = await fetch(`https://graph.facebook.com/${commentId}?fields=permalink_url&access_token=${tokenData['access_token']}`);
-					}	const linkData = await fetchUrl.json();
-
+						const linkData = await fetchUrl.json();
 						const {permalink_url} = linkData;
 
 						console.log(permalink_url);
 
 						const urlQuery = url.parse(permalink_url);
 						const parsedQuery = qs.parse(urlQuery);
+					} catch(err) {
+						console.error(err);
 						// /development|design|marketing|others\/(\w*-)*\w/.exec(parsedQuery.u)
+					}
 
 					// Gets the message. entry.messaging is an array, but 
 					*/
