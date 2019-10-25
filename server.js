@@ -277,12 +277,11 @@ async function Init() {
 						const parsedQuery = qs.parse(urlQuery);
 					} catch(err) {
 						console.error(err);
+						res.sendStatus(500);
 						// /development|design|marketing|others\/(\w*-)*\w/.exec(parsedQuery.u)
 					}
 
-					// Gets the message. entry.messaging is an array, but 
-					*/
-
+					// Gets the message. entry.messaging is an array, but
 				});
 				// Returns a '200 OK' response to all requests
 				res.status(200).send('EVENT_RECEIVED');
