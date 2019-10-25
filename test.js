@@ -44,9 +44,10 @@ if (!dev) {
 }
 
 server
-	.use(express.urlencoded())
+	.use(express.json())
+	.use(express.urlencoded({extended: true}))
 	.use(session(sess))
-	.use(fileUpload(sess))
+	.use(fileUpload())
 	.use(userAgent)
 	.use(express.static(join(__dirname, "static")))
 
@@ -226,6 +227,10 @@ async function Init() {
 					res.status(500).send(err);
 				}
 			}
+		})
+		.post("/test-json", (req, res) => {
+			console.log(req.body);
+			res.send()
 		})
 		.get("/admin", (req, res) => {
 			res.sendFile(join(__dirname, "comment.html"))

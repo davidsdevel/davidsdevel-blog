@@ -33,9 +33,9 @@ const router = new Router(db);
 
 
 var sess = {
-  	secret: 'keyboard cat',
-  	resave: false,
-  	saveUninitialized: true,
+	secret: 'keyboard cat',
+	resave: false,
+	saveUninitialized: true,
 	cookie: {
 		maxAge: 3600000 * (24 * 365)
 	}
@@ -43,14 +43,15 @@ var sess = {
 
 if (!dev) {
 	sess.store = new KnexSessionStore({
-	    knex: db.db
+		knex: db.db
 	});
 	server.set('trust proxy', 1) // trust first proxy
-  	sess.cookie.secure = true;
+	sess.cookie.secure = true;
 }
 
 server
-	.use(express.urlencoded())
+	.use(express.json())
+	.use(express.urlencoded({extended: true}))
 	.use(session(sess))
 	.use(fileUpload())
 	.use(userAgent)
@@ -249,9 +250,51 @@ async function Init() {
 				}
 			}
 		})
-		.get("/fb-webhook", (req, res) => {
-			if (req.query["hub.verify_token"] === "C@mila")
-				res.send(req.query["hub.challenge"]);
+		.post('/webhook', (req, res) => {  
+ 
+			let body = req.body;
+			console.log(req.body)
+			// Checks this is an event from a page subscription
+			if (body.object === 'page') {
+		
+				// Iterates over each entry - there may be multiple if batched
+				body.entry.forEach(function(entry) {
+		
+					// Gets the message. entry.messaging is an array, but 
+					// will only ever contain one message, so we get index 0
+					let webhook_event = entry.messaging[0];
+					console.log(webhook_event);
+				});
+				// Returns a '200 OK' response to all requests
+				res.status(200).send('EVENT_RECEIVED');
+			} else {
+				// Returns a '404 Not Found' if event is not from a page subscription
+				res.sendStatus(404);
+			}
+		})
+		.get('/fb-webhook', (req, res) => {
+
+			// Your verify token. Should be a random string.
+			let VERIFY_TOKEN = "C@mila";
+			
+			// Parse the query params
+			let mode = req.query['hub.mode'];
+			let token = req.query['hub.verify_token'];
+			let challenge = req.query['hub.challenge'];
+			
+			// Checks if a token and mode is in the query string of the request
+			if (mode && token) {
+				// Checks the mode and token sent is correct
+				if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+					// Responds with the challenge token from the request
+					console.log('WEBHOOK_VERIFIED');
+					res.status(200).send(challenge);
+			
+				} else {
+					// Responds with '403 Forbidden' if verify tokens do not match
+					res.sendStatus(403);      
+				}
+			}
 		})
 		.get("*", (req, res) => handle(req, res))
 		.listen(PORT, err => {
@@ -291,10 +334,10 @@ Content-Type: application/json
 
 {
   "notification": {
-    "title": "Portugal vs. Denmark",
-    "body": "5 to 1",
-    "icon": "firebase-logo.png",
-    "click_action": "http://localhost:8081"
+	"title": "Portugal vs. Denmark",
+	"body": "5 to 1",
+	"icon": "firebase-logo.png",
+	"click_action": "http://localhost:8081"
   },
   "to": "YOUR-IID-TOKEN"
 }
