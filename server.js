@@ -250,10 +250,8 @@ async function Init() {
 			}
 		})
 		.get("/fb-webhook", (req, res) => {
-			const {hub.verify_token, hub.challenge} = req.query;
-
-			if (hub_verify_token === "C@mila")
-				res.send(hub_challenge);
+			if (req.query["hub.verify_token"] === "C@mila")
+				res.send(req.query["hub.challenge"]);
 		})
 		.get("*", (req, res) => handle(req, res))
 		.listen(PORT, err => {
