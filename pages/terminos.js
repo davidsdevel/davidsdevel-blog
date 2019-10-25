@@ -8,7 +8,7 @@ const Terminos = () => (
 	<div>
 		<Head>
 			<meta charSet="utf-8"/>
-			<title>Política de Privacidad</title>
+			<title>Terminos y Condiciones de Uso</title>
 			<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 			<link rel="icon" href="/static/favicon.ico" />
 		</Head>

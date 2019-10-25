@@ -249,6 +249,12 @@ async function Init() {
 				}
 			}
 		})
+		.get("/fb-webhook", (req, res) => {
+			const {hub_verify_token, hub_challenge} = req.query;
+
+			if (hub_verify_token === "C@mila")
+				res.send(hub_challenge);
+		})
 		.get("*", (req, res) => handle(req, res))
 		.listen(PORT, err => {
 			if (err) throw new Error(err);
