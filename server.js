@@ -13,10 +13,12 @@ const KnexSessionStore = require('connect-session-knex')(session);
 //APIS
 const fetch = require("isomorphic-fetch");
 const Router = require("./lib/router");
+const qs = require("qs")
 
 //Native Modules
 const {existsSync, mkdirSync} = require("fs");
 const {join} = require("path");
+const url = require("url");
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -31,6 +33,8 @@ const db = new DB(dev);
 const posts = new PostsManager(db);
 const router = new Router(db);
 
+const fbClientID = "337231497026333";
+const fbClientSecret = "d381bb7dcf6bd6c6adb0806985de7d49";
 
 var sess = {
 	secret: 'keyboard cat',
@@ -253,15 +257,30 @@ async function Init() {
 		.post('/fb-webhook', (req, res) => {  
  
 			let body = req.body;
-			console.log(req.body)
 			// Checks this is an event from a page subscription
 			if (body.object === 'application') {
 		
 				// Iterates over each entry - there may be multiple if batched
-				body.entry.forEach(function(entry) {
-					console.log(entry);
+				body.entry.forEach(async function(entry) {
+					let commentId = entry.changes[0].value.id;
+					try {
+						const fetchToken = await fetch(`https://graph.facebook.com/oauth/access_token?client_id=${fbClientID}&client_secret=${fbClientSecret}&grant_type=client_credentials`);
+						const tokenData = await fetchToken.json();
+
+						const fetchUrl = await fetch(`https://graph.facebook.com/${commentId}?fields=permalink_url&access_token=${tokenData['access_token']}`);
+					}	const linkData = await fetchUrl.json();
+
+						const {permalink_url} = linkData;
+
+						console.log(permalink_url);
+
+						const urlQuery = url.parse(permalink_url);
+						const parsedQuery = qs.parse(urlQuery);
+						// /development|design|marketing|others\/(\w*-)*\w/.exec(parsedQuery.u)
+
 					// Gets the message. entry.messaging is an array, but 
-					// will only ever contain one message, so we get index 0
+					*/
+
 				});
 				// Returns a '200 OK' response to all requests
 				res.status(200).send('EVENT_RECEIVED');
