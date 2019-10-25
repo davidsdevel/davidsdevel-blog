@@ -250,7 +250,7 @@ async function Init() {
 			}
 		})
 		.get("/fb-webhook", (req, res) => {
-			const {hub_verify_token, hub_challenge} = req.query;
+			const {hub.verify_token, hub.challenge} = req.query;
 
 			if (hub_verify_token === "C@mila")
 				res.send(hub_challenge);
