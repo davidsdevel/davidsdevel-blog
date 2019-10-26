@@ -11,6 +11,7 @@ const Privacidad = () => (
 			<title>Política de Privacidad</title>
 			<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 			<link rel="icon" href="/static/favicon.ico" />
+			<script src="/static/FB.js"/>
 		</Head>
 		<Nav/>
 		<Landing title="Porque también pensamos en tu privacidad" image="/static/images/privacidad.jpg"/>

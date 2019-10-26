@@ -84,7 +84,7 @@ class Posts extends Component {
 						<div>
 							{
 								e.postStatus === "published" &&
-								<Link href={`/${e.url}`}>
+								<Link href="/[category]/[title]" as={`/${e.url}`}>
 									<a target="_blank">Ver</a>
 								</Link>
 							}

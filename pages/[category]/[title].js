@@ -12,10 +12,16 @@ class Post extends Component {
 	static async getInitialProps({query, req, asPath}) {
 		try {
 			var origin;
-			if (req)
+			var referer;
+
+			if (req) {
 				origin = req.headers["host"];
-			else
+				referer = req.headers.referer;
+			}
+			else {
 				origin = location.host;
+				referer = "https://blog.davidsdevel.com";
+			}
 
 			const r = await fetch(`${origin.match(/localhost|127\.0\.0\.1|::1/) !== null ? "http:" : "https:"}//${origin}/posts/single?url=${query.category}/${query.title}&fields=image,content,title,tags,updated,description,category`);
 
@@ -24,9 +30,10 @@ class Post extends Component {
 			query = {
 				...query,
 				pathname: asPath,
-				referer: encodeURI(req.headers.referer || "https://blog.davidsdevel.com"),
+				referer: encodeURI(referer),
 				viewUrl: asPath.slice(1),
 			}
+
 			return query;
 		} catch(err) {
 			console.log(err);
