@@ -9,7 +9,7 @@ import {setBanner} from "../../lib/banners";
 import fetch from "isomorphic-fetch";
 
 class Post extends Component {
-	static async getInitialProps({query, req, asPath, pathname}) {
+	static async getInitialProps({query, req, asPath}) {
 		try {
 			var origin;
 			if (req)
@@ -20,11 +20,12 @@ class Post extends Component {
 			const r = await fetch(`${origin.match(/localhost|127\.0\.0\.1|::1/) !== null ? "http:" : "https:"}//${origin}/posts/single?url=${query.category}/${query.title}&fields=image,content,title,tags,updated,description,category`);
 
 			query = await r.json();
+
 			query = {
 				...query,
-				pathname,
+				pathname: asPath,
 				referer: encodeURI(req.headers.referer || "https://blog.davidsdevel.com"),
-				viewUrl: query.category + "/" + query.title,
+				viewUrl: asPath.slice(1),
 			}
 			return query;
 		} catch(err) {
@@ -43,7 +44,7 @@ class Post extends Component {
 
 		let lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
 		let active = false;
-		console.log("> Active ", active);
+
 		const lazyLoad = () => {
 			if (active === false) {
 				active = true;
@@ -51,8 +52,6 @@ class Post extends Component {
 				setTimeout(() => {
 					lazyImages.forEach(lazyImage => {
 						if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
-							console.log("view ");
-							console.log(lazyImage.dataset)
 							lazyImage.src = lazyImage.dataset.src;
 							lazyImage.classList.remove("lazy");
 		
@@ -78,7 +77,7 @@ class Post extends Component {
 	}
 	render() {
 		const {pathname, image, content, title, tags, updated, description, category} = this.props;
-		console.log(content)
+
 		return <div>
 			<Head url={pathname} category={category} published={updated} title={title} tags={tags} image={image} description={description}/>
 			<Nav/>
@@ -95,10 +94,10 @@ class Post extends Component {
 				<main dangerouslySetInnerHTML={{__html: content}}/>
 				<aside>
 					<a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
-					  <img src="/static/images/payoneer.png" style={{width: "300px"}}/>
+					  <img src="/static/images/payoneer.png" />
 					</a>
 					<a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
-					  <img src="/static/images/platzi.png" style={{width: "300px"}}/>
+					  <img src="/static/images/platzi.png" />
 					</a>
 				</aside>
 			</div>
@@ -183,9 +182,14 @@ class Post extends Component {
 						display: inline-block;
 					}
 					aside {
-						display: inline-block;
-						float: right;
-					}
+            			float: right;
+            			margin-right: 5%;
+            			display: flex;
+            			justify-content: center;
+            			float: right;
+            			flex-direction: column;
+            			margin-top: 50px;
+            		}
 					aside a {
 						display: block;
 					}

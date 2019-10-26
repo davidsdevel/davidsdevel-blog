@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import Editor from "./editor";
 import Link from "next/link";
-import Head from "next/head";
 
 class Posts extends Component {
 	constructor() {
@@ -27,7 +26,7 @@ class Posts extends Component {
 				fetching: true
 			});
 			const req = await fetch("/posts/all-edit?fields=ID,title,postStatus,comments,views,updated,url");
-			const posts = await req.json();
+			const {posts} = await req.json();
 			this.setState({
 				posts,
 				fetching: false
@@ -104,11 +103,6 @@ class Posts extends Component {
 			ui = <Editor data={editData} cancel={this.cancel}/>
 		}
 		return <div>
-			<Head>
-				<link href="/static/quill.snow.css" rel="stylesheet"/>
-				<script src="/static/quill.js"/>
-				<script src="/static/editor.js"/>
-			</Head>
 			{
 				!editting &&
 				<button onClick={this.newPost}>New Post</button>

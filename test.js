@@ -109,10 +109,9 @@ async function Init() {
 				if (fields) {
 					const parse = postData => {
 						var newData = {};
+
 						const parsedFields = fields.split(",");
-						Object.entries(postData).forEach(e => {
-							console.log(e)
-						});
+
 						Object.entries(postData).forEach(e => {
 							for (let i = 0; i < parsedFields.length; i++) {
 								if (e[0] === parsedFields[i]) {
@@ -128,10 +127,13 @@ async function Init() {
 						action === "category" ||
 						action === "category-edit"
 					)
-						data = data.map(e => parse(e));
+						data = {
+							...data,
+							posts: data.posts.map(e => parse(e))
+						};
 
 					else
-						data = parse(data);
+						data = parse(data)
 					
 				}
 				res.json(data);

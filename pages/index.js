@@ -22,8 +22,12 @@ class Home extends Component {
 
     const r = await fetch(`${origin.match(/localhost|127\.0\.0\.1|::1/) !== null ? "http:" : "https:"}//${origin}/posts/all?page=${page}&fields=description,title,image,url,views`);
 
+    const {posts, next, prev} = await r.json();
+
     const data = {
-      posts: await r.json(),
+      posts,
+      next,
+      prev,
       page
     }
 
@@ -33,40 +37,30 @@ class Home extends Component {
     initializeFB();
   } 
   render() {
-    const {page, posts} = this.props;
+    const {page, posts, next, prev} = this.props;
 		const generatePagesCount = () => {
 			var pages = [];
 			const totalPages = Math.floor(this.props.totalItems / 10) + 1;
 
-      if (page === 1 && totalPages > 1)
-        return (<Link href={`/?page=2`} prefetch key={`pagination-2`}>
-          <a className="next">
-            <img style={{transform: "rotate(270deg)"}} src="/static/assets/arrow-white.svg"/>
-          </a>
-        </Link>);
-      else if (page === 1 && totalPages === 1) 
-        return;
+      return <div>
+        {
+          prev &&
 
-      else if (page > 1 && page < totalPages)
-        return (<div>
           <Link href={`/?page=${page - 1}`} prefetch>
             <a className="prev">
               <img style={{transform: "rotate(90deg)"}} src="/static/assets/arrow-white.svg"/>
             </a>
           </Link>
+        }
+        {
+          next &&
           <Link href={`/?page=${page + 1}`} prefetch>
             <a className="next">
               <img style={{transform: "rotate(270deg)"}} src="/static/assets/arrow-white.svg"/>
             </a>
           </Link>
-        </div>);
-
-      else if (page > 1 && page === totalPages)
-        return (<Link href={`/?page=${page - 1}`} prefetch>
-          <a className="prev">
-            <img style={{transform: "rotate(90deg)"}} src="/static/assets/arrow-white.svg"/>
-          </a>
-        </Link>);
+        }
+      </div>
 		}
 		return (
 			<div>
