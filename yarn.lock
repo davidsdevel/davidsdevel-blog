@@ -2276,10 +2276,10 @@ express-session@^1.16.2:
     safe-buffer "5.1.2"
     uid-safe "~2.1.5"
 
-express-ua-middleware@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/express-ua-middleware/-/express-ua-middleware-0.2.0.tgz#ed5e0368824a4a88ca77ac5ffb14dac2243d088d"
-  integrity sha512-u6aQ75zBX/5o6rOIrf1z7mvaB/zGhDxjFQlWlUO9h1agIe21c7YnyXKvp6Wlj6RKylhWPDQe9BUVxLa2A74Img==
+express-ua-middleware@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/express-ua-middleware/-/express-ua-middleware-0.2.1.tgz#889d461bb311b823a70e92003f8dc95c59c00e8c"
+  integrity sha512-/x/PGP4tZC++S26IGY2AmB0OGiLA8J/+NSnbnJbmD+XPyFqoEVASv3JAh0b88xiKdpIVIZ+r6dK7LhCWXCvqlw==
   dependencies:
     ua-parser-js "^0.7.20"
 
