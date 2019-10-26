@@ -65,7 +65,8 @@ Head.propTypes = {
 	url: string,
 	image: string,
 	tags: array,
-	published: string
+	published: string,
+	category: string
 };
 
 export default Head;

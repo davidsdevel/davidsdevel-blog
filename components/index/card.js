@@ -37,7 +37,7 @@ class Card extends Component  {
 		}
 	}
 	render() {
-		const {image, content, title, url, views} = this.props; 
+		const {image, content, title, url, comments} = this.props; 
 		return <div className="blog-card">
 			<Link href={`/${url}`} prefetch>
 				<a onClick={() => FB.AppEvents.logEvent('View Post On Image')}>
@@ -57,7 +57,7 @@ class Card extends Component  {
 			}
 			<p>{content}</p>
 			<div className="comment-container">
-				<span>{views}</span>
+				<span>{comments}</span>
 				<img src="/static/assets/bubbles.svg" style={{height: "18px", margin: "0 10px"}}/>
 			</div>
 			<div>

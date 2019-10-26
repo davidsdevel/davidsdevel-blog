@@ -20,7 +20,7 @@ class Home extends Component {
     if (/\/?page=\d*/.test(asPath))
       page = parseInt(asPath.match(/\d/)[0]);
 
-    const r = await fetch(`${origin.match(/localhost|127\.0\.0\.1|::1/) !== null ? "http:" : "https:"}//${origin}/posts/all?page=${page}&fields=description,title,image,url,views`);
+    const r = await fetch(`${origin.match(/localhost|127\.0\.0\.1|::1/) !== null ? "http:" : "https:"}//${origin}/posts/all?page=${page}&fields=description,title,image,url,comments`);
 
     const {posts, next, prev} = await r.json();
 
@@ -42,7 +42,7 @@ class Home extends Component {
 			var pages = [];
 			const totalPages = Math.floor(this.props.totalItems / 10) + 1;
 
-      return <div>
+      return <div style={{height: 56}}>
         {
           prev &&
 
@@ -74,14 +74,14 @@ class Home extends Component {
         </div>
 				<div id="posts-container">
           <span style={{marginLeft: "5%", display: "block"}}>Entradas</span>
-					{posts.map(({description, title, image, url, views}, i) => {
+					{posts.map(({description, title, image, url, comments}, i) => {
 						return <Card
              key={`blog-index-${i}`}
              title={title}
              content={description}
              url={url}
              image={image}
-             views={views}
+             comments={comments}
             />
 					})}
 				</div>
@@ -90,7 +90,7 @@ class Home extends Component {
             <img src="/static/images/payoneer.png"/>
           </a>
           {
-            posts.lenght > 2 && 
+            posts.length > 2 && 
             <a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
               <img src="/static/images/platzi.png"/>
             </a>

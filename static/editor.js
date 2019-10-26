@@ -33,6 +33,8 @@ function initQuill() {
 			const node = super.create(data);
 			node.setAttribute('data-src', data.dataSrc);
 			node.setAttribute('src', data.src);
+			node.setAttribute('alt', window.react.state.title + " - David's Devel");
+			node.setAttribute('title', window.react.state.title + " - David's Devel");
 			node.setAttribute('style', `width: ${data.width}px;`);
 			return node;
 		}
@@ -58,8 +60,7 @@ function initQuill() {
 		modules: {
 			toolbar: toolbarOptions
 		},
-		theme: 'snow',
-		debug:"info"
+		theme: 'snow'
 	});
 }
 function imgHandler() {

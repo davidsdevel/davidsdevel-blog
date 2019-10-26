@@ -53,7 +53,8 @@ class Post extends Component {
 					lazyImages.forEach(lazyImage => {
 						if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
 							lazyImage.src = lazyImage.dataset.src;
-							lazyImage.classList.remove("lazy");
+							
+							setTimeout(() => lazyImage.classList.remove("lazy"), 1000);
 		
 							lazyImages = lazyImages.filter(function(image) {
 								return image !== lazyImage;

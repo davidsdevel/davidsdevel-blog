@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import fetch from "isomorphic-fetch";
-import Head from "next/head";
 
 export default class extends Component {
 	constructor() {
@@ -37,7 +36,8 @@ export default class extends Component {
 				category,
 				tags
 			});
-			quill.clipboard.dangerouslyPasteHTML(content)
+			quill.container.innerHTML = content;
+			//quill.clipboard.dangerouslyPasteHTML(content)
 		}
 		window.react = this;
 		// Handlers can also be added post initialization
@@ -122,11 +122,6 @@ export default class extends Component {
 	}
 	render() {
 		return <div>
-			<Head>
-				<link href="/static/quill.snow.css" rel="stylesheet"/>
-				<script src="/static/quill.js"/>
-				<script src="/static/editor.js"/>
-			</Head>
 			<div>
 				<input type="text" name="title" value={this.state.title} placeholder="Titulo" onChange={this.handleInput}/>
 				<button disabled={this.state.isSaved} onClick={this.save}>{this.state.postStatus === "published" ? "Cambiar a Borrador": "Guardar"}</button>
