@@ -27,6 +27,7 @@ const Head = props => (
 		<meta content='100000619759917' property='fb:admins'/>
 		<meta content='337231497026333' property='fb:app_id'/>
 		<meta content='es_LA' property='og:locale'/>
+		<meta property="fb:pages" content="552760701890501" />
 	
 		<meta content='@davidsdevel' name='twitter:site'/>
 		<meta content='@davidsdevel' name='twitter:creator'/>
