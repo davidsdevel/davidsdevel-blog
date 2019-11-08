@@ -9,7 +9,7 @@ const About = () => {
 	return <div id="about-container">
 		<h4>Un poco acerca de mi</h4>
 		<img src="/static/images/me.jpg" alt="David González - David's Devel"/>
-		<p>Yo soy un joven venezolano de {yo} Años, Programador autodidacta, diseñador por que toca, y marketer apasionado</p>
+		<p>Soy <span className="author">David González</span>, un joven venezolano de {yo} Años, Programador autodidacta, diseñador por que toca, y marketer apasionado</p>
 		<div id="social-container">
 			<a 
 				href="https://www.facebook.com/davidsdevel"
