@@ -33,9 +33,6 @@ class Home extends Component {
 
     return data;
   }
-  componentDidMount() {
-    initializeFB();
-  } 
   render() {
     const {page, posts, next, prev} = this.props;
 		const generatePagesCount = () => {

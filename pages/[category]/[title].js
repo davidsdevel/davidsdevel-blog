@@ -47,8 +47,6 @@ class Post extends Component {
 			console.error(err);
 		}
 
-		initializeFB();
-
 		let lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
 		let active = false;
 
@@ -61,7 +59,9 @@ class Post extends Component {
 						if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
 							lazyImage.src = lazyImage.dataset.src;
 							
-							setTimeout(() => lazyImage.classList.remove("lazy"), 1000);
+							lazyImage.onload = () => {
+								lazyImage.classList.remove("lazy");
+							}
 		
 							lazyImages = lazyImages.filter(function(image) {
 								return image !== lazyImage;
@@ -82,6 +82,12 @@ class Post extends Component {
 		document.addEventListener("scroll", lazyLoad);
 		window.addEventListener("resize", lazyLoad);
 		window.addEventListener("orientationchange", lazyLoad);
+
+		const script = document.createElement("script");
+
+		script.src = 'https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=sunburst';
+
+		document.body.appendChild(script);
 	}
 	render() {
 		const {pathname, image, content, title, tags, updated, description, category} = this.props;
@@ -131,7 +137,6 @@ class Post extends Component {
 			 data-numposts="20"
 			></div>`}}/>
 			<Footer/>
-			<script src='https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js?skin=sunburst'/>
 			<style jsx>{`
 				header {
 					background-image: url(${image});
