@@ -41,7 +41,7 @@ var sess = {
 	resave: false,
 	saveUninitialized: true,
 	cookie: {
-		maxAge: 3600000 * (24 * 365)
+		maxAge: 3600000 * 24 
 	}
 }
 
