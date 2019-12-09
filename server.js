@@ -56,7 +56,6 @@ if (!dev) {
 server
 	.use(express.json())
 	.use(express.urlencoded({extended: true}))
-	.use(session(sess))
 	.use(fileUpload())
 	.use(userAgent)
 
@@ -96,7 +95,7 @@ async function Init() {
 			res.sendFile(join(__dirname, "fcm-sw.js"));
 		})
 		/*----------API----------*/
-		.post("/admin-login", (req, res) => {
+		.post("/admin-login", session(sess), (req, res) => {
 			const {username, password} = req.body;
 			if (username === "davidsdevel" && password == 1234)
 				req.session.adminAuth = true;
@@ -279,7 +278,7 @@ async function Init() {
 
 						const urlQuery = url.parse(permalink_url);
 						const parsedQuery = qs.parse(urlQuery);
-						const postPath = /development|design|marketing|others\/(\w*-)*\w(?=\?)/.exec(parsedQuery.u)[0];
+						const postPath = /development|design|marketing|technology|others\/(\w*-)*\w(?=\?)/.exec(parsedQuery.u)[0];
 
 						await db.setComment(postPath);
 					} catch(err) {
