@@ -2,7 +2,7 @@ import React from 'react'
 import App, { Container } from 'next/app';
 
 export default class extends App {
-	componentDidMount() {
+	initFB() {
 		var js, fjs = document.getElementsByTagName("script")[0];
 
 		if (!document.getElementById("facebook-jssdk")) {
@@ -28,8 +28,14 @@ export default class extends App {
 			FB.XFBML.parse();
 		}
 	}
+	componentDidMount() {
+		this.initFB();
+	}
+	componentDidUpdate() {
+		this.initFB();
+	}
 	render() {
-		const { Component, pageProps } = this.props
+		const { Component, pageProps } = this.props;
 
 		return (
 		  <Container>
