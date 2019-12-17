@@ -175,22 +175,24 @@ class Nav extends Component {
 		}
 	}
 	render() {
+		const {title} = this.props;
+		const {mobileBar, titleOpacity, inputBackground, inputStyle, search, menuStyle, shadowStyle, arrowStyle}
 		return <nav id="nav">
-			<div id="mobile-bar" style={this.state.mobileBar}>
+			<div id="mobile-bar" style={mobileBar}>
 				<img onClick={this.toggleMenu} id="menu-icon" src="/static/assets/menu.svg"/>
-				<span id="title" style={{opacity: this.state.titleOpacity}}>{this.props.title}</span>
-				<div id="input" style={{background: this.state.inputBackground}}>
+				<span id="title" style={{opacity: titleOpacity}}>{title}</span>
+				<div id="input" style={{background: inputBackground}}>
 					<img className="inline" onClick={this.toggleSearch} style={{float: "left"}}src="/static/assets/search.svg"/>
-					<input onKeyUp={this.find} value={this.state.search} className="inline" style={this.state.inputStyle} type="text" placeholder="Busqueda" onChange={this.handleInput}/>
-					<Link href={`https://davidsdevel-blog.herokuapp.com/search?q=${this.state.search}`}>
+					<input onKeyUp={this.find} value={search} className="inline" style={inputStyle} type="text" placeholder="Busqueda" onChange={this.handleInput}/>
+					<Link href={`/search?q=${search}`} as={`/search/${search}`}>
 						<a onClick={() => FB.AppEvents.logEvent('Search')}>
-							<img className="inline" id="arrow" style={{...this.state.arrowStyle, float: "right"}} src="/static/assets/arrow.svg" />
+							<img className="inline" id="arrow" style={{...arrowStyle, float: "right"}} src="/static/assets/arrow.svg" />
 						</a>
 					</Link>
 				</div>
 			</div>
-			<div id="shadow" style={this.state.shadowStyle} onClick={this.toggleMenu}></div>
-			<ul id="menu" style={this.state.menuStyle}>
+			<div id="shadow" style={shadowStyle} onClick={this.toggleMenu}></div>
+			<ul id="menu" style={menuStyle}>
 				<button style={{float: "right"}} onClick={this.toggleMenu}>
 					<img src="/static/assets/cross.svg"/>
 				</button>
