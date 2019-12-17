@@ -1,5 +1,7 @@
 import React from 'react'
 import App, { Container } from 'next/app';
+import Nav from '../components/nav'
+import Footer from '../components/index/footer';
 
 export default class extends App {
 	initFB() {
@@ -39,7 +41,9 @@ export default class extends App {
 
 		return (
 		  <Container>
+		  	<Nav/>
 			<Component {...pageProps} />
+			<Footer/>
 		  </Container>
 		)
 	}
