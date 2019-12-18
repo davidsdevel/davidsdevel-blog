@@ -121,7 +121,7 @@ class Posts extends Component {
 								<div className="buttons">
 									{
 										e.postStatus === "published" &&
-										<a target="_blank" href={`/${e.url}`}>Ver</a>
+										<button className="white" onClick={() => window.open(`/${e.url}`, "_blank")}>Ver</button>
 									}
 									<button className="gray" onClick={() => this.edit(e.url)}>Editar</button>
 									<button className="black" onClick={() => this.delete(e.ID)}>Eliminar</button>
