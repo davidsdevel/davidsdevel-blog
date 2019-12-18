@@ -289,6 +289,9 @@ async function Init() {
 				case "images":
 					res.json(await db.getImages());
 					break;
+				case "stats":
+					res.json(await db.getStats());
+					break;
 				default:
 					res.sendStatus(404);
 					break;

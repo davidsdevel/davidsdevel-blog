@@ -26,7 +26,7 @@ class Posts extends Component {
 			this.setState({
 				fetching: true
 			});
-			const req = await fetch(`${process.env.ORIGIN}/posts/all-edit?fields=ID,title,postStatus,comments,views,url,tags`);
+			const req = await fetch(`${process.env.ORIGIN}/posts/all-edit?fields=ID,title,postStatus,comments,views,url,tags,image`);
 
 			const {posts} = await req.json();
 
@@ -110,21 +110,30 @@ class Posts extends Component {
 				if (posts.length > 0)
 					ui = <ul>
 						{posts.map(e => <li className="post" key={`post-${e.ID}`}>
-							<span>{e.title || "Nuevo Post"}</span>
-							<div>
-								{
-									e.tags &&
-									<span className="tags">{e.tags}</span>
-								}
-								<span>Comments: {e.comments}</span>
-								<span>Views: {e.views}</span>
-								<div className="buttons">
+							<div className="image" style={{backgroundImage: `url(${e.image})`}}/>
+							<div className="data">
+								<span>{e.title || "Nuevo Post"}</span>
+								<div>
 									{
-										e.postStatus === "published" &&
-										<button className="white" onClick={() => window.open(`/${e.url}`, "_blank")}>Ver</button>
+										e.tags &&
+										<span className="tags">{e.tags}</span>
 									}
-									<button className="gray" onClick={() => this.edit(e.url)}>Editar</button>
-									<button className="black" onClick={() => this.delete(e.ID)}>Eliminar</button>
+									<div className="align">
+										<img src="/static/assets/bubbles.svg"/>
+										<span>{e.comments}</span>
+									</div>
+									<div className="align">
+										<img src="/static/assets/eye.svg"/>
+										<span>{e.views}</span>
+									</div>
+									<div className="buttons">
+										{
+											e.postStatus === "published" &&
+											<button className="white" onClick={() => window.open(`/${e.url}`, "_blank")}>Ver</button>
+										}
+										<button className="gray" onClick={() => this.edit(e.url)}>Editar</button>
+										<button className="black" onClick={() => this.delete(e.ID)}>Eliminar</button>
+									</div>
 								</div>
 							</div>
 						</li>)}
@@ -139,9 +148,25 @@ class Posts extends Component {
 								background: white;
 								border-radius: 10px;
 								box-shadow: 1px 1px 5px gray;
+								position: relative;
+								display: flex;
+								align-items: center;
+							}
+							ul li.post .image {
+								background-size: cover;
+								background-position: center;
+								display: inline-block;
+								width: 100px;
+								height: 100px;
+							}
+							ul li.post .data {
+								display: inline-block;
+								margin: 0 0 0 25px;
 							}
 							ul li.post .buttons {
-								float: right;
+								position: absolute;
+								bottom: 5%;
+								right: 1%;
 							}
 							ul li.post .buttons button {
 								margin: 0 10px
@@ -155,6 +180,13 @@ class Posts extends Component {
 								color: #7f7f7f;
 								font-size: 14px;
 								margin: 10px;
+							} 
+							.align {
+								display: inline-flex;
+								align-items: center;
+							}
+							.align img {
+								width: 25px;
 							}
 						`}</style>
 					</ul>;

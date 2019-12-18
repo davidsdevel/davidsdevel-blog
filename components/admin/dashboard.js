@@ -1,8 +1,9 @@
 import React, {Component} from "react";
 import Posts from "./posts";
+import Stats from "./stats";
 import Import from "./import";
 
-export default class extends Component {
+export default class Dashboard extends Component {
 	constructor() {
 		super();
 		this.state = {
@@ -16,11 +17,15 @@ export default class extends Component {
 		})
 	}
 	render() {
-		var tab;
-		if (this.state.tab === "posts")
-			tab = <Posts/>;
-		else if (this.state.tab === "import")
-			tab = <Import/>;
+		var {tab} = this.state;
+		var UI;
+
+		if (tab === "posts")
+			UI = <Posts/>;
+		else if (tab === "stats")
+			UI = <Stats/>
+		else if (tab === "import")
+			UI = <Import/>;
 
 		return <div>
 			<aside>
@@ -32,11 +37,11 @@ export default class extends Component {
 				</ul>
 			</aside>
 			<div id="content">
-				{tab}
+				{UI}
 			</div>
 			<style jsx>{`
 				aside {
-					position: absolute;
+					position: fixed;
 					width: 25%;
 					display: inline-block;
 					height: 100%;

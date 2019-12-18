@@ -89,6 +89,25 @@ async function Init() {
 				res.status(403).send("bad-request")
 			}
 		})
+		.get("/data/:type", async (req, res) => {
+			try {
+				const {type} = req.params;
+
+				switch(type) {
+				case "images":
+					res.json(await db.getImages());
+					break;
+				case "stats":
+					res.json(await db.getStats());
+					break;
+				default:
+					res.sendStatus(404);
+					break;
+				}
+			} catch(err) {
+				res.status(500).send(err.toString());
+			}
+		})
 		.get("/posts/:action", async (req, res) => {
 			try {
 				const {action} = req.params;
