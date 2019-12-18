@@ -1,7 +1,5 @@
 import React, {Component} from "react";
 import Head from "../../components/postHead";
-import Nav from "../../components/nav";
-import Footer from '../../components/index/footer';
 import Share from '../../components/post/share';
 import About from '../../components/post/about';
 import Link from "next/link";
@@ -11,27 +9,13 @@ import fetch from "isomorphic-fetch";
 class Post extends Component {
 	static async getInitialProps({query, req, asPath}) {
 		try {
-			var origin;
-			var referer;
-
-			if (req) {
-				origin = req.headers["host"];
-				referer = req.headers.referer;
-			}
-			else {
-				origin = location.host;
-				referer = "https://blog.davidsdevel.com";
-			}
-
-			const r = await fetch(`${origin.match(/localhost|127\.0\.0\.1|::1/) !== null ? "http:" : "https:"}//${origin}/posts/single?url=${query.category}/${query.title}&fields=image,content,title,tags,updated,description,category`);
+			const r = await fetch(`${process.env.ORIGIN}/posts/single?url=${query.category}/${query.title}&fields=image,content,title,tags,updated,description,category`);
 
 			query = await r.json();
 
 			query = {
 				...query,
-				pathname: asPath,
-				referer: encodeURI(referer),
-				viewUrl: asPath.slice(1),
+				pathname: asPath
 			}
 
 			return query;
@@ -40,13 +24,6 @@ class Post extends Component {
 		}
 	}
 	async componentDidMount() {
-		try {
-			const req = await fetch(`/set-view?url=${this.props.viewUrl}&referer=${this.props.referer}`);
-			await req.text();
-		} catch(err) {
-			console.error(err);
-		}
-
 		let lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
 		let active = false;
 
@@ -94,7 +71,6 @@ class Post extends Component {
 
 		return <div>
 			<Head url={pathname} category={category} published={updated} title={title} tags={tags} image={image} description={description}/>
-			<Nav/>
 			<header>
 				<div id="header-shadow">
 					<h1>{title}</h1>
@@ -136,7 +112,6 @@ class Post extends Component {
 			 data-width="100%"
 			 data-numposts="20"
 			></div>`}}/>
-			<Footer/>
 			<style jsx>{`
 				header {
 					background-image: url(${image});

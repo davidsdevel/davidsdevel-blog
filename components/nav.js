@@ -176,7 +176,7 @@ class Nav extends Component {
 	}
 	render() {
 		const {title} = this.props;
-		const {mobileBar, titleOpacity, inputBackground, inputStyle, search, menuStyle, shadowStyle, arrowStyle}
+		const {mobileBar, titleOpacity, inputBackground, inputStyle, search, menuStyle, shadowStyle, arrowStyle} = this.state;
 		return <nav id="nav">
 			<div id="mobile-bar" style={mobileBar}>
 				<img onClick={this.toggleMenu} id="menu-icon" src="/static/assets/menu.svg"/>
@@ -208,29 +208,6 @@ class Nav extends Component {
 					</li>
 				))}
 			</ul>
-			<style global jsx>{`
-				html {
-					scroll-behavior: smooth;
-				}
-				@font-face {
-					font-family: Roboto;
-					src: url(/static/fonts/Roboto.ttf);
-				}
-				button:focus {
-					outline: none;
-				}
-				li {
-					list-style: none;
-				}
-				a {
-					text-decoration: none;
-				}
-				* {
-					margin: 0;
-					padding: 0;
-					font-family: Roboto, Helvetica;
-				}
-			`}</style>
 			<style jsx>{`
 				#nav #mobile-bar {
 					background: white;

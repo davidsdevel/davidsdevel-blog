@@ -39,14 +39,14 @@ export default class extends Component {
 					position: absolute;
 					width: 25%;
 					display: inline-block;
-					heigth: 100%;
+					height: 100%;
 					left: 0;
 				}
 				#content {
 					position: absolute;
 					width: 75%;
 					display: inline-block;
-					heigth: 100%;
+					height: 100%;
 					left: 25%;
 				}
 			`}</style>

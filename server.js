@@ -13,10 +13,11 @@ const KnexSessionStore = require('connect-session-knex')(session);
 //APIS
 const fetch = require("isomorphic-fetch");
 const Router = require("./lib/router");
-const qs = require("qs")
+const qs = require("qs");
+var Jimp = require('jimp');
 
 //Native Modules
-const {existsSync, mkdirSync} = require("fs");
+const {existsSync, mkdirSync, writeFileSync, readFileSync, unlinkSync} = require("fs");
 const {join} = require("path");
 const url = require("url");
 
@@ -58,6 +59,7 @@ server
 	.use(express.urlencoded({extended: true}))
 	.use(fileUpload())
 	.use(userAgent)
+	.use(session(sess));
 
 async function Init() {
 	try {
@@ -95,12 +97,20 @@ async function Init() {
 			res.sendFile(join(__dirname, "fcm-sw.js"));
 		})
 		/*----------API----------*/
-		.post("/admin-login", session(sess), (req, res) => {
+		.post("/admin-login", (req, res) => {
 			const {username, password} = req.body;
-			if (username === "davidsdevel" && password == 1234)
-				req.session.adminAuth = true;
 
-			res.redirect(302, "/admin");
+			if (username === "davidsdevel" && password == 1234) {
+				req.session.adminAuth = true;
+				
+				res.json({
+					status: "OK"
+				});
+			} else
+				res.json({
+					status: "Error",
+					message: "Usuario o contraseña incorrectos"
+				});
 		})
 		.get("/posts/:action", async (req, res) => {
 			try {
@@ -160,6 +170,23 @@ async function Init() {
 					res.status(500).send(err);
 			}
 		})
+		.delete("/manage-post/:action", async (req, res) => {
+			try {
+				const {action} = req.params;
+				const {ID} = req.body;
+
+				switch(action) {
+					case "delete":
+						res.json(await db.deletePost(ID));
+						break;
+					default:
+						res.sendStatus(404);
+						break;
+				}
+			} catch(err) {
+				res.status(500).send(err.toString());
+			}
+		})
 		.post("/manage-post/:action", async (req, res) => {
 			try {
 				const {action} = req.params;
@@ -179,15 +206,41 @@ async function Init() {
 		.get("/:type/:secret/:name", async (req, res, next) => {
 			try {
 				const {type, secret, name} = req.params;
+				
 
-				if (!/^\d\d\d\d\d\d\d\d\d\d$/.test(secret)) return next();
-				const file = await db.getFile(type, secret, name);
+				if (!/^\d\d\d\d\d\d\d\d\d\d$/.test(secret))
+					return next();
+				
+				const {width} = req.query;
+				
+				var file = await db.getFile(secret, name);
 
-				res.set({
-					"Content-Type": file.mime
-				});
-				res.send(file.buffer);
+				if (width) {
+
+					let image = await Jimp.read(file.buffer);
+
+					image.resize(width * 1, Jimp.AUTO).getBuffer(Jimp.AUTO, (err, buffer) => {
+						if (err) {
+							console.error(err);
+							res.status(500).send(err.toString());
+						} else {
+							res.set({
+								"Content-Type": file.mime
+							});
+
+							res.send(buffer);
+						}
+					});
+				} else {
+					res.set({
+						"Content-Type": file.mime
+					});
+
+					res.send(file.buffer);
+				}
+
 			} catch(err) {
+				console.log(err);
 				if (err === "dont-exists")
 					res.status(404).send(err);
 				else
@@ -196,7 +249,7 @@ async function Init() {
 		})
 		.post('/upload/:type', (req,res) => {
 			const {file} = req.files;
-			const {name, mime} = req.body;
+			const {name, mime, width} = req.body;
 			const {type} = req.params;
 
 			var path = join(__dirname, "files");
@@ -206,7 +259,7 @@ async function Init() {
 			const filepath = join(path, name);
 			file.mv(filepath, async () => {
 				try{
-					const data = await db.uploadFile(type, name, mime, filepath);
+					const data = await db.uploadFile(type, name, mime, filepath, width);
 					res.json(data);
 				} catch(err) {
 					console.error(err);
@@ -215,6 +268,34 @@ async function Init() {
 					});
 				}
 			});
+		})
+		.delete("/action-images/delete", async (req, res) => {
+			try {
+				const {name, secret} = req.body;
+
+				const data = await db.deleteImage(name, secret);
+
+				res.json(data);
+			} catch(err) {
+				console.error(err);
+				res.status(500).send(err.toString());
+			}
+		})
+		.get("/data/:type", async (req, res) => {
+			try {
+				const {type} = req.params;
+
+				switch(type) {
+				case "images":
+					res.json(await db.getImages());
+					break;
+				default:
+					res.sendStatus(404);
+					break;
+				}
+			} catch(err) {
+				res.status(500).send(err.toString());
+			}
 		})
 		.get("/fcm/:action", async (req, res) => {
 			try {
@@ -233,7 +314,7 @@ async function Init() {
 			try {
 				const {url, referer} = req.query;
 
-				await posts.setView(url, "https://www.google.com", req.userAgent);
+				await posts.setView(url, referer, req.userAgent);
 
 				res.send("success");
 			} catch(err) {

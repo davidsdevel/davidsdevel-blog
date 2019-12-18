@@ -4,8 +4,17 @@ import Dashboard from "../components/admin/dashboard";
 import Head from "next/head";
 
 class Admin extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			...props
+		};
+
+		this.onLogin = this.onLogin.bind(this);
+	}
 	static async getInitialProps({req}) {
 		var auth = false;
+
 		if (req) {
 			if (req.session) {
 				const {session} = req;
@@ -15,11 +24,18 @@ class Admin extends Component {
 			}
 		}
 		return {
-			auth
-		}
+			auth,
+			hideLayout: true
+		};
+	}
+	onLogin() {
+		this.setState({
+			auth: true
+		});
 	}
 	render() {
-		const {auth} = this.props;
+		const {auth} = this.state;
+
 		return <div>
 			<Head>
 	    		<title>{"David's Devel - Admin"}</title>
@@ -27,14 +43,13 @@ class Admin extends Component {
 	    		<link rel="icon" href="/static/favicon.ico" />
 			</Head>
 			{
-				auth ?
+				true ?
 				<Dashboard/>:
-				<NoAuth/>
+				<NoAuth onLogin={this.onLogin}/>
 			}
 			<style jsx global>{`
-				* {
-					margin: 0;
-					padding: 0;
+				body {
+					background: #f7f7f7;
 				}
 			`}</style>
 		</div>

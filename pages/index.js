@@ -1,26 +1,19 @@
 import React, {Component} from 'react'
 import Link from 'next/link';
-import Nav from '../components/nav'
 import Head from '../components/head'
 import Landing from '../components/index/landing';
 import Card from '../components/index/card';
-import Footer from '../components/index/footer';
 import {setBanner} from "../lib/banners";
 import fetch from "isomorphic-fetch";
 
 class Home extends Component {
   static async getInitialProps({req, query, asPath}) {
     var page = 1;
-    var origin;
-    if (req)
-      origin = req.headers["host"];
-    else
-      origin = location.host;
 
     if (/\/?page=\d*/.test(asPath))
       page = parseInt(asPath.match(/\d/)[0]);
 
-    const r = await fetch(`${origin.match(/localhost|127\.0\.0\.1|::1/) !== null ? "http:" : "https:"}//${origin}/posts/all?page=${page}&fields=description,title,image,url,comments`);
+    const r = await fetch(`${process.env.ORIGIN}/posts/all?page=${page}&fields=description,title,image,url,comments`);
 
     const {posts, next, prev} = await r.json();
 
@@ -62,7 +55,6 @@ class Home extends Component {
 		return (
 			<div>
 				<Head title="David's Devel - Blog"/>
-				<Nav title="David's Devel"/>
 				<Landing/>
         <h1>David's Devel</h1>
         <h2>Un simple blog de un Desarrollador Javascript Venezolano.</h2>
@@ -99,14 +91,12 @@ class Home extends Component {
         <div className="banner-container">
           {setBanner()}
         </div>
-				<Footer/>
 				<style jsx>{`
           h1 {
             margin: 50px 0 20px;
           }
           h1, h2 {
             text-align: center;
-
           }
           h2 {
             width: 90%;

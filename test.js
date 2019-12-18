@@ -12,10 +12,13 @@ const KnexSessionStore = require('connect-session-knex')(session);
 //APIS
 const fetch = require("isomorphic-fetch");
 const Router = require("./lib/router");
+const qs = require("qs");
+var Jimp = require('jimp');
 
 //Native Modules
-const {existsSync, mkdirSync, readFile} = require("fs");
+var {existsSync, mkdirSync, writeFileSync, readFileSync, unlinkSync} = require("fs");
 const {join} = require("path");
+const url = require("url");
 
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -164,16 +167,41 @@ async function Init() {
 		.get("/:type/:secret/:name", async (req, res, next) => {
 			try {
 				const {type, secret, name} = req.params;
+				
 
-				if (!/^\d\d\d\d\d\d\d\d\d\d$/.test(secret)) return next();
-				const file = await db.getFile(type, secret, name);
+				if (!/^\d\d\d\d\d\d\d\d\d\d$/.test(secret))
+					return next();
+				
+				const {width} = req.query;
+				
+				var file = await db.getFile(secret, name);
 
-				console.log(file)
-				res.set({
-					"Content-Type": file.mime
-				});
-				res.send(file.buffer);
+				if (width) {
+
+					let image = await Jimp.read(file.buffer);
+
+					image.resize(width * 1, Jimp.AUTO).getBuffer(Jimp.AUTO, (err, buffer) => {
+						if (err) {
+							console.error(err);
+							res.status(500).send(err.toString());
+						} else {
+							res.set({
+								"Content-Type": file.mime
+							});
+
+							res.send(buffer);
+						}
+					});
+				} else {
+					res.set({
+						"Content-Type": file.mime
+					});
+
+					res.send(file.buffer);
+				}
+
 			} catch(err) {
+				console.log(err);
 				if (err === "dont-exists")
 					res.status(404).send(err);
 				else
@@ -201,6 +229,22 @@ async function Init() {
 					});
 				}
 			});
+		})
+		.get("/data/:type", async (req, res) => {
+			try {
+				const {type} = req.params;
+
+				switch(type) {
+				case "images":
+					res.json(await db.getImages());
+					break;
+				default:
+					res.sendStatus(404);
+					break;
+				}
+			} catch(err) {
+				res.status(500).send(err.toString());
+			}
 		})
 		.get("/set-view", async (req, res) => {
 			try {

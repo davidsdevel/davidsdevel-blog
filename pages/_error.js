@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import Head from "next/head";
-import Footer from '../components/index/footer';
 import Link from "next/link";
 
 class ErrorPage extends Component {
@@ -15,7 +14,8 @@ class ErrorPage extends Component {
 			}
 			return {
 				message,
-				status
+				status,
+				hideLayout: true
 			};
 		}
 	}
@@ -32,19 +32,7 @@ class ErrorPage extends Component {
 				<div id="container">
 					{status ? <span id="status">{status}</span> : null}
 					{message}
-					
-					
 				</div>
-				<Footer/>
-				<style jsx>{`
-					@font-face {
-						font-family: Roboto;
-						src: url(/static/fonts/Roboto.ttf);
-					}
-					* {
-						font-family: Roboto;
-					}
-				`}</style>
 				<style jsx>{`
 					#container {
 						text-align: center;

@@ -10,21 +10,39 @@ export default class extends Component {
 		this.login = this.login.bind(this);
 		this.handleInput = this.handleInput.bind(this);
 	}
-	async login() {
+	async login(e) {
 		try {
-			const url = new URLSearchParams();
-			url
-			const req = await fetch("http://localhost:8080/admin-login", {
-				method: "POST",
+			e.preventDefault();
 
-			})
+			const {username, password} = this.state;
+
+			if (!username || !password)
+				return alert("Ingrese los datos");
+
+			const req = await fetch(`${process.env.ORIGIN}/admin-login`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					username,
+					password
+				})
+			});
+
+			const {status, message} = await req.json();
+
+			if (status === "OK")
+				this.props.onLogin();
+			else if (status === "Error")
+				alert(message);
 		} catch(err) {
 			console.error(err);
 		}
 	}
 	handleInput({target}) {
-		const {name, type} = target;
-		const value = type === "checkbox" ? target.checked : target.value;
+		const {name, value} = target;
+
 		this.setState({
 			[name]: value
 		});
@@ -32,10 +50,10 @@ export default class extends Component {
 	render() {
 		return <div id="container">
 			<img src="/static/images/davidsdevel-rombo.png"/>
-			<form action="/admin-login" method="POST" encType="application/json">
-				<input type="text" name="username" placeholder="Username"/>
-				<input type="password" name="password" placeholder="Password"/>
-				<button>Login</button>
+			<form onSubmit={this.login}>
+				<input type="text" name="username" placeholder="Username" onChange={this.handleInput}/>
+				<input type="password" name="password" placeholder="Password" onChange={this.handleInput}/>
+				<button className="black">Login</button>
 			</form>
 			<style jsx>{`
 				#container {
@@ -49,14 +67,12 @@ export default class extends Component {
 					margin: 50px auto 80px;
 					display: block;
 				}
-				#container input {
-					background: white;
-				    padding: 10px 20px;
-				    border: none;
+				#container input, #container button {
 				    display: block;
 				    margin: 15px auto;
-				    box-shadow: grey 1px 1px 2px;
-				    border-radius: 10px;
+				}
+				#container button.black {
+				    padding: 10px 50px;
 				}
 			`}</style>
 		</div>

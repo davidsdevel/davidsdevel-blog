@@ -55,7 +55,6 @@ const Head = props => (
     	<meta content={props.url ? "https://davidsdevel-blog.herokuapp.com" + props.url: defaultOGURL} name='twitter:url'/>
 
   		<link rel="manifest" href="/manifest.json"/>
-		<script src="/static/FB.js"/>
 	</NextHead>
 );
 

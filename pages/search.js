@@ -2,11 +2,9 @@ import React, {Component} from "react";
 import fetch from "isomorphic-fetch";
 import Router from "next/router";
 import Link from 'next/link';
-import Nav from '../components/nav'
 import Head from '../components/head'
 import Landing from '../components/index/landing';
 import Card from '../components/index/card';
-import Footer from '../components/index/footer';
 import {setBanner} from "../lib/banners";
 import {string} from "prop-types";
 
@@ -89,7 +87,6 @@ class Search extends Component {
 		return (
 			<div>
 				<Head title="David's Devel" url={pathname}/>
-				<Nav title="David's Devel"/>
 				<span id="title">Busquedas para el termino: <b>{decodeURI(search)}</b></span>
 				<div className="banner-container">
 				  {setBanner()}
@@ -125,7 +122,6 @@ class Search extends Component {
 				<div className="banner-container">
 				  {setBanner()}
 				</div>
-				<Footer/>
 				<style jsx>{`
 					#title {
 						margin: 100px 0 20px;

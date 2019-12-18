@@ -1,7 +1,5 @@
 import React, {Component} from "react";
 import Head from "../components/head";
-import Nav from "../components/nav";
-import Footer from '../components/index/footer';
 import Share from '../components/post/share';
 import About from '../components/post/about';
 import Link from "next/link";
@@ -14,7 +12,6 @@ const Post = () =>  (
 			<NextHead>
 				<script async defer src="https://platform.linkedin.com/badges/js/profile.js" type="text/javascript"/>
 			</NextHead>
-			<Nav/>
 			<header>
 				<div id="header-shadow">
 					<h1>Acerca de Mi</h1>
@@ -69,7 +66,6 @@ const Post = () =>  (
 			<div className="banner-container">
 				{setBanner()}
 			</div>
-			<Footer/>
 			<style jsx>{`
 				header {
 					background-image: url(/static/images/og.jpg);
