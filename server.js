@@ -50,8 +50,8 @@ if (!dev) {
 	sess.store = new KnexSessionStore({
 		knex: db.db
 	});
-	server.set('trust proxy', 1) // trust first proxy
 	sess.cookie.secure = true;
+	server.set('trust proxy', 1) // trust first proxy
 }
 
 server
@@ -117,21 +117,24 @@ async function Init() {
 				const {action} = req.params;
 				const {page, url, referer, userAgent, fields} = req.query;
 				var data;
-				if (action === "all")
+				switch(action) {
+				case "all":
 					data = await posts.all(page);
-
-				else if (action === "all-edit")
+					break;
+				case "all-edit":
 					data = await posts.allEdit();
-
-				else if (action === "single")
+					break;
+				case "single":
 					data = await posts.single(url, referer, req.userAgentFromString(userAgent));
-
-				else if(action === "single-edit")
+					break;
+				case "single-edit":
 					data = await posts.singleEdit(url);
-
-				else if (action === "find") {
-					//TODO
+					break;
+				case "search":
+					break;
+					default: break;
 				}
+
 				if (fields) {
 					const parse = postData => {
 						var newData = {};
@@ -260,6 +263,9 @@ async function Init() {
 			file.mv(filepath, async () => {
 				try{
 					const data = await db.uploadFile(type, name, mime, filepath, width);
+
+					unlinkSync(filepath);
+
 					res.json(data);
 				} catch(err) {
 					console.error(err);
@@ -315,6 +321,9 @@ async function Init() {
 		})
 		.get("/set-view", async (req, res) => {
 			try {
+				if (req.session.adminAuth)
+					return res.send("success");
+
 				const {url, referer} = req.query;
 
 				await posts.setView(url, referer, req.userAgent);

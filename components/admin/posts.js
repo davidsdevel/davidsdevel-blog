@@ -80,6 +80,7 @@ class Posts extends Component {
 
 		} catch(err) {
 			console.error(err);
+			alert("Error al obtener las entradas");
 		}
 	}
 	cancel(isSave) {

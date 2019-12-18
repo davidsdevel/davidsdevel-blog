@@ -145,9 +145,13 @@ export default class Editor extends Component {
 		q.enable(true);
 
 		this.setState({
-			image: src,
 			showImagesModal: false
 		});
+
+		if (this.state.postStatus === "new" && !this.state.image)
+			this.setState({
+				image: src,
+			});
 	}
 	imageHandler() {
 		this.quill.enable(false);
@@ -177,6 +181,7 @@ export default class Editor extends Component {
 			});
 			const data = await req.text();
 			this.setState({
+				postStatus: "saved",
 				isSaved: true,
 				ID: data
 			});
@@ -216,7 +221,7 @@ export default class Editor extends Component {
 		this.setState({
 			[name]: value
 		});
-		if (name === "title") {
+		if (name === "title" && this.state.postStatus === "new") {
 			this.setState({
 				url: value.toLowerCase().split(" ").slice(0, 8).join("-")
 			})
@@ -245,7 +250,7 @@ export default class Editor extends Component {
 					<option value="marketing">Marketing</option>
 				</select>
 				<textarea type="text" name="description" value={description} placeholder="Descripcion" onChange={this.handleInput}/>
-				<input type="text" name="url" placeholder="URL" onChange={this.handleInput} value={url}/>
+				<input type="text" name="url" placeholder="URL" onChange={this.handleInput} value={url} disabled={postStatus !== "new"}/>
 				<input type="text" name="tags" value={tags} placeholder="Etiquetas" onChange={this.handleInput}/>
 				<button className="white" disabled={isSaved} onClick={this.save}>{postStatus === "published" ? "Cambiar a Borrador": "Guardar"}</button>
 				<button className="gray" onClick={this.publish}>{postStatus === "published" ? "Actualizar": "Publicar"}</button>

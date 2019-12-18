@@ -4,7 +4,7 @@ import Nav from '../components/nav'
 import Footer from '../components/index/footer';
 import Router from "next/router";
 
-export default class extends App {
+export default class CustomApp extends App {
 	static async getInitialProps({ Component, ctx }) {
 		let pageProps = {}
 		let referer;
@@ -67,6 +67,19 @@ export default class extends App {
 			};
 		} else {
 			FB.XFBML.parse();
+		}
+
+		window.FB = {
+			AppEvents: {
+				logEvent(e) {
+					console.log(e);
+				}
+			},
+			XFBML: {
+				parse() {
+					return;
+				}
+			}
 		}
 	}
 	componentDidMount() {

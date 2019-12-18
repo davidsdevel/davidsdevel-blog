@@ -43,7 +43,7 @@ class Admin extends Component {
 	    		<link rel="icon" href="/static/favicon.ico" />
 			</Head>
 			{
-				true ?
+				auth ?
 				<Dashboard/>:
 				<NoAuth onLogin={this.onLogin}/>
 			}

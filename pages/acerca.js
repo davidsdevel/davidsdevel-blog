@@ -175,6 +175,6 @@ const Post = () =>  (
 				}
 			`}</style>
 		</div>
-)
+);
 
 export default Post;
