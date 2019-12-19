@@ -47,11 +47,11 @@ var sess = {
 }
 
 if (!dev) {
-	/*sess.store = new KnexSessionStore({
+	sess.store = new KnexSessionStore({
 		knex: db.db
 	});
 	sess.cookie.secure = true;
-	server.set('trust proxy', 1) // trust first proxy*/
+	server.set('trust proxy', 1) // trust first proxy
 }
 
 server
