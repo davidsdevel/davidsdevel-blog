@@ -52,7 +52,7 @@ server
 	.use(session(sess))
 	.use(fileUpload())
 	.use(userAgent)
-	.use(express.static(join(__dirname, "static")))
+	.use(express.static(join(__dirname)))
 
 
 async function Init() {
@@ -264,6 +264,26 @@ async function Init() {
 			} catch(err) {
 				res.status(500).send(err.toString());
 			}
+		})
+		.get("/preview/:secret/:ID", async ({params}, res) => {
+			const {ID} = params;
+			const data = await db.getPostByID(ID);
+
+			var template = readFileSync("./previewTemplate.html").toString();
+
+			var tags = "";
+
+			data.tags.split(/\,\s*/).forEach(e => (tags += `<li class="jsx-3065913865 jsx-552310415"><a class="jsx-3065913865 jsx-552310415" href="/search?q=${e}">${e}</a></li>`))
+
+			template = template
+				.replace(/\%TITLE\%/g, data.title)
+				.replace(/\%DESCRIPTION\%/g, data.description)
+				.replace(/\%URL\%/g, data.url)
+				.replace(/\%IMAGE\%/g, data.image)
+				.replace(/\%CONTENT\%/g, data.content)
+				.replace(/%TAGS%/g, tags);
+
+				res.send(template);
 		})
 		.get("/set-view", async (req, res) => {
 			try {

@@ -148,7 +148,7 @@ export default class Editor extends Component {
 			showImagesModal: false
 		});
 
-		if (this.state.postStatus === "new" && !this.state.image)
+		if (!this.state.image)
 			this.setState({
 				image: src,
 			});
@@ -234,7 +234,7 @@ export default class Editor extends Component {
 		this.quill.enable(true);
 	}
 	render() {
-		const {showImagesModal, title, category, description, tags, url, postStatus, isSaved} = this.state;
+		const {showImagesModal, title, category, description, tags, url, postStatus, isSaved, ID} = this.state;
 
 		return <div id="main-container">
 			<div id="editor-head">
@@ -254,6 +254,7 @@ export default class Editor extends Component {
 				<input type="text" name="tags" value={tags} placeholder="Etiquetas" onChange={this.handleInput}/>
 				<button className="white" disabled={isSaved} onClick={this.save}>{postStatus === "published" ? "Cambiar a Borrador": "Guardar"}</button>
 				<button className="gray" onClick={this.publish}>{postStatus === "published" ? "Actualizar": "Publicar"}</button>
+				<button className="gray" onClick={() => window.open(`/preview/${process.env.AUTH_KEY}/${ID}`)}>Vista Previa</button>
 				<button className="black" onClick={() => this.props.cancel(isSaved)}>Cancelar</button>
 			</aside>
 			<ImagesModal show={showImagesModal} setImage={this.setImage} close={this.closeModal}/>

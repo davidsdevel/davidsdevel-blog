@@ -47,11 +47,11 @@ var sess = {
 }
 
 if (!dev) {
-	sess.store = new KnexSessionStore({
+	/*sess.store = new KnexSessionStore({
 		knex: db.db
 	});
 	sess.cookie.secure = true;
-	server.set('trust proxy', 1) // trust first proxy
+	server.set('trust proxy', 1) // trust first proxy*/
 }
 
 server
@@ -305,6 +305,26 @@ async function Init() {
 			} catch(err) {
 				res.status(500).send(err.toString());
 			}
+		})
+		.get("/preview/:secret/:ID", async ({params}, res) => {
+			const {ID} = params;
+			const data = await db.getPostByID(ID);
+
+			var template = readFileSync("./previewTemplate.html").toString();
+
+			var tags = "";
+
+			data.tags.split(/\,\s*/).forEach(e => (tags += `<li class="jsx-3065913865 jsx-552310415"><a class="jsx-3065913865 jsx-552310415" href="/search?q=${e}">${e}</a></li>`))
+
+			template = template
+				.replace(/\%TITLE\%/g, data.title)
+				.replace(/\%DESCRIPTION\%/g, data.description)
+				.replace(/\%URL\%/g, data.url)
+				.replace(/\%IMAGE\%/g, data.image)
+				.replace(/\%CONTENT\%/g, data.content)
+				.replace(/%TAGS%/g, tags);
+
+				res.send(template);
 		})
 		.get("/fcm/:action", async (req, res) => {
 			try {

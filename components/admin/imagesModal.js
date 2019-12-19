@@ -18,7 +18,6 @@ export default class ImagesModal extends Component {
 		this.upload = this.upload.bind(this);
 	}
 	componentWillUpdate(a, b) {
-		console.log(a.show, b.display, b.opacity);
 		if (a.show && b.display === "none" && b.opacity === 0) {
 
 			this.setState({
@@ -103,7 +102,6 @@ export default class ImagesModal extends Component {
 							});
 
 							const data = await req.json();
-							console.log(data);
 							const newData = Object.assign([], this.state.data);
 
 							newData.unshift(data);
@@ -135,7 +133,6 @@ export default class ImagesModal extends Component {
 		if (e.target.tagName === "DIV")
 			return;
 
-		console.log(secret, name);
 		try {
 			const req = await fetch("/action-images/delete", {
 				method: "DELETE",

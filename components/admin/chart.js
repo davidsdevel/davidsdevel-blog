@@ -30,8 +30,8 @@ export default class Chart extends Component {
 
 						let alphaChannel = percent / 100;
 
-						if (alphaChannel < 0.5)
-							alphaChannel = 0.5;
+						if (alphaChannel < 0.1)
+							alphaChannel = 0.1;
 
 						console.log(alphaChannel)
 						return <li key={key+value}>
