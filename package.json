@@ -30,7 +30,8 @@
     "xml-js": "^1.6.11"
   },
   "engines": {
-    "node": "12.x"
+    "node": "12.14.0",
+    "yarn": "1.12.1"
   },
   "devDependencies": {
     "mysql": "^2.17.1"
