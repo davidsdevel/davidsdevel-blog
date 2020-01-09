@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Hola Mundo</title>
+</head>
+<body>
+	<div>
+		<input type="file" id="file"/>
+		<button onclick="sendData()">Enviar Datos</button>
+	</div>
+	<script>
+		var data;
+
+		async function sendData() {
+			try {
+				const formData = new FormData();
+				formData.append("data", data);
+
+				const req = await fetch("http://localhost:8080/import-posts", {
+					method: "POST",
+					body: formData
+				});
+			} catch(err) {
+				console.error(err);
+			}
+		}
+		function getData({target}) {
+			const {files} = target;
+			const file = files[0];
+			console.log(file)
+			const reader = new FileReader();
+			reader.readAsText(file);
+			reader.onloadend = e => {
+				data = e.target.result;
+			}
+		}
+		document.getElementById("file").onchange = getData;
+	</script>
+</body>
+</html>

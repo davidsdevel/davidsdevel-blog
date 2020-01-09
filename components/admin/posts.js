@@ -26,7 +26,7 @@ class Posts extends Component {
 			this.setState({
 				fetching: true
 			});
-			const req = await fetch(`${process.env.ORIGIN}/posts/all-edit?fields=ID,title,postStatus,comments,views,url,tags,image`);
+			const req = await fetch(`${process.env.ORIGIN}/posts/all-edit?fields=ID,title,postStatus,comments,views,url,tags,image,category`);
 
 			const {posts} = await req.json();
 
@@ -41,11 +41,11 @@ class Posts extends Component {
 	async newPost() {
 		this.setState({editting: true, editData: undefined});
 	}
-	async edit(url) {
+	async edit(ID) {
 		try {
-			const req = await fetch(`${process.env.ORIGIN}/posts/single-edit?url=${url}&fields=ID,title,description,image,postStatus,url,content,category,tags`);
+			const req = await fetch(`${process.env.ORIGIN}/posts/single-edit?ID=${ID}&fields=ID,title,description,image,postStatus,url,content,category,tags`);
 			const editData = await req.json();
-			console.log(editData);
+
 			this.setState({
 				editData,
 				editting: true
@@ -59,7 +59,7 @@ class Posts extends Component {
 			if (!confirm("¿Esta seguro de eliminar esta publicacion?"))
 				return;
 
-			const req = await fetch(`${process.env.ORIGIN}/manage-post/delete`, {
+			const req = await fetch(`${process.env.ORIGIN}/posts/delete`, {
 				method: "DELETE",
 				headers: {
 					"Content-Type": "application/json"
@@ -130,9 +130,9 @@ class Posts extends Component {
 									<div className="buttons">
 										{
 											e.postStatus === "published" &&
-											<button className="white" onClick={() => window.open(`/${e.url}`, "_blank")}>Ver</button>
+											<button className="white" onClick={() => window.open(`/${e.category}/${e.url}`, "_blank")}>Ver</button>
 										}
-										<button className="gray" onClick={() => this.edit(e.url)}>Editar</button>
+										<button className="gray" onClick={() => this.edit(e.ID)}>Editar</button>
 										<button className="black" onClick={() => this.delete(e.ID)}>Eliminar</button>
 									</div>
 								</div>

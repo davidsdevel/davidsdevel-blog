@@ -22,6 +22,7 @@ const Privacidad = () => (
 			}
 			#main p {
 				margin: 20px 0;
+				text-align: justify;
 			}
 			#main strong {
 				text-align: center;

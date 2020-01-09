@@ -1,0 +1,61 @@
+Title
+Author
+categories
+posts Route
+Base de datos
+usuario 
+password
+email
+
+
+
+
+
+const dbName = "the_name";
+
+var request = indexedDB.open(dbName, 2);
+
+request.onerror = function(event) {
+  // Manejar errores.
+};
+request.onupgradeneeded = function(event) {
+  var db = event.target.result;
+
+  // Se crea un almacén para contener la información de nuestros cliente
+  // Se usará "ssn" como clave ya que es garantizado que es única
+  var objectStore = db.createObjectStore("customers", { keyPath: "ssn" });
+
+  // Se crea un índice para buscar clientes por nombre. Se podrían tener duplicados
+  // por lo que no se puede usar un índice único.
+  objectStore.createIndex("name", "name", { unique: false });
+
+  // Se crea un índice para buscar clientespor email. Se quiere asegurar que
+  // no puedan haberdos clientes con el mismo email, asi que se usa un índice único.
+  objectStore.createIndex("email", "email", { unique: true });
+
+  // Se usa transaction.oncomplete para asegurarse que la creación del almacén 
+  // haya finalizado antes de añadir los datos en el.
+  objectStore.transaction.oncomplete = function(event) {
+    // Guarda los datos en el almacén recién creado.
+    var customerObjectStore = db.transaction("customers", "readwrite").objectStore("customers");
+    for (var i in customerData) {
+      customerObjectStore.add(customerData[i]);
+    }
+  }
+};
+
+
+
+var transaction = db.transaction(["customers"]);
+var objectStore = transaction.objectStore("customers");
+var request = objectStore.get("444-44-4444");
+request.onerror = function(event) {
+  // Handle errors!
+};
+request.onsuccess = function(event) {
+  // Do something with the request.result!
+  alert("Name for SSN 444-44-4444 is " + request.result.name);
+};
+
+
+https://app.airtm.com/ivt/KOreGt8P

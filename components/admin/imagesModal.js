@@ -8,7 +8,7 @@ export default class ImagesModal extends Component {
 			data: [],
 			fetching: true,
 			isUploading: false,
-			uploadName: "2A7.jpg",
+			uploadName: "",
 			display: "none",
 			opacity: 0
 		};
@@ -181,7 +181,7 @@ export default class ImagesModal extends Component {
 											<img src="/static/assets/spinner.svg" className="rotating"/>
 										</li>
 									}
-									{	data.length > 0 ?
+									{	data.length > 0 || isUploading?
 										data.map((e, i) => <li key={i+e.name}>
 											<img src={`${e.src}?width=200`}/>
 											<span>{e.name}</span>

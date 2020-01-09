@@ -46,6 +46,8 @@ export default class Dashboard extends Component {
 					display: inline-block;
 					height: 100%;
 					left: 0;
+
+					background: white;
 				}
 				#content {
 					position: absolute;

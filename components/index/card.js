@@ -37,9 +37,9 @@ class Card extends Component  {
 		}
 	}
 	render() {
-		const {image, content, title, url, comments} = this.props; 
+		const {image, content, title, url, comments, category} = this.props; 
 		return <div className="blog-card">
-			<Link href="/[category]/[title]" as={`/${url}`} prefetch>
+			<Link href="/[category]/[title]" as={`/${category}/${url}`} prefetch>
 				<a onClick={() => FB.AppEvents.logEvent('View Post On Image')}>
 					{ image ?
 						<div className="card-header-image" style={{backgroundImage: `url(${image})`}}></div>
@@ -50,21 +50,23 @@ class Card extends Component  {
 					}
 				</a>
 			</Link>
-			{!!image &&
-				<div className="title-container">
-					<h3>{title}</h3>
+			<div className="data-cont">
+				{!!image &&
+					<div className="title-container">
+						<h3>{title}</h3>
+					</div>
+				}
+				<p>{content.length > 200 ? content.slice(0, 197) + "..." : content}</p>
+				<div className="comment-container">
+					<span>{comments}</span>
+					<img src="/static/assets/bubbles.svg" style={{height: "18px", margin: "0 10px"}}/>
 				</div>
-			}
-			<p>{content}</p>
-			<div className="comment-container">
-				<span>{comments}</span>
-				<img src="/static/assets/bubbles.svg" style={{height: "18px", margin: "0 10px"}}/>
+				<div>
+					<button className="view-more" onClick={() => {Router.push("/[category]/[title]", `/${category}/${url}`); FB.AppEvents.logEvent('View Post On Button')}}>Ver Mas</button>
+					<button className="share" onFocus={this.toggleShare} onBlur={this.toggleShare}>Compartir</button>
+				</div>
+				<Share style={{opacity: this.state.shareOpacity, display: this.state.shareDisplay}} title={title} url={`https://blog.davidsdevel.com${url}`}/>
 			</div>
-			<div>
-				<button className="view-more" onClick={() => {Router.push("/[category]/[title]", `/${url}`); FB.AppEvents.logEvent('View Post On Button')}}>Ver Mas</button>
-				<button className="share" onFocus={this.toggleShare} onBlur={this.toggleShare}>Compartir</button>
-			</div>
-			<Share style={{opacity: this.state.shareOpacity, display: this.state.shareDisplay}} title={title} url={`https://blog.davidsdevel.com${url}`}/>
 			<style jsx>{`
 				.comment-container {
 					padding: 20px;
@@ -105,6 +107,7 @@ class Card extends Component  {
     				padding: 10px;
 				}
 				.blog-card p {
+					height: 100px;
 					padding: 0 10px;
 				}
 				.blog-card div button {
@@ -133,10 +136,34 @@ class Card extends Component  {
 				}
 				@media screen and (min-width: 720px) {
 					.blog-card {
-						width: 45%;
-						margin: 50px 2.5%;
+						width: ${this.props.size === "big" ? "65%" : "45%"};
+						margin: 50px ${this.props.size === "big" ? "0" : "2.5%"};
 						display: inline-block;
 						position: relative;
+					}
+					.blog-card .card-header-image,
+					.blog-card .card-header-title {
+						${this.props.size === "big" ? 
+							`display: inline-block;
+							width: 35%;`: ""
+						}
+					}
+					.blog-card .data-cont {
+						${this.props.size === "big" ? 
+							`display: inline-block;
+							width: 65%;` : ""
+						}
+					}
+					.blog-card div .view-more {
+						${this.props.size === "big" ? 
+							`border-radius: 0;` : ""
+						}
+					}
+					.blog-card p {
+						${this.props.size === "big" ? 
+							`height: 60px;` : ""
+						}
+						
 					}
 				}
 			`}</style>

@@ -5,11 +5,12 @@ import About from '../../components/post/about';
 import Link from "next/link";
 import {setBanner} from "../../lib/banners";
 import fetch from "isomorphic-fetch";
+import ErrorPage from "../_error";
 
 class Post extends Component {
 	static async getInitialProps({query, req, asPath}) {
 		try {
-			const r = await fetch(`${process.env.ORIGIN}/posts/single?url=${query.category}/${query.title}&fields=image,content,title,tags,updated,description,category`);
+			const r = await fetch(`${process.env.ORIGIN}/posts/single?category=${query.category}&url=${query.title}&fields=image,content,title,tags,updated,description,category`);
 
 			query = await r.json();
 
@@ -67,7 +68,9 @@ class Post extends Component {
 		document.body.appendChild(script);
 	}
 	render() {
-		const {pathname, image, content, title, tags, updated, description, category} = this.props;
+		const {pathname, image, content, title, tags, updated, description, category, status} = this.props;
+		if (status === "dont-exists")
+			return <ErrorPage status={404} message={<div><p>Ups. No hay nada por aqui</p><span>¿Te perdiste? Bueno dejame llevarte hasta el <Link href="/" prefetch><a>Inicio</a></Link></span></div>}/>;
 
 		return <div>
 			<Head url={pathname} category={category} published={updated} title={title} tags={tags} image={image} description={description}/>

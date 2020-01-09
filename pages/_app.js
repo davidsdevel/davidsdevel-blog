@@ -1,29 +1,46 @@
 import React from 'react'
 import App, { Container } from 'next/app';
+import Load from "../components/loadBar";
 import Nav from '../components/nav'
 import Footer from '../components/index/footer';
 import Router from "next/router";
+import Messaging from "../lib/messaging";
+
+const messaging = new Messaging({
+	apiKey: "AIzaSyAzcg06Z-3ukLDhVkvxM7V0lCNwYTwHpho",
+	authDomain: "davids-devel-1565378708258.firebaseapp.com",
+	databaseURL: "https://davids-devel-1565378708258.firebaseio.com",
+	projectId: "davids-devel-1565378708258",
+	storageBucket: "",
+	messagingSenderId: "167456236988",
+	appId: "1:167456236988:web:0896b0297732acc2"
+});
 
 export default class CustomApp extends App {
+	constructor() {
+		super();
+		this.state = {
+			showLoad: false
+		};
+	}
 	static async getInitialProps({ Component, ctx }) {
 		let pageProps = {}
 		let referer;
 
 
-		if (Component.getInitialProps)
+		if (Component.getInitialProps) 
 			pageProps = await Component.getInitialProps(ctx);
 	
 		if (ctx.req) {
-			console.log(ctx.req.headers);
 			referer = ctx.req.headers.referer;
 		}
-		else
-			referer = "https://blog.davidsdevel.com";
+
+		referer = referer || "https://blog.davidsdevel.com";
 
 		return {
 			pageProps,
 			referer: encodeURI(referer),
-			viewUrl: ctx.asPath
+			viewUrl: ctx.asPath === "/" ? "/" : ctx.asPath.slice(1)
 		};
 	}
 	async setView() {
@@ -33,7 +50,7 @@ export default class CustomApp extends App {
 		try {
 			const {viewUrl, referer} = this.props;
 
-			const req = await fetch(`${process.env.ORIGIN}/set-view?url=${viewUrl}&referer=${referer}`);
+			const req = await fetch(`${process.env.ORIGIN}/posts/set-view?url=${viewUrl}&referer=${referer}`);
 
 			await req.text();
 		} catch(err) {
@@ -68,34 +85,46 @@ export default class CustomApp extends App {
 		} else {
 			FB.XFBML.parse();
 		}
-
 		window.FB = {
-			AppEvents: {
-				logEvent(e) {
-					console.log(e);
-				}
+			...window.FB,
+			AppEvents:{
+				logEvent: ev => console.log(ev)
 			},
 			XFBML: {
-				parse() {
-					return;
-				}
+				parse: () => console.log("parsed") 
 			}
 		}
 	}
 	componentDidMount() {
+		if (!this.props.pageProps.hideLayout)
+			messaging.init();
+
 		this.initFB();
 		this.setView();
+
+		Router.events.on("routeChangeStart", () => this.setState({
+			showLoad: true
+		}));
 
 		Router.events.on("routeChangeComplete", () => {
 			this.initFB();
 			this.setView();
+
+			this.setState({
+				showLoad: false
+			});
 		});
 	}
 	render() {
 		const { Component, pageProps } = this.props;
+		const {showLoad} = this.state;
 
 		return (
 		  <Container>
+		  	{
+		  		(showLoad && !pageProps.hideLayout) &&
+		  		<Load/>
+		  	}
 		  	{
 		  		!pageProps.hideLayout &&
 		  		<Nav/>
@@ -126,6 +155,9 @@ export default class CustomApp extends App {
 					margin: 0;
 					padding: 0;
 					font-family: Roboto, Helvetica;
+				}
+				input:focus {
+					outline: none;
 				}
 				input[type="text"],
 				input[type="password"],

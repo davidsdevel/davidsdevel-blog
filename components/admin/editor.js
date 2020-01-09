@@ -15,6 +15,7 @@ export default class Editor extends Component {
 			postStatus: "new",
 			category: "development",
 			isSaved: false,
+			isPublished: false,
 			showImagesModal: false
 		};
 
@@ -93,11 +94,12 @@ export default class Editor extends Component {
 			modules: {
 				toolbar: toolbarOptions
 			},
-			theme: 'snow'
+			theme: 'snow',
+			debug: "info"
 		});
 
 		if (this.props.data) {
-			const {ID, title,description,image,postStatus,url,content,category,tags} = this.props.data;
+			const {ID, title,description,image,postStatus,url,content,category,tags,isPublished} = this.props.data;
 
 			this.setState({
 				ID,
@@ -105,13 +107,14 @@ export default class Editor extends Component {
 				description,
 				image,
 				postStatus,
-				url: url.match(/(\w*-)*\w*$/)[0] || "",
+				url: /(\w*-)*/.test(url) ? url : "",
 				content,
 				category,
-				tags
+				tags,
+				isPublished
 			});
 
-			quill.root.innerHTML = content;
+			quill.clipboard.dangerouslyPasteHTML(0, content);
 		}
 
 		// Handlers can also be added post initialization
@@ -172,10 +175,10 @@ export default class Editor extends Component {
 			urlEncoded.append("tags", tags);
 			urlEncoded.append("content", content);
 			urlEncoded.append("image", image);
-			urlEncoded.append("url", category+"/"+url);
+			urlEncoded.append("url", url);
 			urlEncoded.append("category", category);
 
-			const req = await fetch("/manage-post/save", {
+			const req = await fetch("/posts/save", {
 				method: "POST",
 				body: urlEncoded
 			});
@@ -191,7 +194,7 @@ export default class Editor extends Component {
 	}
 	async publish() {
 		try {
-			const {ID, title, description, tags, content, image, url, category} = this.state;
+			const {ID, title, description, tags, content, image, url, category, postStatus} = this.state;
 
 			const urlEncoded = new URLSearchParams();
 
@@ -201,10 +204,11 @@ export default class Editor extends Component {
 			urlEncoded.append("tags", tags);
 			urlEncoded.append("content", content);
 			urlEncoded.append("image", image);
-			urlEncoded.append("url", category+"/"+url);
+			urlEncoded.append("url", url);
 			urlEncoded.append("category", category);
+			urlEncoded.append("postStatus", postStatus);
 
-			const req = await fetch("/manage-post/publish", {
+			const req = await fetch("/posts/publish", {
 				method: "POST",
 				body: urlEncoded
 			});
@@ -221,7 +225,7 @@ export default class Editor extends Component {
 		this.setState({
 			[name]: value
 		});
-		if (name === "title" && this.state.postStatus === "new") {
+		if (name === "title" && !this.state.isPublished) {
 			this.setState({
 				url: value.toLowerCase().split(" ").slice(0, 8).join("-")
 			})
@@ -234,7 +238,7 @@ export default class Editor extends Component {
 		this.quill.enable(true);
 	}
 	render() {
-		const {showImagesModal, title, category, description, tags, url, postStatus, isSaved, ID} = this.state;
+		const {showImagesModal, title, category, description, tags, url, postStatus, isSaved, ID, isPublished} = this.state;
 
 		return <div id="main-container">
 			<div id="editor-head">
@@ -250,11 +254,11 @@ export default class Editor extends Component {
 					<option value="marketing">Marketing</option>
 				</select>
 				<textarea type="text" name="description" value={description} placeholder="Descripcion" onChange={this.handleInput}/>
-				<input type="text" name="url" placeholder="URL" onChange={this.handleInput} value={url} disabled={postStatus !== "new"}/>
+				<input type="text" name="url" placeholder="URL" onChange={this.handleInput} value={url} disabled={isPublished}/>
 				<input type="text" name="tags" value={tags} placeholder="Etiquetas" onChange={this.handleInput}/>
 				<button className="white" disabled={isSaved} onClick={this.save}>{postStatus === "published" ? "Cambiar a Borrador": "Guardar"}</button>
 				<button className="gray" onClick={this.publish}>{postStatus === "published" ? "Actualizar": "Publicar"}</button>
-				<button className="gray" onClick={() => window.open(`/preview/${process.env.AUTH_KEY}/${ID}`)}>Vista Previa</button>
+				<button className="gray" onClick={() => window.open(`/preview/${process.env.AUTH_TOKEN}/${ID}`)}>Vista Previa</button>
 				<button className="black" onClick={() => this.props.cancel(isSaved)}>Cancelar</button>
 			</aside>
 			<ImagesModal show={showImagesModal} setImage={this.setImage} close={this.closeModal}/>

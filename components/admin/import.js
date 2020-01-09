@@ -3,46 +3,70 @@ import React, {Component} from "react";
 export default class Import extends Component {
 	constructor() {
 		super();
+
 		this.state = {
 			data: "",
-			readyToSend: false
-		}
+			sending: false
+		};
+
 		this.sendData  = this.sendData.bind(this);
-		this.getData  = this.getData.bind(this);
 	}
-	getData({target}) {
-		const {files} = target;
-		const file = files[0];
+	sendData(cms) {
+		var input = document.getElementById("input-data");
 
-		const reader = new FileReader();
-		reader.readAsText(file);
-		reader.onloadend = e => {
-			this.setState({
-				data: e.target.result,
-				readyToSend: true
-			});
-		}
-	}
-	async sendData() {
-		try {
-			const formData = new FormData();
-			formData.append("data", this.state.data);
+		if (input === null) {
+			input = document.createElement("input");
+			input.setAttribute('type', 'file');
+			input.id = "input-data";
 
-			const req = await fetch("/import-posts", {
-				method: "POST",
-				headers: {
-					"Auth": "C@mila"
-				},
-				body: formData
-			});
-		} catch(err) {
-			console.error(err);
+			input.onchange = ({target}) => {
+
+				const {files} = target;
+				const file = files[0];
+
+				const reader = new FileReader();
+
+				reader.readAsText(file);
+				reader.onloadend = async e => {
+
+					try {
+						const formData = new FormData();
+						formData.append("data", e.target.result);
+						formData.append("cms", cms);
+
+						const req = await fetch("/blog/import-posts", {
+							method: "POST",
+							headers: {
+								"Auth": "C@mila"
+							},
+							body: formData
+						});
+					} catch(err) {
+						console.error(err);
+					}
+				}
+			}
 		}
+
+		input.click();
 	}
 	render() {
+		const {sending} = this.state;
 		return <div>
-			<input type="file" onChange={this.getData}/>
-			<button disabled={!this.state.readyToSend} onClick={this.sendData}>Enviar Datos</button>
+			<ul>
+				<li>
+					<span>Blogger</span>
+					<button className="black" disabled={sending} onClick={() => this.sendData("blogger")}>Enviar Datos</button>
+				</li>
+				<li>
+					<span>WordPress</span>
+					<button className="black" disabled={sending} onClick={() => this.sendData("wordpress")}>Enviar Datos</button>
+				</li>
+				<li>
+					<span>CMS</span>
+					<button className="black" disabled={sending} onClick={() => this.sendData("cms")}>Enviar Datos</button>
+				</li>
+			</ul>
 		</div>
 	}
 }

@@ -300,17 +300,13 @@ async function Init() {
 			}
 		})
 		.post("/import-posts", async (req, res) => {
-			if (!req.headers["auth"] === "C@mila") {
-				res.status(401).send("no-auth");
-			}
-			else {
-				try {
-					await db.importPostsFromJson(JSON.parse(req.body.data));
-					res.send("success");
-				} catch(err) {
-					console.log(err);
-					res.status(500).send(err);
-				}
+			try {
+				//await db.importPostsFromJson(JSON.parse(req.body.data));
+				await db.importPostsFromBlogger(req.body.data);
+				res.json("success");
+			} catch(err) {
+				console.log(err);
+				res.status(500).send(err.toString());
 			}
 		})
 		.post("/test-json", (req, res) => {
@@ -318,7 +314,7 @@ async function Init() {
 			res.send()
 		})
 		.get("/admin", (req, res) => {
-			res.sendFile(join(__dirname, "comment.html"))
+			res.sendFile(join(__dirname, "test.html"))
 		})
 		.listen(8080, err => {
 			if (err) throw new Error(err);

@@ -199,12 +199,14 @@ class Nav extends Component {
 				<img src="/static/images/davidsdevel-black.png"/>
 				<li>
 					<Link href='/'>
-						<a>Home</a>
+						<a onClick={this.toggleMenu}>Home</a>
 					</Link>
 				</li>
 				{links.map(({ key, href, label }) => (
 					<li key={key}>
-						<a href={href}>{label}</a>
+					<Link href={href} prefetch>
+						<a onClick={this.toggleMenu}>{label}</a>
+					</Link>
 					</li>
 				))}
 			</ul>
