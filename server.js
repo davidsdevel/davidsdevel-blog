@@ -21,7 +21,7 @@ const handle = app.getRequestHandler();
 
 const PORT = process.env.PORT || 3000;
 
-const db = new DB(!dev);
+const db = new DB(dev);
 const posts = new PostsManager(db);
 const router = new Router(db);
 
@@ -37,7 +37,7 @@ var sess = {
 	}
 }
 
-if (dev) {
+if (!dev) {
 	sess.store = new KnexSessionStore({
 		knex: db.db
 	});
