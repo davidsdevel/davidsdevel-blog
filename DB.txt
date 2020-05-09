@@ -1,3 +1,29 @@
+amplificador tda 2005
+regulador LM317
+potenciometro 10k
+Resistencia 1k
+
+MATERIALES
+1 integrado TDA2005 o TDA2004A
+1 disipador ( y un tornillito y una tuerca)
+Pasta térmica
+1 placa PCB
+2 condensadores electrolíticos de 100 microfaradios
+2 condensadores electrolíticos de 220 microfaradios
+2 condensadores electrolíticos de 2.2 microfaradios
+1 condensador electrolítico de 10 microfaradios
+3 condensadores cerámicos de 0.1 microfaradios
+3 resistencias de 1k ohmios
+2 resistencias de 10 ohmios
+4 resistencias de 1 ohmio
+1 resistencia de 120k ohmios
+1 altavoz de 4 ohmios y máximo 20 W (preferiblemente de 15W). El del vídeo es de 30W y por ello suena algo distorsionado.
+1 metro de cables de 1 mm de grosor
+Eliminador o adaptador de 12 V y más de 20W o bien convertir tu alimentador de PC en una fuente regulable siguiendo mi vídeo:
+
+
+
+
 install
 express-session express-fileupload pg-promise
 
