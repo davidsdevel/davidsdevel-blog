@@ -7,11 +7,11 @@ const Card = ({data}) => (<div>
 			<span className="title">{data.title}</span>
 			<span className="description">{data.description}</span>
 			<div className="views">
-				<img src="/static/assets/eye.svg"/>
+				<img src="/assets/eye.svg"/>
 				<span>{data.views}</span>
 			</div>
 			<div className="comments">
-				<img src="/static/assets/bubbles.svg"/>
+				<img src="/assets/bubbles.svg"/>
 				<span>{data.comments}</span>
 			</div>
 			<button onClick={() => window.open(process.env.ORIGIN + "/" + data.url, "_blank")} className="black">Ver</button>

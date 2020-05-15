@@ -8,7 +8,7 @@ const About = () => {
 
 	return <div id="about-container">
 		<h4>Un poco acerca de mi</h4>
-		<img src="/static/images/me.jpg" alt="David González - David's Devel"/>
+		<img src="/images/me.jpg" alt="David González - David's Devel"/>
 		<p>Soy <span className="author">David González</span>, un joven venezolano de {yo} Años, Programador autodidacta, diseñador por que toca, y marketer apasionado</p>
 		<div id="social-container">
 			<a 
@@ -16,28 +16,28 @@ const About = () => {
 				target="_blank"
 				onClick={() => FB.AppEvents.logEvent('View Profile on Facebook')}
 			>
-				<img src="/static/assets/facebook.svg"/>
+				<img src="/assets/facebook.svg"/>
 			</a>
 			<a 
 				href="https://twitter.com/intent/user?screen_name=davidsdevel"
 				target="_blank"
 				onClick={() => FB.AppEvents.logEvent('View Profile on Twitter')}
 			>
-				<img src="/static/assets/twitter.svg" />
+				<img src="/assets/twitter.svg" />
 			</a>
 			<a
 				href="https://www.linkedin.com/in/davidsdevel"
 				target="_blank"
 				onClick={() => FB.AppEvents.logEvent('View Profile on LinkedIn')}
 			>
-				<img src="/static/assets/linkedin.svg" />
+				<img src="/assets/linkedin.svg" />
 			</a>
 			<a
 				href="https://www.instagram.com/davidsdevel"
 				target="_blank"
 				onClick={() => FB.AppEvents.logEvent('View Profile on Instagram')}
 			>
-				<img src="/static/assets/instagram.svg" />
+				<img src="/assets/instagram.svg" />
 			</a>
 		</div>
 		<style jsx>{`

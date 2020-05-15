@@ -103,8 +103,8 @@ class Posts extends Component {
 		var ui;
 		if (editting === false) {
 			if (fetching)
-				ui = <div>
-					<span>Loading posts...</span>
+				ui = <div className="center">
+					<span>Obteniendo Entradas...</span>
 				</div>
 				
 			else {
@@ -113,18 +113,18 @@ class Posts extends Component {
 						{posts.map(e => <li className="post" key={`post-${e.ID}`}>
 							<div className="image" style={{backgroundImage: `url(${e.image})`}}/>
 							<div className="data">
-								<span>{e.title || "Nuevo Post"}</span>
+								<span>{e.title || "Nueva Entrada"}</span>
 								<div>
 									{
 										e.tags &&
 										<span className="tags">{e.tags}</span>
 									}
 									<div className="align">
-										<img src="/static/assets/bubbles.svg"/>
+										<img src="/assets/bubbles.svg"/>
 										<span>{e.comments}</span>
 									</div>
 									<div className="align">
-										<img src="/static/assets/eye.svg"/>
+										<img src="/assets/eye.svg"/>
 										<span>{e.views}</span>
 									</div>
 									<div className="buttons">
@@ -192,9 +192,9 @@ class Posts extends Component {
 						`}</style>
 					</ul>;
 				else
-					ui = <div>
-						<span>No hay post</span>
-						<button className="black" onClick={this.newPost}>Crear Post</button>
+					ui = <div className="center">
+						<span>No hay Entradas</span>
+						<button className="black" onClick={this.newPost}>Crear Entrada</button>
 					</div>
 			}
 		} else {
@@ -202,17 +202,27 @@ class Posts extends Component {
 		}
 		return <div>
 			<Head>
-				<link href="/static/quill.snow.css" rel="stylesheet"/>
-				<script src="/static/quill.js"/>
+				<link href="/quill.snow.css" rel="stylesheet"/>
+				<script src="/quill.js"/>
 			</Head>
 			{
 				!editting &&
-				<button className="black" onClick={this.newPost}>Nuevo Posts</button>
+				<button className="black" onClick={this.newPost}>Nueva Entrada</button>
 			}
 			{ui}
 			<style jsx>{`
 				button.black {
 					margin: 20px 0;
+				}
+				:global(.center) {
+					display: flex;
+					flex-direction: column;
+					text-align: center;
+					width: 25%;
+					margin: 20% auto 0;
+				}
+				:global(.center span) {
+					margin-bottom: 20px;
 				}
 			`}</style>
 		</div>

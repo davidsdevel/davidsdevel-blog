@@ -22,8 +22,8 @@ router
 				data = await req.posts.singleEdit(ID);
 				break;
 			case "set-view":
-				if (req.session.adminAuth)
-					return res.send("success");
+				/*if (req.session.adminAuth)
+					return res.send("success");*/
 
 				try {
 					await req.posts.setView(url, referer, req.userAgent);

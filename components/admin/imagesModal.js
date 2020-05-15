@@ -167,7 +167,7 @@ export default class ImagesModal extends Component {
 			<div id="shadow">
 				<div id="images-main">
 					<span id="images-title">Imagenes</span>
-					<img id="cross" src="/static/assets/cross.svg" onClick={this.props.close}/>
+					<img id="cross" src="/assets/cross.svg" onClick={this.props.close}/>
 					<div id="images-container">
 						{
 							fetching ?
@@ -178,7 +178,7 @@ export default class ImagesModal extends Component {
 									{
 										isUploading &&
 										<li id="upload">
-											<img src="/static/assets/spinner.svg" className="rotating"/>
+											<img src="/assets/spinner.svg" className="rotating"/>
 										</li>
 									}
 									{	data.length > 0 || isUploading?
@@ -186,7 +186,7 @@ export default class ImagesModal extends Component {
 											<img src={`${e.src}?width=200`}/>
 											<span>{e.name}</span>
 											<div className="image-shadow" onClick={(ev) => this.appendImage(e.src, e.width, ev)}>
-												<img src="/static/assets/cross.svg" onClick={(ev) => this.deleteImage(e.secret, e.name, ev, i)}/>
+												<img src="/assets/cross.svg" onClick={(ev) => this.deleteImage(e.secret, e.name, ev, i)}/>
 											</div>
 										</li>)
 										:

@@ -52,8 +52,9 @@ export default class Import extends Component {
 	}
 	render() {
 		const {sending} = this.state;
-		return <div>
-			<ul>
+		return <div id="import-container">
+			<span className="title">Importar Datos</span>
+			<ul className="center">
 				<li>
 					<span>Blogger</span>
 					<button className="black" disabled={sending} onClick={() => this.sendData("blogger")}>Enviar Datos</button>
@@ -67,6 +68,33 @@ export default class Import extends Component {
 					<button className="black" disabled={sending} onClick={() => this.sendData("cms")}>Enviar Datos</button>
 				</li>
 			</ul>
+			<style jsx>{`
+				.title {
+					display: block;
+					font-size: 32px;
+					width: 75%;
+					right: 0;
+					text-align: center;
+					font-weight: bold;
+					position: fixed;
+				}
+				.center {
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					width: 100%;
+					height: 100%;
+					position: absolute;
+				}
+				.center li {
+					margin: 25px 0;
+					display: flex;
+					width: 250px;
+					justify-content: space-between;
+					align-items: center;
+				}
+			`}</style>
 		</div>
 	}
 }

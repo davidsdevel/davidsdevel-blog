@@ -20,10 +20,10 @@ class Landing extends Component {
 			<header style={{height: this.state.clientHeight}}>
 				<button className="white">Suscríbete</button>
 				<button id="circle" onClick={() => {scroll(0, this.state.clientHeight - 70); FB.AppEvents.logEvent('Landing Scroll')}}>
-					<img src="/static/assets/arrow.svg" />
+					<img src="/assets/arrow.svg" />
 				</button>
 				<div id="header-shadow">
-					<img src="/static/images/davidsdevel-rombo.png"/>
+					<img src="/images/davidsdevel-rombo.png"/>
 					<span>Mantente al tanto de las actualizaciones de mi blog</span>
 				</div>
 				<Modal/>
@@ -51,7 +51,7 @@ class Landing extends Component {
 					width: 100%;
 					height: 640px;
 					display: block;
-					background-image: url(/static/images/landing-mobile.jpg);
+					background-image: url(/images/landing-mobile.jpg);
 					background-position: center;
     				background-size: cover;
 					overflow: hidden;
@@ -89,7 +89,7 @@ class Landing extends Component {
     					margin: 15% auto 5%;
     				}
     				header {
-						background-image: url(/static/images/landing-mobile-480p.jpg);
+						background-image: url(/images/landing-mobile-480p.jpg);
 					}
 					button.white {
 						width: 50%;
@@ -98,7 +98,7 @@ class Landing extends Component {
 				}
 				@media screen and (min-width: 720px) {
 					header {
-						background-image: url(/static/images/landing-desktop.jpg);
+						background-image: url(/images/landing-desktop.jpg);
 					}
 					#header-shadow img {
 						width: 100px;
@@ -124,7 +124,7 @@ class Landing extends Component {
 				}
 				@media screen and (min-width: 960px) {
 					header {
-						background-image: url(/static/images/landing-desktop-960p.jpg);
+						background-image: url(/images/landing-desktop-960p.jpg);
 					}
 				}
 			`}</style>

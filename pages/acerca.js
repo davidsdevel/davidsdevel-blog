@@ -16,7 +16,7 @@ const Post = () =>  (
 				<div id="header-shadow">
 					<h1>Acerca de Mi</h1>
 				</div>
-				<img src="/static/images/davidsdevel-rombo.png"/>
+				<img src="/images/davidsdevel-rombo.png"/>
 			</header>
 			<div>
 				<div className="banner-container">
@@ -55,10 +55,10 @@ const Post = () =>  (
 				</main>
 				<aside>
 					<a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
-						<img src="/static/images/payoneer.png"/>
+						<img src="/images/payoneer.png"/>
 					</a>
 					<a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
-						<img src="/static/images/platzi.png"/>
+						<img src="/images/platzi.png"/>
 					</a>
 				</aside>
 			</div>
@@ -68,7 +68,7 @@ const Post = () =>  (
 			</div>
 			<style jsx>{`
 				header {
-					background-image: url(/static/images/og.jpg);
+					background-image: url(/images/og.jpg);
 					height: 600px;
 					width: 100%;
 					background-position: center;

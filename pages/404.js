@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 
 class ErrorPage extends Component {
-	static async getInitialProps({req, res}) {
+	/*static async getInitialProps({req, res}) {
 		if (req) {
 			const status = res.statusCode;
 			var message;
@@ -18,7 +18,7 @@ class ErrorPage extends Component {
 				hideLayout: true
 			};
 		}
-	}
+	}*/
 	render() {
 		const {status, message} = this.props;
 		return (
@@ -26,12 +26,12 @@ class ErrorPage extends Component {
 				<Head>
 					<meta charSet="utf-8"/>
 					<title>Ups. Lo sentimos</title>
-					<meta name="viewport" content="with=device-width, initial-scale=1"/>
+					<meta name="viewport" content="width=device-width, initial-scale=1"/>
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<div id="container">
-					{status ? <span id="status">{status}</span> : null}
-					{message}
+					<span id="status">404</span>
+					<div><p>Ups. No hay nada por aqui</p><span>¿Te perdiste? Bueno dejame llevarte hasta el <Link href="/"><a>Inicio</a></Link></span></div>
 				</div>
 				<style jsx>{`
 					#container {

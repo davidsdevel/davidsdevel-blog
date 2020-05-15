@@ -179,14 +179,14 @@ class Nav extends Component {
 		const {mobileBar, titleOpacity, inputBackground, inputStyle, search, menuStyle, shadowStyle, arrowStyle} = this.state;
 		return <nav id="nav">
 			<div id="mobile-bar" style={mobileBar}>
-				<img onClick={this.toggleMenu} id="menu-icon" src="/static/assets/menu.svg"/>
+				<img onClick={this.toggleMenu} id="menu-icon" src="/assets/menu.svg"/>
 				<span id="title" style={{opacity: titleOpacity}}>{title}</span>
 				<div id="input" style={{background: inputBackground}}>
-					<img className="inline" onClick={this.toggleSearch} style={{float: "left"}}src="/static/assets/search.svg"/>
+					<img className="inline" onClick={this.toggleSearch} style={{float: "left"}}src="/assets/search.svg"/>
 					<input onKeyUp={this.find} value={search} className="inline" style={inputStyle} type="text" placeholder="Busqueda" onChange={this.handleInput}/>
 					<Link href={`/search?q=${search}`} as={`/search/${search}`}>
 						<a onClick={() => FB.AppEvents.logEvent('Search')}>
-							<img className="inline" id="arrow" style={{...arrowStyle, float: "right"}} src="/static/assets/arrow.svg" />
+							<img className="inline" id="arrow" style={{...arrowStyle, float: "right"}} src="/assets/arrow.svg" />
 						</a>
 					</Link>
 				</div>
@@ -194,9 +194,9 @@ class Nav extends Component {
 			<div id="shadow" style={shadowStyle} onClick={this.toggleMenu}></div>
 			<ul id="menu" style={menuStyle}>
 				<button style={{float: "right"}} onClick={this.toggleMenu}>
-					<img src="/static/assets/cross.svg"/>
+					<img src="/assets/cross.svg"/>
 				</button>
-				<img src="/static/images/davidsdevel-black.png"/>
+				<img src="/images/davidsdevel-black.png"/>
 				<li>
 					<Link href='/'>
 						<a onClick={this.toggleMenu}>Home</a>
@@ -204,7 +204,7 @@ class Nav extends Component {
 				</li>
 				{links.map(({ key, href, label }) => (
 					<li key={key}>
-					<Link href={href} prefetch>
+					<Link href={href}>
 						<a onClick={this.toggleMenu}>{label}</a>
 					</Link>
 					</li>

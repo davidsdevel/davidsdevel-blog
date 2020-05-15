@@ -21,7 +21,7 @@ const handle = app.getRequestHandler();
 
 const PORT = process.env.PORT || 3000;
 
-const db = new DB(!dev);
+const db = new DB(dev);
 const posts = new PostsManager(db);
 const router = new Router(db);
 
@@ -34,13 +34,13 @@ var sess = {
 	saveUninitialized: true,
 	cookie: {
 		maxAge: 3600000 * 24 
-	}
+	},
+	store: new KnexSessionStore({
+		knex: db.db
+	})
 }
 
-if (dev) {
-	sess.store = new KnexSessionStore({
-		knex: db.db
-	});
+if (!dev) {
 	sess.cookie.secure = true;
 	server.set('trust proxy', 1) // trust first proxy
 }

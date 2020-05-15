@@ -7,6 +7,7 @@ export default class Stats extends Component {
 		super();
 
 		this.state = {
+			haveData: false,
 			general: {},
 			mostView: {},
 			mostCommented: {},
@@ -26,6 +27,12 @@ export default class Stats extends Component {
 			const req = await fetch("/data/stats");
 
 			const {general, posts} = await req.json();
+
+			if (!general)
+				return this.setState({
+					fetching: false,
+					haveData: false
+				});
 
 			const mostView = posts.sort((a,b) => {
 				if (a.views > b.views)
@@ -50,7 +57,8 @@ export default class Stats extends Component {
 				mostCommented,
 				viewsPosts,
 				commentsPosts,
-				fetching: false
+				fetching: false,
+				haveData: true
 			});
 		} catch(err) {
 			console.error(err);
@@ -58,15 +66,18 @@ export default class Stats extends Component {
 		}
 	}
 	render() {
-		const {general, mostView, mostCommented, fetching, viewsPosts, commentsPosts} = this.state;
+		const {general, mostView, mostCommented, fetching, viewsPosts, commentsPosts, haveData} = this.state;
 
 		return <div>
-			<div>
-				<span className="title">Visitas al Blog</span>
-				{
-					fetching ?
+			{
+				fetching ?
+				<div className="center">
 					<span className="fetch-message">Obteniendo datos...</span>
-					:
+				</div>
+				:
+				haveData ?
+				<div>
+					<span className="title">Visitas al Blog</span>
 					<div>
 						<Chart title="Horas" data={general.hours} size="small"/>
 						<Chart title="Días" data={general.days} size="small"/>
@@ -75,35 +86,19 @@ export default class Stats extends Component {
 						<Chart title="Navegadores" data={general.browsers} size="small"/>
 						<Chart title="Origen" data={general.origins}/>
 					</div>
-				}
-				<span className="title">Más Visto</span>
-				{
-					fetching ? 
-					<span className="fetch-message">Obteniendo datos...</span>
-					:
+					<span className="title">Más Visto</span>
 					<Card data={mostView}/>
-				}
-				<span className="title">Más Comentado</span>
-				{
-					fetching ? 
-					<span className="fetch-message">Obteniendo datos...</span>
-					:
+					<span className="title">Más Comentado</span>
 					<Card data={mostCommented}/>
-				}
-				<span className="title">Entradas</span>
-				{
-					fetching ? 
-					<span className="fetch-message">Obteniendo datos...</span>
-					:
+					<span className="title">Entradas</span>
 					<Chart title="Visitas" data={viewsPosts}/>
-				}
-				{
-					fetching ? 
-					<span className="fetch-message">Obteniendo datos...</span>
-					:
 					<Chart title="Comentarios" data={commentsPosts}/>
-				}
-			</div>
+				</div>
+				:
+				<div id="no-stats">
+					<span>No hay datos para mostrar</span>
+				</div>
+			}
 			<style jsx>{`
 				.title {
 					display: block;
@@ -111,6 +106,27 @@ export default class Stats extends Component {
 					margin: 50px 0;
 					text-align: center;
 					font-weight: bold;
+				}
+				:global(#no-stats) {
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+   					align-items: center;
+					width: 100%;
+					height: 100%;
+					position: absolute;
+				}
+				:global(#no-stats span) {
+					margin-bottom: 20px;
+				}
+				.center {
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					width: 100%;
+					height: 100%;
+					position: absolute;
 				}
 			`}</style>
 		</div>

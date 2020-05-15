@@ -106,12 +106,12 @@ class Search extends Component {
 				</div>
 				<aside>
 					<a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
-						<img src="/static/images/payoneer.png"/>
+						<img src="/images/payoneer.png"/>
 					</a>
 					{
 						items.lenght > 2 && 
 						<a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
-							<img src="/static/images/platzi.png"/>
+							<img src="/images/platzi.png"/>
 						</a>
 					}
 				</aside>

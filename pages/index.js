@@ -39,17 +39,17 @@ class Home extends Component {
         {
           prev &&
 
-          <Link href={`/?page=${page - 1}`} prefetch>
+          <Link href={`/?page=${page - 1}`}>
             <a className="prev">
-              <img style={{transform: "rotate(90deg)"}} src="/static/assets/arrow-white.svg"/>
+              <img style={{transform: "rotate(90deg)"}} src="/assets/arrow-white.svg"/>
             </a>
           </Link>
         }
         {
           next &&
-          <Link href={`/?page=${page + 1}`} prefetch>
+          <Link href={`/?page=${page + 1}`}>
             <a className="next">
-              <img style={{transform: "rotate(270deg)"}} src="/static/assets/arrow-white.svg"/>
+              <img style={{transform: "rotate(270deg)"}} src="/assets/arrow-white.svg"/>
             </a>
           </Link>
         }
@@ -61,41 +61,49 @@ class Home extends Component {
 				<Landing/>
         <h1>David's Devel</h1>
         <h2>Un simple blog de un Desarrollador Javascript Venezolano.</h2>
-        <span style={{marginLeft: "5%", display: "block"}}>Te puede interesar</span>
-        <div className="banner-container">
-          <Card
-            title={recommended.title}
-            content={recommended.description}
-            url={recommended.url}
-            image={recommended.image}
-            comments={recommended.comments}
-            category={recommended.category}
-            size={"big"}
-           />
-          {setBanner()}
-        </div>
-				<div id="posts-container">
-          <span style={{marginLeft: "5%", display: "block"}}>Entradas</span>
-					{posts.map(({description, title, image, url, comments, category}, i) => {
-						return <Card
-             key={`blog-index-${i}`}
-             title={title}
-             content={description}
-             url={url}
-             image={image}
-             comments={comments}
-             category={category}
-            />
-					})}
-				</div>
+        { posts.length > 0 ?
+          <div>
+            <span style={{marginLeft: "5%", display: "block"}}>Te puede interesar</span>
+            <div className="banner-container">
+              <Card
+                title={recommended.title}
+                content={recommended.description}
+                url={recommended.url}
+                image={recommended.image}
+                comments={recommended.comments}
+                category={recommended.category}
+                size={"big"}
+               />
+              {setBanner()}
+            </div>
+				    <div id="posts-container">
+              <span style={{marginLeft: "5%", display: "block"}}>Entradas</span>
+				    	{posts.map(({description, title, image, url, comments, category}, i) => {
+				    		return <Card
+                 key={`blog-index-${i}`}
+                 title={title}
+                 content={description}
+                 url={url}
+                 image={image}
+                 comments={comments}
+                 category={category}
+                />
+				    	})}
+				    </div>
+          </div>
+          :
+          <div id="entries">
+            <span>No Hay Entradas</span>
+          </div>
+        }
         <aside>
           <a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
-            <img src="/static/images/payoneer.png"/>
+            <img src="/images/payoneer.png"/>
           </a>
           {
             posts.length > 2 && 
             <a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
-              <img src="/static/images/platzi.png"/>
+              <img src="/images/platzi.png"/>
             </a>
           }
         </aside>
@@ -146,9 +154,15 @@ class Home extends Component {
             position: absolute;
             left: 0;
           }
+          #entries {
+            padding: 100px 0;
+            width: 100%;
+            text-align: center;
+          }
           @media screen and (min-width: 720px) {
             .banner-container {
               margin: 0;
+              margin-top: -25px;
               display: flex;
               justify-content: space-between;
               padding: 2%;

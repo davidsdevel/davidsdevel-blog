@@ -49,7 +49,7 @@ export default class Login extends Component {
 	}
 	render() {
 		return <div id="container">
-			<img src="/static/images/davidsdevel-rombo.png"/>
+			<img src="/images/davidsdevel-rombo.png"/>
 			<form onSubmit={this.login}>
 				<input type="text" name="username" placeholder="Username" onChange={this.handleInput}/>
 				<input type="password" name="password" placeholder="Password" onChange={this.handleInput}/>

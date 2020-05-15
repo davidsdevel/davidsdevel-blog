@@ -40,7 +40,7 @@ class Admin extends Component {
 			<Head>
 	    		<title>{"David's Devel - Admin"}</title>
 	    		<meta name="viewport" content="width=device-width, initial-scale=1" />
-	    		<link rel="icon" href="/static/favicon.ico" />
+	    		<link rel="icon" href="/favicon.ico" />
 			</Head>
 			{
 				auth ?

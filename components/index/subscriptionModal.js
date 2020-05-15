@@ -250,7 +250,7 @@ class Modal extends Component {
 		return <div>
 			<div id="shadow" style={{display, opacity}}>
 				<div id="subscription-main">
-					<img src="/static/assets/arrow.svg"/>
+					<img src="/assets/arrow.svg"/>
 					{ui}
 				</div>
 			</div>

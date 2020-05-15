@@ -28,7 +28,7 @@ export default class CustomApp extends App {
 		let referer;
 
 
-		if (Component.getInitialProps) 
+		if (Component.getInitialProps)
 			pageProps = await Component.getInitialProps(ctx);
 	
 		if (ctx.req) {
@@ -40,7 +40,7 @@ export default class CustomApp extends App {
 		return {
 			pageProps,
 			referer: encodeURI(referer),
-			viewUrl: ctx.asPath === "/" ? "/" : ctx.asPath.slice(1)
+			viewUrl: pageProps.viewUrl
 		};
 	}
 	async setView() {
@@ -140,7 +140,7 @@ export default class CustomApp extends App {
 				}
 				@font-face {
 					font-family: Roboto;
-					src: url(/static/fonts/Roboto.ttf);
+					src: url(/fonts/Roboto.ttf);
 				}
 				button:focus {
 					outline: none;

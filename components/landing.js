@@ -3,7 +3,7 @@ import React from "react";
 const Landing = ({image, title}) => (
 	<div id="landing-container">
 		<div id="shadow">
-			<img src="/static/images/davidsdevel-rombo.png"/>
+			<img src="/images/davidsdevel-rombo.png"/>
 			<h1>{title}</h1>
 		</div>
 		<style jsx>{`

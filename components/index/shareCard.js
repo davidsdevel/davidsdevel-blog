@@ -10,21 +10,21 @@ const ShareCard = ({url, title, style}) => {
 			target="_blank"
 			onClick={() => FB.AppEvents.logEvent('Card - Share on Facebook')}
 		>
-			<img src="/static/assets/facebook.svg"/>
+			<img src="/assets/facebook.svg"/>
 		</a>
 		<a 
 			href={`https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fblog.davidsdevel.com&ref_src=twsrc%5Etfw&text=${encodeURI("Esta entrada me gusto, puede que a ti también te interese." + title)}&tw_p=tweetbutton&url=${encodedURL}&via=davidsdevel`}
 			target="_blank"
 			onClick={() => FB.AppEvents.logEvent('Card - Share on Twitter')}
 		>
-			<img src="/static/assets/twitter.svg" />
+			<img src="/assets/twitter.svg" />
 		</a>
 		<a
 			href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodedURL}`}
 			target="_blank"
 			onClick={() => FB.AppEvents.logEvent('Card - Share on LinkedIn')}
 		>
-			<img src="/static/assets/linkedin.svg" />
+			<img src="/assets/linkedin.svg" />
 		</a>
 		<style jsx>{`
 			#share-card {
@@ -33,8 +33,9 @@ const ShareCard = ({url, title, style}) => {
 				bottom: 80px;
 				height: 50px;
 				padding: 10px 25px;
-				width: 70%;
-				left: 7.5%;
+				width: 250px;
+				left: 50%;
+				margin-left: -150px;
 				background: #f3f5f7;
 				border-radius: 50px;
 				box-shadow: 1px 1px 3px grey;

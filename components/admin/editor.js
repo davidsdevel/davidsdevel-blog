@@ -126,6 +126,7 @@ export default class Editor extends Component {
 				clearTimeout(this.timeout);
 				this.timeout = setTimeout(this.save, 5000);
 			}
+			console.log(quill.root.innerHTML)
 			this.setState({
 				isSaved: false,
 				content: quill.root.innerHTML
@@ -148,12 +149,13 @@ export default class Editor extends Component {
 		q.enable(true);
 
 		this.setState({
-			showImagesModal: false
+			showImagesModal: false,
+			content: this.quill.root.innerHTML
 		});
 
 		if (!this.state.image)
 			this.setState({
-				image: src,
+				image: src
 			});
 	}
 	imageHandler() {

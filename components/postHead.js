@@ -4,7 +4,7 @@ import { string, array } from "prop-types";
 
 const defaultDescription = "JavaScript, tecnología, informática y mas JavaScript en este blog. Un simple blog de un desarrollador JavaScript Venezolano.";
 const defaultOGURL = "https://davidsdevel-blog.herokuapp.com";
-const defaultOGImage = "https://davidsdevel-blog.herokuapp.com/static/images/og.jpg";
+const defaultOGImage = "https://davidsdevel-blog.herokuapp.com/images/og.jpg";
 
 const Head = props => (
 	<NextHead>
@@ -14,10 +14,10 @@ const Head = props => (
 			content={props.description || defaultDescription}
 	    />
 	    <meta name="viewport" content="width=device-width, initial-scale=1" />
-	    <link rel="icon" sizes="192x192" href="/static/touch-icon.png" />
-	    <link rel="apple-touch-icon" href="/static/touch-icon.png" />
-	    <link rel="mask-icon" href="/static/favicon-mask.svg" color="#49B882" />
-	    <link rel="icon" href="/static/favicon.ico" />
+	    <link rel="icon" sizes="192x192" href="/touch-icon.png" />
+	    <link rel="apple-touch-icon" href="/touch-icon.png" />
+	    <link rel="mask-icon" href="/favicon-mask.svg" color="#49B882" />
+	    <link rel="icon" href="/favicon.ico" />
 
 	    <link href={props.image || defaultOGImage} rel='image_src'/>
 	    <link rel="canonical" href={props.url ? "https://davidsdevel-blog.herokuapp.com" + props.url: defaultOGURL}/>

@@ -16,7 +16,8 @@ class Post extends Component {
 
 			query = {
 				...query,
-				pathname: asPath
+				pathname: asPath,
+				viewUrl: asPath.replace("/"+query.category+"/", "")
 			}
 
 			return query;
@@ -70,7 +71,7 @@ class Post extends Component {
 	render() {
 		const {pathname, image, content, title, tags, updated, description, category, status} = this.props;
 		if (status === "dont-exists")
-			return <ErrorPage status={404} message={<div><p>Ups. No hay nada por aqui</p><span>¿Te perdiste? Bueno dejame llevarte hasta el <Link href="/" prefetch><a>Inicio</a></Link></span></div>}/>;
+			return <ErrorPage status={404} message={<div><p>Ups. No hay nada por aqui</p><span>¿Te perdiste? Bueno dejame llevarte hasta el <Link href="/"><a>Inicio</a></Link></span></div>}/>;
 
 		return <div>
 			<Head url={pathname} category={category} published={updated} title={title} tags={tags} image={image} description={description}/>
@@ -78,7 +79,7 @@ class Post extends Component {
 				<div id="header-shadow">
 					<h1>{title}</h1>
 				</div>
-				<img src="/static/images/davidsdevel-rombo.png"/>
+				<img src="/images/davidsdevel-rombo.png"/>
 			</header>
 			<div>
 				<div className="banner-container">
@@ -87,10 +88,10 @@ class Post extends Component {
 				<main dangerouslySetInnerHTML={{__html: content}}/>
 				<aside>
 					<a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
-					  <img src="/static/images/payoneer.png" />
+					  <img src="/images/payoneer.png" />
 					</a>
 					<a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
-					  <img src="/static/images/platzi.png" />
+					  <img src="/images/platzi.png" />
 					</a>
 				</aside>
 			</div>

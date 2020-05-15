@@ -39,7 +39,7 @@ class Card extends Component  {
 	render() {
 		const {image, content, title, url, comments, category} = this.props; 
 		return <div className="blog-card">
-			<Link href="/[category]/[title]" as={`/${category}/${url}`} prefetch>
+			<Link href="/[category]/[title]" as={`/${category}/${url}`}>
 				<a onClick={() => FB.AppEvents.logEvent('View Post On Image')}>
 					{ image ?
 						<div className="card-header-image" style={{backgroundImage: `url(${image})`}}></div>
@@ -59,7 +59,7 @@ class Card extends Component  {
 				<p>{content.length > 200 ? content.slice(0, 197) + "..." : content}</p>
 				<div className="comment-container">
 					<span>{comments}</span>
-					<img src="/static/assets/bubbles.svg" style={{height: "18px", margin: "0 10px"}}/>
+					<img src="/assets/bubbles.svg" style={{height: "18px", margin: "0 10px"}}/>
 				</div>
 				<div>
 					<button className="view-more" onClick={() => {Router.push("/[category]/[title]", `/${category}/${url}`); FB.AppEvents.logEvent('View Post On Button')}}>Ver Mas</button>
@@ -75,23 +75,21 @@ class Card extends Component  {
 				.blog-card {
 					width: 90%;
 					margin: 50px auto;
-					border-radius: 10px;
-    				box-shadow: grey 1px 1px 5px;
     				position: relative;
+    				border-radius: 10px;
+    				overflow: hidden;
 				}
 				.blog-card .card-header-image {
 					height: 200px;
     				background-position: center;
     				background-size: cover;
-					border-radius: 10px 10px 0 0;
 				}
 				.blog-card .card-header-title {
 					height: 300px;
 					background: black;
-					border-radius: 10px 10px 0 0;
 					display: flex;
    					justify-content: center;
-   					align-items: center;
+					align-items: center;
 				}
 				.blog-card .card-header-title h3 {
 					color: white;
@@ -140,18 +138,29 @@ class Card extends Component  {
 						margin: 50px ${this.props.size === "big" ? "0" : "2.5%"};
 						display: inline-block;
 						position: relative;
+						overflow: hidden;
+					}
+					.blog-card > a {
+						${this.props.size === "big" ? 
+							`display: inline-block;
+							width: 35%;
+							top: 0;
+							height: 100%;
+							position: absolute;`: "position: relative;display: block;width: 100%;"
+						}
+						overflow: hidden;
 					}
 					.blog-card .card-header-image,
 					.blog-card .card-header-title {
 						${this.props.size === "big" ? 
 							`display: inline-block;
-							width: 35%;`: ""
+							width: 100%;height:100%;`: ""
 						}
 					}
 					.blog-card .data-cont {
 						${this.props.size === "big" ? 
 							`display: inline-block;
-							width: 65%;` : ""
+							width: 65%;margin-left: 35%;` : ""
 						}
 					}
 					.blog-card div .view-more {
