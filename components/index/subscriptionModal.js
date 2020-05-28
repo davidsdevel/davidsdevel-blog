@@ -1,5 +1,7 @@
 import React, {Component} from "react";
 import {bool} from "prop-types";
+import store from "../../store";
+import {hideModal} from "../../store/actions";
 
 class Modal extends Component {
 	constructor() {
@@ -10,14 +12,15 @@ class Modal extends Component {
 			lastname: "",
 			email: "",
 			token:"",
+			show: false,
 			display: "none",
-			opacity: 0,
+			opacity: 1,
 			invalidEmail: false,
 			existsUsername: false,
 			existsEmail: false,
 			categories: [],
 			feed: [],
-			step: 0
+			step: 3
 		};
 
 		this.checkUsername = this.checkUsername.bind(this);
@@ -28,6 +31,14 @@ class Modal extends Component {
 		this.exit = this.exit.bind(this);
 		this.next = this.next.bind(this);
 		this.prev = this.prev.bind(this);
+
+		store.subscribe(() => {
+			const {show} = store.getState().subscriptionModal;
+			console.log(show)
+			this.setState({
+				show
+			});
+		})
 	}
 	async checkUsername(e) {
 		try {
@@ -120,6 +131,8 @@ class Modal extends Component {
 				});
 			} else {
 				this.createUser();
+
+
 				this.exit();
 			}
 		} catch(err) {
@@ -147,7 +160,10 @@ class Modal extends Component {
 			if (data.status === "OK") {
 				if (data.success) {
 					localStorage.setItem("userID", data.ID);
-					this.exit();
+					this.setState({
+						step: 4
+					});
+					setTimeout(() => this.exit(), 1000);
 				}
 			}
 		} catch(err) {
@@ -180,26 +196,24 @@ class Modal extends Component {
 		}
 	}
 	exit() {
-		this.setState({
-			step: 4
-		});
+		store.dispatch(hideModal());
 	}
 	next() {
 		const {step} = this.state;
 
 		this.setState({
-			step: step++
+			step: step + 1
 		});
 	}
 	prev() {
 		const {step} = this.state;
 
 		this.setState({
-			step: step--
+			step: step - 1
 		});
 	}
 	render() {
-		const {display, opacity, step, existsUsername, existsEmail, name, categories, invalidEmail} = this.state;
+		const {show, step, existsUsername, existsEmail, name, categories, invalidEmail} = this.state;
 		var ui;
 
 		//Get Username
@@ -228,7 +242,7 @@ class Modal extends Component {
 			ui = <div>
 				<span>{existsEmail ? "Ya recibes nuestros posts por email, " : ""}¿Deseas recibir notificaciones cuando haya nuevos posts?</span>
 				<button className="gray" onClick={this.getToken}>Recibir</button>
-				<button className="black" onClick={this.exit}>No Recibir</button>
+				<button className="black" onClick={this.createUser}>No Recibir</button>
 			</div>;
 		}
 		//Select feed if categories
@@ -248,9 +262,9 @@ class Modal extends Component {
 			</div>;
 		}
 		return <div>
-			<div id="shadow" style={{display, opacity}}>
+			<div id="shadow" style={{display: show ? "flex" : "none", opacity: show ? 1 : 0}}>
 				<div id="subscription-main">
-					<img src="/assets/arrow.svg"/>
+					<img src="/assets/arrow.svg" onClick={() => step === 0 ? this.exit() : this.prev()}/>
 					{ui}
 				</div>
 			</div>
@@ -286,8 +300,21 @@ class Modal extends Component {
 					height: 80%;
 					top: 10%;
 				}
+				:global(#shadow #subscription-main div) {
+					text-align: center;
+				}
+				:global(#shadow #subscription-main form span) {
+					text-align: center;
+				}
 				:global(input[type="email"].invalid) {
 					border: #F44336 solid 2px;
+				}
+				#shadow #subscription-main img {
+					cursor: pointer;
+					transform: rotate(90deg);
+					position: absolute;
+					top: 10px;
+					left: 10px;
 				}
 			`}</style>
 		</div>;

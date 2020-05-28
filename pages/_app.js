@@ -1,10 +1,12 @@
 import React from 'react'
-import App, { Container } from 'next/app';
+import App from 'next/app';
 import Load from "../components/loadBar";
 import Nav from '../components/nav'
 import Footer from '../components/index/footer';
 import Router from "next/router";
-import Messaging from "../lib/messaging";
+import Messaging from "../lib/client/Messaging";
+import Facebook from "../lib/client/FacebookSDK";
+import Head from "next/head";
 
 const messaging = new Messaging({
 	apiKey: "AIzaSyAzcg06Z-3ukLDhVkvxM7V0lCNwYTwHpho",
@@ -27,24 +29,25 @@ export default class CustomApp extends App {
 		let pageProps = {}
 		let referer;
 
-
 		if (Component.getInitialProps)
 			pageProps = await Component.getInitialProps(ctx);
 	
-		if (ctx.req) {
+		if (ctx.req)
 			referer = ctx.req.headers.referer;
-		}
+
+		if (Component.name === "ErrorPage")
+			pageProps.hideLayout = true;
 
 		referer = referer || "https://blog.davidsdevel.com";
 
 		return {
 			pageProps,
 			referer: encodeURI(referer),
-			viewUrl: pageProps.viewUrl
+			viewUrl: pageProps.viewUrl || undefined
 		};
 	}
 	async setView() {
-		if (this.props.pageProps.hideLayout)
+		if (this.props.pageProps.hideLayout || this.props.viewUrl === "/")
 			return;
 
 		try {
@@ -57,58 +60,32 @@ export default class CustomApp extends App {
 			console.error(err);
 		}
 	}
-	initFB() {
-		if (this.props.pageProps.hideLayout)
-			return;
-
-		var js, fjs = document.getElementsByTagName("script")[0];
-
-		if (!document.getElementById("facebook-jssdk")) {
-
-			js = document.createElement("script");
-			js.id = "facebook-jssdk";
-			js.src = "https://connect.facebook.net/es_LA/sdk.js";
-
-			fjs.parentNode.insertBefore(js, fjs);
-		}
-		
-		if(!window.FB) {
-			window.fbAsyncInit = () => {
-				FB.init({
-					appId      : '337231497026333',
-					xfbml      : true,
-					autoLogAppEvents: true,
-					version    : 'v4.0'
-				});
-				FB.AppEvents.logPageView();
-			};
-		} else {
-			FB.XFBML.parse();
-		}
-		window.FB = {
-			...window.FB,
-			AppEvents:{
-				logEvent: ev => console.log(ev)
-			},
-			XFBML: {
-				parse: () => console.log("parsed") 
-			}
-		}
-	}
 	componentDidMount() {
 		if (!this.props.pageProps.hideLayout)
 			messaging.init();
 
-		this.initFB();
+		if (!this.props.pageProps.hideLayout || this.props.Component.name === "Admin")
+			Facebook.init();
+
 		this.setView();
 
-		Router.events.on("routeChangeStart", () => this.setState({
-			showLoad: true
-		}));
+		const html = document.getElementsByTagName("html")[0];
+
+		Router.events.on("routeChangeStart", () => {
+			html.style.scrollBehavior = "";
+			this.setState({
+				showLoad: true
+			})
+		});
+		
 
 		Router.events.on("routeChangeComplete", () => {
-			this.initFB();
+			Facebook.init();
 			this.setView();
+
+			window.scrollTo(0, 0);
+			html.style.scrollBehavior = "smooth";
+
 
 			this.setState({
 				showLoad: false
@@ -120,7 +97,20 @@ export default class CustomApp extends App {
 		const {showLoad} = this.state;
 
 		return (
-		  <Container>
+			<div>
+			{
+				pageProps.next || pageProps.prev ? 
+				<Head>
+					{
+						pageProps.next &&
+						<link rel="next"/>
+					}
+					{
+						pageProps.prev &&
+						<link rel="prev"/>
+					}
+		  		</Head> : ""
+		  	}
 		  	{
 		  		(showLoad && !pageProps.hideLayout) &&
 		  		<Load/>
@@ -135,9 +125,6 @@ export default class CustomApp extends App {
 				<Footer/>
 			}
 			<style jsx global>{`
-				html {
-					scroll-behavior: smooth;
-				}
 				@font-face {
 					font-family: Roboto;
 					src: url(/fonts/Roboto.ttf);
@@ -156,6 +143,17 @@ export default class CustomApp extends App {
 					padding: 0;
 					font-family: Roboto, Helvetica;
 				}
+				.title {
+					font-size: 26px;
+					font-weight: bold;
+					text-align: center;
+					display: block;
+					margin: 15px 0;
+				}
+				.sub-title {
+					font-size: 20px;
+					font-weight: bold;
+				}
 				input:focus {
 					outline: none;
 				}
@@ -173,6 +171,10 @@ export default class CustomApp extends App {
 				    border: none;
 				    box-shadow: grey 1px 1px 2px;
 				    border-radius: 10px;
+				}
+				input[type="text"].search {
+					padding: 0;
+					box-shadow: none;
 				}
 				button {
 					cursor: pointer;
@@ -195,11 +197,44 @@ export default class CustomApp extends App {
 					padding: 20px;
 					border-radius: 50%;
 				}
+				button:disabled {
+					background: black;
+					color: gray;
+					box-shadow: none;
+					cursor: default;
+				}
+				button:disabled:hover {
+					background: black;
+					color: gray;
+				}
 				li {
 					list-style: none;
 				}
+				@keyframes rotation {
+					0% {
+						transform: rotate(0deg);
+					} 100% {
+						transform: rotate(359deg);
+					}
+				}
+				aside.banners {
+					display: none;
+				}
+				@media screen and (min-width: 780px) {
+					aside.banners {
+						float: right;
+						margin-right: 5%;
+						display: flex;
+						justify-content: center;
+						flex-direction: column;
+						margin-top: 50px;
+					}
+					aside.banners a {
+						display: block;
+					}
+				}
 			`}</style>
-		  </Container>
+		  </div>
 		)
 	}
 }

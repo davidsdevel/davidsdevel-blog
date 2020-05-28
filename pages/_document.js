@@ -8,7 +8,7 @@ export default class CustomDocument extends Document {
 	}
 	render() {
 		return (
-			<Html prefix="og: https://ogp.me/ns# fb: https://ogp.me/ns/fb# article: https://ogp.me/ns/article#">
+			<Html style={{scrollBehavior: "smooth"}} prefix="og: https://ogp.me/ns# fb: https://ogp.me/ns/fb# article: https://ogp.me/ns/article#">
 				<Head/>
 				<body>
 					<div id="fb-root"/>

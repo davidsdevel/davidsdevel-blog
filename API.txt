@@ -1,0 +1,41 @@
+----- Posts -------
+
+GET /posts/:action
+
+Params
+	:action
+		all
+		all-edit
+		single
+		single-edit
+		most-view
+		search
+
+Queries
+	page,
+	url,
+	referer,
+	fields,
+	ID,
+	category,
+	q
+
+Return
+	{}
+
+POST /posts/:action
+
+Headers
+	Accept: "application/json"
+	Accept: "application/x-www-form-urlencoded"
+
+Params
+	:action
+		set-view
+
+Body
+	url
+	userAgent
+
+POST
+set-view

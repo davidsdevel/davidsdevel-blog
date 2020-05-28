@@ -3,22 +3,6 @@ import Head from "next/head";
 import Link from "next/link";
 
 class ErrorPage extends Component {
-	/*static async getInitialProps({req, res}) {
-		if (req) {
-			const status = res.statusCode;
-			var message;
-			if (status === 404) {
-				message = <div><p>Ups. No hay nada por aqui</p><span>¿Te perdiste? Bueno dejame llevarte hasta el <Link href="/"><a>Inicio</a></Link></span></div>
-			} else if (status === 500) {
-				message = <div>¡Lo sentimos!<br/>Hubo un error en el servidor<br/><Link href="/"><a>Inicio</a></Link></div>
-			}
-			return {
-				message,
-				status,
-				hideLayout: true
-			};
-		}
-	}*/
 	render() {
 		const {status, message} = this.props;
 		return (
@@ -30,18 +14,23 @@ class ErrorPage extends Component {
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<div id="container">
-					<span id="status">404</span>
+					<img src="/images/warn.png"/>
 					<div><p>Ups. No hay nada por aqui</p><span>¿Te perdiste? Bueno dejame llevarte hasta el <Link href="/"><a>Inicio</a></Link></span></div>
 				</div>
 				<style jsx>{`
 					#container {
 						text-align: center;
+						position: absolute;
+						width: 100%;
+						height: 100%;
+						display: flex;
+						flex-direction: column;
+						justify-content: space-evenly;
+						align-items: center;
+						background: #f7f7f7;
 					}
-					#container #status {
-						font-size: 50px;
-						display: block;
-						margin: 100px auto;
-						font-weight: bold;
+					#container img {
+						width: 150px;
 					}
 				`}</style>
 			</div>

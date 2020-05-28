@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import Link from 'next/link';
 import Router from "next/router";
 import {string} from "prop-types";
+import store from "../store";
+import {search as searchStore, bindSearch} from "../store/actions";
 
 const links = [
 	{ href: '/acerca', label: 'Acerca de mi' },
@@ -18,7 +20,6 @@ class Nav extends Component {
 		this.state = {
 			searchIsOpen: false,
 			menuIsOpen: false,
-			search: "",
 			arrowStyle:{
 				width: 0,
 				opacity: 0
@@ -44,13 +45,16 @@ class Nav extends Component {
 		this.toggleSearch = this.toggleSearch.bind(this);
 		this.toggleMenu = this.toggleMenu.bind(this);
 		this.componentDidMount = this.componentDidMount.bind(this);
+		this.find = this.find.bind(this);
+
+		store.subscribe(() => this.setState({
+			search: store.getState().search.bind
+		}));
 	}
 	handleInput({target}) {
 		const {value} = target;
 
-		this.setState({
-			search: value
-		}) 
+		store.dispatch(bindSearch(value));
 	}
 	toggleMenu() {
 		if(this.state.menuIsOpen) {
@@ -93,7 +97,9 @@ class Nav extends Component {
 		}
 	}
 	toggleSearch() {
-		if (this.state.searchIsOpen)
+		if (this.state.searchIsOpen) {
+
+			store.dispatch(bindSearch(""));
 
 			this.setState({
 				inputWidth: undefined,
@@ -107,9 +113,9 @@ class Nav extends Component {
 				},
 				inputBackground: "none",
 				searchIsOpen: false,
-				titleOpacity: 1,
-				search: ""
+				titleOpacity: 1
 			});
+		}
 
 		else
 			this.setState({
@@ -146,8 +152,7 @@ class Nav extends Component {
 				},
 				inputBackground: "none",
 				searchIsOpen: false,
-				titleOpacity: 1,
-				search: ""
+				titleOpacity: 1
 			});
 
 			if (document.body.clientWidth < 720) {
@@ -168,9 +173,12 @@ class Nav extends Component {
 			}
 		}
 	}
-	find({code}) {
-		if (code === "Enter") {
+	find({key}) {
+		if (key === "Enter") {
 			Router.push(`/search?q=${this.state.search}`);
+
+			store.dispatch(searchStore(this.state.search));
+
 			FB.AppEvents.logEvent('Search');
 		}
 	}
@@ -182,9 +190,9 @@ class Nav extends Component {
 				<img onClick={this.toggleMenu} id="menu-icon" src="/assets/menu.svg"/>
 				<span id="title" style={{opacity: titleOpacity}}>{title}</span>
 				<div id="input" style={{background: inputBackground}}>
-					<img className="inline" onClick={this.toggleSearch} style={{float: "left"}}src="/assets/search.svg"/>
-					<input onKeyUp={this.find} value={search} className="inline" style={inputStyle} type="text" placeholder="Busqueda" onChange={this.handleInput}/>
-					<Link href={`/search?q=${search}`} as={`/search/${search}`}>
+					<img className="inline" onClick={this.toggleSearch} style={{float: "left"}} src="/assets/search.svg"/>
+					<input onKeyUp={this.find} value={search} className="inline search" style={inputStyle} type="text" placeholder="Busqueda" onChange={this.handleInput}/>
+					<Link href={`/search?q=${search}`} as={`/search?q=${search}`}>
 						<a onClick={() => FB.AppEvents.logEvent('Search')}>
 							<img className="inline" id="arrow" style={{...arrowStyle, float: "right"}} src="/assets/arrow.svg" />
 						</a>
@@ -199,7 +207,7 @@ class Nav extends Component {
 				<img src="/images/davidsdevel-black.png"/>
 				<li>
 					<Link href='/'>
-						<a onClick={this.toggleMenu}>Home</a>
+						<a onClick={this.toggleMenu}>Inicio</a>
 					</Link>
 				</li>
 				{links.map(({ key, href, label }) => (

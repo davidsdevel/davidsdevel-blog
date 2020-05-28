@@ -15,7 +15,7 @@ const LoadBar = () => (
 				height: 5px;
 				position: absolute;
 
-				animation: load infinite linear 1s;
+				animation: load infinite linear 1.5s;
 			}
 			@keyframes load {
 				0% {

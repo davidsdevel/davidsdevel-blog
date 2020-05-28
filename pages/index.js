@@ -13,9 +13,8 @@ class Home extends Component {
     if (/\/?page=\d*/.test(asPath))
       page = parseInt(asPath.match(/\d/)[0]);
 
-    const r = await fetch(`${process.env.ORIGIN}/posts/all?page=${page}&fields=description,title,image,url,comments,category`);
-    const rmv = await fetch(`${process.env.ORIGIN}/posts/most-viewed?fields=description,title,image,url,comments,category`);
-
+    const r = await fetch(`${process.env.ORIGIN}/posts/all?page=${page}&fields=description,title,image,url,comments,category,ID`);
+    const rmv = await fetch(`${process.env.ORIGIN}/posts/most-viewed?fields=description,title,image,url,comments,category,ID`);
 
     const {posts, next, prev} = await r.json();
 
@@ -24,7 +23,8 @@ class Home extends Component {
       next,
       prev,
       page,
-      recommended: await rmv.json()
+      recommended: await rmv.json(),
+      viewUrl: "/"
     }
 
     return data;
@@ -40,21 +40,42 @@ class Home extends Component {
           prev &&
 
           <Link href={`/?page=${page - 1}`}>
-            <a className="prev">
-              <img style={{transform: "rotate(90deg)"}} src="/assets/arrow-white.svg"/>
-            </a>
+            <a className="prev">Anterior</a>
           </Link>
         }
         {
           next &&
           <Link href={`/?page=${page + 1}`}>
-            <a className="next">
-              <img style={{transform: "rotate(270deg)"}} src="/assets/arrow-white.svg"/>
-            </a>
+            <a className="next">Siguiente</a>
           </Link>
         }
+        <style jsx>{`
+          a {
+            color: #03A9F4;
+          }
+          .next {
+            position: absolute;
+            right: 0;
+          }
+          .prev {
+            position: absolute;
+            left: 0;
+          }
+        `}</style>
       </div>
 		}
+    const Banners = () => <aside className="banners">
+      <a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
+        <img src="/images/payoneer.png"/>
+      </a>
+      {
+        posts.length > 2 && 
+        <a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
+          <img src="/images/platzi.png"/>
+        </a>
+      }
+    </aside>;
+
 		return (
 			<div>
 				<Head title="David's Devel - Blog"/>
@@ -62,10 +83,11 @@ class Home extends Component {
         <h1>David's Devel</h1>
         <h2>Un simple blog de un Desarrollador Javascript Venezolano.</h2>
         { posts.length > 0 ?
-          <div>
+          <div id="main">
             <span style={{marginLeft: "5%", display: "block"}}>Te puede interesar</span>
             <div className="banner-container">
               <Card
+                ID={recommended.ID}
                 title={recommended.title}
                 content={recommended.description}
                 url={recommended.url}
@@ -78,7 +100,7 @@ class Home extends Component {
             </div>
 				    <div id="posts-container">
               <span style={{marginLeft: "5%", display: "block"}}>Entradas</span>
-				    	{posts.map(({description, title, image, url, comments, category}, i) => {
+				    	{posts.map(({ID, description, title, image, url, comments, category}, i) => {
 				    		return <Card
                  key={`blog-index-${i}`}
                  title={title}
@@ -86,27 +108,18 @@ class Home extends Component {
                  url={url}
                  image={image}
                  comments={comments}
-                 category={category}
+                 ID={ID}
                 />
 				    	})}
 				    </div>
+            <Banners/>
           </div>
           :
           <div id="entries">
             <span>No Hay Entradas</span>
+            <Banners/>
           </div>
         }
-        <aside>
-          <a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
-            <img src="/images/payoneer.png"/>
-          </a>
-          {
-            posts.length > 2 && 
-            <a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
-              <img src="/images/platzi.png"/>
-            </a>
-          }
-        </aside>
 				<div id="pagination-container">
 					{generatePagesCount()}
 				</div>
@@ -124,14 +137,12 @@ class Home extends Component {
             width: 90%;
             margin: auto;
           }
-          .banner-container {
-            margin 50px 0;
+          :global(.banner-container) {
+            margin 10px 0;
             display: flex;
             justify-content: center;
             align-items: center;
-          }
-          aside {
-            display: none;
+            flex-direction: column;
           }
           #pagination-container {
             position: relative;
@@ -139,31 +150,17 @@ class Home extends Component {
             margin: 0 auto 100px;
             padding: 5px;
           }
-          :global(#pagination-container a) {
-            background: #03A9F4;
-            padding: 10px 15px;
-            border-radius: 50%;
-            display: inline-block;
-            font-weight: bold;
-          }
-          :global(.next) {
-            position: absolute;
-            right: 0;
-          }
-          :global(.prev) {
-            position: absolute;
-            left: 0;
-          }
           #entries {
             padding: 100px 0;
             width: 100%;
             text-align: center;
           }
           @media screen and (min-width: 720px) {
-            .banner-container {
+            :global(.banner-container) {
               margin: 0;
               margin-top: -25px;
               display: flex;
+              flex-direction: row;
               justify-content: space-between;
               padding: 2%;
             }
@@ -174,17 +171,10 @@ class Home extends Component {
             h2 {
               width: 60%;
             }
-            aside {
-              float: right;
-              margin-right: 5%;
-              display: flex;
-              justify-content: center;
-              float: right;
-              flex-direction: column;
-              margin-top: 50px;
-            }
-            aside a {
-              display: block;
+            #entries {
+              display: inline-block;
+              padding: 160px 0;
+              text-align: center;
             }
             #posts-container {
               display: inline-block;
@@ -203,18 +193,3 @@ class Home extends Component {
 }
 
 export default Home;
-
-/*
-<div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v4.0&appId=337231497026333&autoLogAppEvents=1"></script>
-
-
-Like Button
-<div class="fb-like" data-href="https://blog.davidsdevel.com${pathname}" data-width="" data-layout="button_count" data-action="like" data-size="large" data-show-faces="false" data-share="false"></div>
-
-GET PAIDS by MARKETPLACES and Direct clients worldwide
-
-button
-  SIGN UP and EARN 25$
-
-*/

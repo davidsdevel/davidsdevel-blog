@@ -9,10 +9,11 @@ const session = require('express-session');
 const fileUpload = require('express-fileupload');
 const userAgent = require("express-ua-middleware");
 const KnexSessionStore = require('connect-session-knex')(session);
+const {renderPost} = require('./middlewares/posts');
 
 //APIS
 const Router = require("./lib/router");
-const DB = require("./lib/DB");
+const DB = require("./lib/server/Database");
 const PostsManager = require("./lib/PostsManager");
 
 const dev = process.env.NODE_ENV !== 'production';
@@ -68,10 +69,73 @@ async function Init() {
 		console.log("Prepared");
 
 		server
-			.use("/", require("./routes/index"))
+			.use("/", require("./routes/root"))
 			.use("/posts", require("./routes/posts"))
 			.use("/users", require("./routes/users"))
 			.use("/blog", require("./routes/blog"))
+
+			.get("/:title", renderPost(app), (pass, req, res, next) => {
+				if (pass) {
+					req = err;
+					res = pass;
+				} else
+					return next();
+
+				if (req.urlID == 1)
+					app.render(req, res, "/post", req.data);
+				else
+					app.render(req, res, "/404", {});
+			})
+			.get("/:category/:title", renderPost(app), async (req, res, next) => {
+				try {
+					const {category} = req.params;
+
+					const categories = await req.db.getCategories();
+					var sameCategory = false;
+
+					for (var i = categories.length - 1; i >= 0; i--) {
+						if (categories[i] == category) {
+							sameCategory = true;
+							break;
+						}
+					}
+				} catch(err) {
+					console.error(err);
+					return res.status(500).send(err.toString());
+				}
+
+				if (!sameCategory)
+					return next();
+
+				if (req.urlID == 2)
+					app.render(req, res, "/post", req.data);
+				else
+					app.render(req, res, "/404", {});
+			})
+			.get("/:year/:month/:title", renderPost(app), (req, res, next) => {
+				
+				const {year} = req.params;
+
+				if (!/\d\d\d\d/.test(year))
+					return next();
+
+				if (req.urlID == 3)
+					app.render(req, res, "/post", req.data);
+				else
+					app.render(req, res, "/404", {});
+			})
+			.get("/:year/:month/:day/:title", renderPost(app), (req, res, next) => {
+				const {year} = req.params;
+
+				if (!/\d\d\d\d/.test(year))
+					return next();
+
+				if (req.urlID == 4)
+					app.render(req, res, "/post", req.data);
+				else
+					app.render(req, res, "/404", {});
+			})
+
 			.get("*", (req, res) => handle(req, res))
 			.listen(PORT, err => {
 				if (err) throw new Error(err);

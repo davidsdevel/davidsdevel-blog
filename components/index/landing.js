@@ -1,5 +1,7 @@
 import React, {Component} from "react";
 import Modal from "./subscriptionModal";
+import store from "../../store";
+import {showModal} from "../../store/actions";
 
 class Landing extends Component {
 	constructor() {
@@ -18,7 +20,7 @@ class Landing extends Component {
 	render() {
 		return <div>
 			<header style={{height: this.state.clientHeight}}>
-				<button className="white">Suscríbete</button>
+				<button className="black" onClick={() => store.dispatch(showModal())}>Suscríbete</button>
 				<button id="circle" onClick={() => {scroll(0, this.state.clientHeight - 70); FB.AppEvents.logEvent('Landing Scroll')}}>
 					<img src="/assets/arrow.svg" />
 				</button>
@@ -29,7 +31,7 @@ class Landing extends Component {
 				<Modal/>
 			</header>
 			<style jsx>{`
-				button.white {
+				button.black {
     				width: 80%;
     				right: 10%;
     				top: ${this.state.clientHeight - 180}px;;
@@ -91,7 +93,7 @@ class Landing extends Component {
     				header {
 						background-image: url(/images/landing-mobile-480p.jpg);
 					}
-					button.white {
+					button.black {
 						width: 50%;
 						right: 25%;
     				}
@@ -106,7 +108,7 @@ class Landing extends Component {
     					right: 20%;
     					top: 0;
 					}
-					button.white {
+					button.black {
 						right: 10%;
 						width: 30%;
 						top: 320px;

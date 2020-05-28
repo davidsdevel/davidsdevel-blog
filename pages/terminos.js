@@ -9,7 +9,6 @@ const Terminos = () => (
 			<title>Terminos y Condiciones de Uso</title>
 			<meta name="viewport" content="width=device-width, initial-scale=1" /> 
 			<link rel="icon" href="/favicon.ico" />
-			<script src="/FB.js"/>
 		</Head>
 		<Landing title="El buen uso de la plataforma depende de ti" image="/images/privacidad.jpg"/>
 		<div id="main">

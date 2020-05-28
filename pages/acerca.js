@@ -53,12 +53,9 @@ const Post = () =>  (
 					Mi Fanpage de Facebook Igual: <a href="https://www.facebook.com/davidsdevel" target="_blank">David's Devel</a><br />
 					¡Ahora tengo <a href="https://www.instagram.com/davidsdevel/" target="_blank">Instagram</a>!
 				</main>
-				<aside>
+				<aside className="banners">
 					<a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
 						<img src="/images/payoneer.png"/>
-					</a>
-					<a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
-						<img src="/images/platzi.png"/>
 					</a>
 				</aside>
 			</div>
@@ -107,18 +104,10 @@ const Post = () =>  (
 					width: 90%;
 					margin: auto;
 				}
-				aside {
-					display: none;
-				}
 				@media screen and (min-width: 720px) {
 					main {
 						width: 60%;
 						display: inline-block;
-					}
-					aside {
-						display: inline-block;
-						float: right;
-						padding: 0 5%;
 					}
 					header img {
 						position: absolute;
@@ -161,17 +150,6 @@ const Post = () =>  (
 				main ul li {
 					margin: 5px 0;
 					list-style: initial;
-				}
-				blockquote {
-					font-style: italic;
-					color: gray;
-					font-size: 18px;
-					margin: 15px auto;
-				}
-				@media screen and (min-width: 960px) {
-					blockquote {
-						font-size: 24px;
-					}
 				}
 			`}</style>
 		</div>

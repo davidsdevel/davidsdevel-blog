@@ -37,11 +37,12 @@ class Card extends Component  {
 		}
 	}
 	render() {
-		const {image, content, title, url, comments, category} = this.props; 
+		const {image, content, title, url, comments, category, ID} = this.props;
+
 		return <div className="blog-card">
-			<Link href="/[category]/[title]" as={`/${category}/${url}`}>
+			<Link href={"/post?ID=" + ID} as={`/${url}`}>
 				<a onClick={() => FB.AppEvents.logEvent('View Post On Image')}>
-					{ image ?
+					{ image !== "null" ?
 						<div className="card-header-image" style={{backgroundImage: `url(${image})`}}></div>
 						:
 						<div className="card-header-title">
@@ -51,7 +52,7 @@ class Card extends Component  {
 				</a>
 			</Link>
 			<div className="data-cont">
-				{!!image &&
+				{image !== "null" &&
 					<div className="title-container">
 						<h3>{title}</h3>
 					</div>
@@ -62,7 +63,7 @@ class Card extends Component  {
 					<img src="/assets/bubbles.svg" style={{height: "18px", margin: "0 10px"}}/>
 				</div>
 				<div>
-					<button className="view-more" onClick={() => {Router.push("/[category]/[title]", `/${category}/${url}`); FB.AppEvents.logEvent('View Post On Button')}}>Ver Mas</button>
+					<button className="view-more" onClick={() => {Router.push("/post?ID=" + ID, `/${url}`); FB.AppEvents.logEvent('View Post On Button')}}>Ver Mas</button>
 					<button className="share" onFocus={this.toggleShare} onBlur={this.toggleShare}>Compartir</button>
 				</div>
 				<Share style={{opacity: this.state.shareOpacity, display: this.state.shareDisplay}} title={title} url={`https://blog.davidsdevel.com${url}`}/>
@@ -78,6 +79,9 @@ class Card extends Component  {
     				position: relative;
     				border-radius: 10px;
     				overflow: hidden;
+				}
+				.blog-card p {
+					color: #505050;
 				}
 				.blog-card .card-header-image {
 					height: 200px;
@@ -118,7 +122,7 @@ class Card extends Component  {
 					border-radius: 0 0 0 10px;
 					color: white;
 					font-size: 15px;
-					background: #ccc;
+					background: #0c3052;
 				}
 				.blog-card div .share {
 					border-radius: 0 0 10px 0;
