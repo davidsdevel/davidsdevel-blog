@@ -1,6 +1,13 @@
 const viewLoad = () => ({
 	type: "VIEW_LOAD"
 });
+const showAlert = message => ({
+	type: "SHOW_ALERT",
+	message
+});
+const hideAlert = () => ({
+	type: "HIDE_ALERT"
+});
 const showModal = () => ({
 	type: "SHOW_MODAL"
 });
@@ -16,4 +23,12 @@ const bindSearch = query => ({
 	bind: query
 });
 
-export { viewLoad, showModal, hideModal, bindSearch, search };
+export {
+	viewLoad,
+	showModal,
+	hideModal,
+	bindSearch,
+	search,
+	showAlert,
+	hideAlert
+};

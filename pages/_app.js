@@ -7,6 +7,10 @@ import Router from "next/router";
 import Messaging from "../lib/client/Messaging";
 import Facebook from "../lib/client/FacebookSDK";
 import Head from "next/head";
+import Alert from "../components/alert";
+import store from "../store";
+import {showAlert} from "../store/actions";
+
 
 const messaging = new Messaging({
 	apiKey: "AIzaSyAzcg06Z-3ukLDhVkvxM7V0lCNwYTwHpho",
@@ -78,6 +82,8 @@ export default class CustomApp extends App {
 
 		this.setView();
 
+		window.alert = msg => store.dispatch(showAlert(msg));
+
 		const html = document.getElementsByTagName("html")[0];
 
 		Router.events.on("routeChangeStart", () => {
@@ -133,6 +139,7 @@ export default class CustomApp extends App {
 				!pageProps.hideLayout &&
 				<Footer/>
 			}
+			<Alert/>
 			<style jsx global>{`
 				@font-face {
 					font-family: Roboto;

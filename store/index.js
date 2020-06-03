@@ -3,7 +3,6 @@ import { createStore, combineReducers } from "redux";
 let loadBar = {
 	show: false
 };
-
 let modal = {
 	show: false
 };
@@ -12,6 +11,21 @@ let searchState = {
 	bind: ""
 };
 
+const alert = (state = {message: "", show: false}, action) => {
+	switch(action.type) {
+	case "SHOW_ALERT":
+		return {
+			show: true,
+			message: action.message
+		};
+	case "HIDE_ALERT":
+		return {
+			show: false,
+			message: ""
+		};
+	default: return state;
+	}
+};
 const appLoad = (state = loadBar, action) => {
 	switch(action.type) {
 	case "SHOW_LOAD":
@@ -57,7 +71,8 @@ const search = (state = searchState, action) => {
 let reducer = combineReducers({
 	appLoad,
 	subscriptionModal,
-	search
+	search,
+	alert
 });
 
 export default createStore(reducer);
