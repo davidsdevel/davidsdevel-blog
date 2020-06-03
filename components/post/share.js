@@ -1,13 +1,11 @@
 import React from "react";
 import store from "../../store";
 import {showModal} from "../../store/actions";
-import Modal from "../index/subscriptionModal";
 
 const Share = ({url, title, isSubscribe}) => {
 	const encodedURL = encodeURI("https://blog.davidsdevel.com" + url);
 
 	return <div id="share-container">
-		<Modal/>
 		<span className="bold"><b>¿Te gustó?</b></span>
 		<br/>
 		<span>¡Compartelo con tus amigos!</span>

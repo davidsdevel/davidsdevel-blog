@@ -15,28 +15,24 @@ const LoadBar = () => (
 				height: 5px;
 				position: absolute;
 
+				width: 30%;
 				animation: load infinite linear 1.5s;
 			}
 			@keyframes load {
 				0% {
-					width: 0;
-					left: 0;
+					left: -30%;
 				}
 				25% {
-					width: 30%;
 					left: 35%;
 				}
 				50% {
-					width: 0;
 					left: 100%;
 				}
 				75% {
-					width: 30%;
 					left: 35%;
 				}
 				100% {
-					width: 0;
-					left: 0;
+					left: -30%;
 				}
 			}
 		`}</style>

@@ -2,8 +2,6 @@ import React, {Component} from 'react'
 import Link from 'next/link';
 import Router from "next/router";
 import {string} from "prop-types";
-import store from "../store";
-import {search as searchStore, bindSearch} from "../store/actions";
 
 const links = [
 	{ href: '/acerca', label: 'Acerca de mi' },
@@ -46,15 +44,9 @@ class Nav extends Component {
 		this.toggleMenu = this.toggleMenu.bind(this);
 		this.componentDidMount = this.componentDidMount.bind(this);
 		this.find = this.find.bind(this);
-
-		store.subscribe(() => this.setState({
-			search: store.getState().search.bind
-		}));
 	}
 	handleInput({target}) {
 		const {value} = target;
-
-		store.dispatch(bindSearch(value));
 	}
 	toggleMenu() {
 		if(this.state.menuIsOpen) {
@@ -98,9 +90,6 @@ class Nav extends Component {
 	}
 	toggleSearch() {
 		if (this.state.searchIsOpen) {
-
-			store.dispatch(bindSearch(""));
-
 			this.setState({
 				inputWidth: undefined,
 				arrowStyle:{
@@ -176,8 +165,6 @@ class Nav extends Component {
 	find({key}) {
 		if (key === "Enter") {
 			Router.push(`/search?q=${this.state.search}`);
-
-			store.dispatch(searchStore(this.state.search));
 
 			FB.AppEvents.logEvent('Search');
 		}

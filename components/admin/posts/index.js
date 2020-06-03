@@ -13,10 +13,14 @@ class Posts extends Component {
 			fetching: true,
 			editData: {}
 		}
+		this.posts = [];
 		this.componentDidMount = this.componentDidMount.bind(this);
-		this.cancel = this.cancel.bind(this);
 		this.fetchPosts = this.fetchPosts.bind(this);
 		this.newPost = this.newPost.bind(this);
+		this.edit = this.edit.bind(this);
+		this.delete = this.delete.bind(this);
+		this.cancel = this.cancel.bind(this);
+		this.filter = this.filter.bind(this);
 	}
 	componentDidMount() {
 		this.fetchPosts();
@@ -30,9 +34,31 @@ class Posts extends Component {
 
 			const {posts} = await req.json();
 
+			var imported = 0;
+			var drafted = 0;
+			var published = 0;
+			const all = posts.length;
+
+			posts.forEach(({postStatus}) => {
+				if (postStatus === "draft")
+					drafted++;
+
+				if (postStatus === "published")
+					published++;
+
+				if (postStatus === "imported")
+					imported++;
+			});
+
+			this.posts = posts;
+
 			this.setState({
+				all,
 				posts,
-				fetching: false
+				fetching: false,
+				imported,
+				drafted,
+				published
 			});
 		} catch(err) {
 			console.error(err);
@@ -103,8 +129,22 @@ class Posts extends Component {
 		}
 		this.fetchPosts();
 	}
+	filter(type) {
+		const posts = this.posts;
+
+		if (type === "*")
+			return this.setState({
+				posts
+			});
+
+		const filtered = posts.filter(({postStatus}) => postStatus === type);
+
+		this.setState({
+			posts: filtered
+		});
+	}
 	render() {
-		const {posts, editting, editData, fetching} = this.state;
+		const {posts, editting, editData, fetching, imported, published, drafted, all} = this.state;
 		var ui;
 		if (editting === false) {
 			if (fetching)
@@ -237,12 +277,26 @@ class Posts extends Component {
 				!editting &&
 				<div className="top">
 					<button className="black" onClick={this.newPost}>Nueva Entrada</button>
+					<div>
+						<span style={{cursor: all > 0 ? "pointer" : "default"}} onClick={() => { all > 0 ? this.filter("*"): null}}>Todos ({all})</span>
+						<span style={{cursor: published > 0 ? "pointer" : "default"}} onClick={() => { published > 0 ? this.filter("published"): null}}>Publicados ({published})</span>
+						<span style={{cursor: drafted > 0 ? "pointer" : "default"}} onClick={() => { drafted > 0 ? this.filter("draft"): null}}>Guardados ({drafted})</span>
+						<span style={{cursor: imported > 0 ? "pointer" : "default"}} onClick={() => { imported > 0 ? this.filter("imported"): null}}>Importados ({imported})</span>
+					</div>
 				</div>
 			}
 			{ui}
 			<style jsx>{`
+				.top div {
+					flex-grow: 1;
+					padding: 0 0 0 50px;
+				}
+				.top div span {
+					margin: 0 15px;
+				}
 				button.black {
-					top: 17px;
+					position: relative;
+					top: 0;
 				}
 			`}</style>
 		</div>

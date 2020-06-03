@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import Modal from "./subscriptionModal";
 import store from "../../store";
 import {showModal} from "../../store/actions";
 
@@ -39,7 +38,6 @@ class Landing extends Component {
 					<span>{isSubscribe ? description : "Mantente al tanto de las actualizaciones de mi blog"}</span>
 					<img src="/images/davidsdevel-rombo.png"/>
 				</div>
-				<Modal/>
 			</header>
 			<style jsx>{`
 				header {
@@ -95,13 +93,13 @@ class Landing extends Component {
 					left: -50px;
 				}
 				#header-shadow {
+					${isSubscribe ? "height: 100%;" : "padding: 0 0 100% 0;height: 65%;"}
 					overflow: hidden;
 					display: flex;
 					flex-direction: column-reverse;
 					justify-content: space-evenly;
 					align-items: center;
 					width: 100%;
-					height: 100%;
 					background: rgba(0, 0, 0, .5)
 				}
 				#header-shadow img {
@@ -156,10 +154,14 @@ class Landing extends Component {
 						flex-direction: row;
 						justify-content: space-between;
 						align-items: center;
+						padding: 0;
+						height: 100%;
 					}
 					#header-shadow img {
-						width: 150px;
-						margin: 0 15% 0 0;
+						${isSubscribe ? 
+							"width: 150px;margin: 0 15% 0 0;" :
+							"width: 100px;margin: 0 20% 15% 0;"
+						}
 					}
 					div#subscription {
 						right: 10%;

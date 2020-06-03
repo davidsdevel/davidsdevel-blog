@@ -1,38 +1,36 @@
 import React, {Component} from "react";
 import fetch from "isomorphic-fetch";
 import Router from "next/router";
-import Link from 'next/link';
-import Head from '../components/head'
-import Landing from '../components/index/landing';
+import Head from '../components/head';
 import Card from '../components/index/card';
 import {setBanner} from "../lib/banners";
 import {string} from "prop-types";
 
 class Search extends Component {
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
+
 		this.state = {
-			posts: [],
-			actualSearch: ""
+			posts: props.posts,
+			page: 1
 		}
 		this.viewMore = this.viewMore.bind(this);
-		this.componentDidUpdate = this.componentDidUpdate.bind(this);
-		this.componentDidMount = this.componentDidMount.bind(this);
 	}
-	static async getInitialProps({req, res, asPath, pathname}) {
-		if (/\/?q=.*/.test(asPath)) {
-			var search;
-			if (!req)
-				search = asPath.match(/=.*(?=&|$)/)[0].replace("=", "");
-			else
-				search = req.query.q;
+	static async getInitialProps({req, res, asPath, query}) {
 
-		console.log(">", search)
+		const {q} = query;
+
+		if (q) {
+			
+			const searchReq = await fetch(`${process.env.ORIGIN}/posts/search?q=${q}&page=1&fields=description,title,image,url,comments,category`);
+
+			const data = await searchReq.json();
+
 			return {
-				search,
-				pathname
+				...data,
+				search: q,
+				pathname: asPath
 			};
-
 		} else {
 			if (!req)
 				Router.push("/");
@@ -42,54 +40,25 @@ class Search extends Component {
 	}
 	async viewMore() {
 		try {
-			const req = await fetch(`/posts/search?q=${this.props.search}&page=${this.state.next}`);
+			const {search} = this.props;
+			const {page, posts} = this.state;
+
+			const req = await fetch(`/posts/search?q=${search}&page=${page + 1}&fields=description,title,image,url,comments,category`);
 			const data = await req.json();
 
 			this.setState({
-				posts: Object.assign([], this.state.posts, data.posts),
-				next: data.next
-			});
-		} catch(err) {
-			console.log(err);
-		}
-	}
-	async componentDidMount() {
-		try {
-			const req = await fetch(`/posts/search?q=${this.props.search}`);
-			const data = await req.json();
-
-			this.setState({
-				posts: data.posts,
+				posts: Object.assign([], posts, data.posts),
 				next: data.next,
-				actualSearch: this.props.search
+				page: page + 1
 			});
 		} catch(err) {
 			console.log(err);
-		}
-	}
-	async componentDidUpdate(props, state) {
-		if (this.state.actualSearch !== props.search) {
-			try {
-				const req = await fetch(`/posts/search?q=${this.props.search}`);
-				const data = await req.json();
-
-				console.log(data)
-				this.setState({
-					posts: Object.assign([], data.posts),
-					next: data.next,
-					actualSearch: this.props.search
-				});
-			} catch(err) {
-				this.setState({
-					posts: []
-				})
-				console.error(err);
-			}
 		}
 	}
 	render() {
 		const {search, pathname} = this.props;
 		const {posts, next} = this.state;
+
 		return (
 			<div>
 				<Head title="David's Devel" url={pathname}/>
@@ -99,11 +68,11 @@ class Search extends Component {
 				</div>
 				<div id="posts-container">
 					<span style={{marginLeft: "5%", display: "block"}}>Entradas</span>
-					{	posts.lenght > 0 ?
+					{	posts.length > 0 ?
 						
-						posts.map(({description, title, image, url, comments, category}, i) => {
-
+						posts.map(({description, title, image, url, comments, category}) => {
 							return <Card
+								key={url}
     		    		        title={title}
         		    		    content={description}
 								url={url}

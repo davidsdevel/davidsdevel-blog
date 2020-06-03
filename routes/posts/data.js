@@ -26,7 +26,7 @@ router
 				break;
 			case "search":
 				try {
-					data = await req.db.searchPost(q, page);
+					data = await req.db.searchPost(q, true, page);
 				} catch(err) {
 					if (err === "dont-exists")
 						return res.status(200).send({posts: []});

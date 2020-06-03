@@ -1,55 +1,14 @@
-import React, {Component} from "react";
+import React from "react";
+import HandleDate from "../../../lib/handleDate";
 
 const FacebookCard = ({content, pageName, pageImage}) => {
 	//https://scontent.fccs2-1.fna.fbcdn.net/v/t1.0-1/cp0/p40x40/67945094_634877830345454_5511295759279980544_o.png?_nc_cat=100&_nc_sid=1eb0c7&_nc_ohc=s0vRSjLMdhgAX9NEf3S&_nc_ht=scontent.fccs2-1.fna&oh=5c8d7407d9f46762345100207e9c27ae&oe=5EF2EA89
-	const date = new Date();
-	const year = date.getFullYear();
-	const day = date.getDate();
+	
 
-	let month;
-	switch(date.getMonth()) {
-	case 0:
-		month = "Enero";
-		break;
-	case 1:
-		month = "Febrero";
-		break;
-	case 2:
-		month = "Marzo";
-		break;
-	case 3:
-		month = "Abril";
-		break;
-	case 4:
-		month = "Mayo";
-		break;
-	case 5:
-		month = "Junio";
-		break;
-	case 6:
-		month = "Julio";
-		break;
-	case 7:
-		month = "Agosto";
-		break;
-	case 8:
-		month = "Septiembre";
-		break;
-	case 9:
-		month = "Octubre";
-		break;
-	case 10:
-		month = "Noviembre";
-		break;
-	case 11:
-		month = "Diciembre";
-		break;
-	default: break;
-	}
-	return <div id="main">
+	return  <div id="main">
 		<div id="head">
 			<div id="photo">
-				<img src={pageImage} style={{border: "solid 1px rgba(0,0,0,.1)", borderRadius: "50%", margin: "-5px 5px 0"}}>
+				<img src={pageImage} style={{border: "solid 1px rgba(0,0,0,.1)", borderRadius: "50%", margin: "-5px 5px 0"}}/>
 			</div>
 			<div id="name">
 				<div>
@@ -59,17 +18,17 @@ const FacebookCard = ({content, pageName, pageImage}) => {
 						</span>
 					</div>
 					<div>
-						<span>{`${day} de  ${month} de ${year}</span>
+						<span>{HandleDate.getGMTDate()}</span>
 						<span> . </span>
 						<span>
-							<img className="image-gray" src="https://static.xx.fbcdn.net/rsrc.php/v3/yQ/r/axobuTi734a.png" alt="Público" height="12" width="12">
+							<img className="image-gray" src="https://static.xx.fbcdn.net/rsrc.php/v3/yQ/r/axobuTi734a.png" alt="Público" height="12" width="12"/>
 						</span>
 					</div>
 				</div>
 			</div>
 			<div id="points">
 				<div style={{padding: 8, width: 20, alignSelf: "flex-start", height: 20}}>
-					<img className="image-gray" src="https://static.xx.fbcdn.net/rsrc.php/v3/y1/r/BOCzaD2rwOa.png" height="20" width="20">
+					<img className="image-gray" src="https://static.xx.fbcdn.net/rsrc.php/v3/y1/r/BOCzaD2rwOa.png" height="20" width="20"/>
 				</div>
 			</div>
 		</div>
@@ -80,7 +39,7 @@ const FacebookCard = ({content, pageName, pageImage}) => {
 			<div>	
 				<div>
 					<div>
-						<img src="https://static.xx.fbcdn.net/rsrc.php/v3/yz/r/gGPRzHuW8qT.png" height="18" width="18">
+						<img src="https://static.xx.fbcdn.net/rsrc.php/v3/yz/r/gGPRzHuW8qT.png" height="18" width="18"/>
 					</div>
 					Me Gusta
 				</div>
@@ -89,7 +48,7 @@ const FacebookCard = ({content, pageName, pageImage}) => {
 				</div>
 				<div>
 					<div>
-						<img className="image-gray" src="https://static.xx.fbcdn.net/rsrc.php/v3/yP/r/EyGUmEdOqjv.png" height="18" width="18">
+						<img className="image-gray" src="https://static.xx.fbcdn.net/rsrc.php/v3/yP/r/EyGUmEdOqjv.png" height="18" width="18"/>
 					</div>
 					Compartir
 				</div>
@@ -214,4 +173,4 @@ const FacebookCard = ({content, pageName, pageImage}) => {
 	</div>
 }
 
-export default FacebookCard
+export default FacebookCard;

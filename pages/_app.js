@@ -1,7 +1,8 @@
 import React from 'react'
 import App from 'next/app';
 import Load from "../components/loadBar";
-import Nav from '../components/nav'
+import Nav from '../components/nav';
+import Modal from "../components/index/subscriptionModal";
 import Footer from '../components/index/footer';
 import Router from "next/router";
 import Messaging from "../lib/client/Messaging";
@@ -131,8 +132,11 @@ export default class CustomApp extends App {
 		  		<Load/>
 		  	}
 		  	{
-		  		!pageProps.hideLayout &&
-		  		<Nav/>
+				!pageProps.hideLayout &&
+				<div>
+					<Nav/>
+					<Modal/>
+				</div>  
 		  	}
 			<Component {...pageProps} />
 			{
@@ -141,6 +145,43 @@ export default class CustomApp extends App {
 			}
 			<Alert/>
 			<style jsx global>{`
+				input[type=checkbox],
+				input[type=radio] {
+					display: none;
+				}
+				input[type=checkbox]:checked + label.option::before,
+				input[type=radio]:checked + label.option::before {
+					width: 15px;
+					height: 15px;
+					border: 5px solid #f0f0f0;
+					background: #555;
+				}
+				label.option {
+					display: flex;
+					align-items: center;
+					position: relative;
+					background: white;
+					padding: 8px 16px;
+					box-shadow: 1px 1px 5px rgba(0,0,0,.3);
+					margin: 5px 0;
+					border-radius: 5px;
+					max-width: 400px;
+					cursor: pointer;
+
+					transition: ease .3s;
+				}
+				label.option:hover {
+					background: #f0f0f0;
+				}
+				label.option::before {
+					content: "";
+					width: 25px;
+					height: 25px;
+					margin: 0 16px 0 0;
+					background: rgb(243, 245, 247);
+					border-radius: 5px;
+					display: inline-block;
+				}
 				@font-face {
 					font-family: Roboto;
 					src: url(/fonts/Roboto.ttf);

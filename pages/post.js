@@ -6,13 +6,14 @@ import Link from "next/link";
 import {setBanner} from "../lib/banners";
 import fetch from "isomorphic-fetch";
 import ErrorPage from "./_error";
+import HandleDate from "../lib/handleDate";
 
 class Post extends Component {
 	static async getInitialProps({query, req, asPath}) {
 
 		try {
 			var isSubscribe = false;
-			const r = await fetch(`${process.env.ORIGIN}/posts/single?ID=${query.ID}&fields=image,content,title,tags,updated,description,category,ID`);
+			const r = await fetch(`${process.env.ORIGIN}/posts/single?ID=${query.ID}&fields=image,content,title,tags,updated,description,category,ID,description,published`);
 
 			const path = asPath.split("/");
 
@@ -79,12 +80,17 @@ class Post extends Component {
 		document.body.appendChild(script);
 	}
 	render() {
-		const {isSubscribe, pathname, image, content, title, tags, updated, description, category, status, ID} = this.props;
+		const {status} = this.props;
+		console.log()
+
 		if (status === "dont-exists")
 			return <ErrorPage status={404} message={<div><p>Ups. No hay nada por aqui</p><span>¿Te perdiste? Bueno dejame llevarte hasta el <Link href="/"><a>Inicio</a></Link></span></div>}/>;
+		
+		const {isSubscribe, pathname, image, content, title, tags, updated, description, category, ID, published} = this.props;
 
 		return <div>
-			<Head url={pathname} category={category} published={updated} title={title} tags={tags} image={image} description={description}/>
+			<Head url={pathname} category={category} published={"" + updated} title={title} tags={tags} image={image} description={description}/>
+			
 			<header>
 				<div id="header-shadow">
 					<h1>{title}</h1>
@@ -94,6 +100,9 @@ class Post extends Component {
 			<div>
 				<div className="banner-container">
 				  {setBanner()}
+				</div>
+				<div>
+					<span className="publish-date">{HandleDate.getGMTString(published)}</span>
 				</div>
 				<main dangerouslySetInnerHTML={{__html: content}}/>
 				<aside className="banners">
@@ -152,6 +161,13 @@ class Post extends Component {
 					width: 100%;
 					height: 100%;
 					background: rgba(0, 0, 0, .5)
+				}
+				.publish-date {
+					margin:  0 5% 25px;
+					display: block;
+					font-weight: bold;
+					font-size: 16px;
+					color: rgb(80, 80, 80)
 				}
 				main {
 					padding: 0 5%;

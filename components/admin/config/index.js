@@ -226,19 +226,19 @@ class Config extends Component {
 					<span className="sub-title">Ruta de las entradas</span>
 					<div className="selection">
 						<input type="radio" onChange={this.handleInput} name="urlID" value="1" id="1" checked={urlID == 1}/>
-						<label htmlFor="1" className="url">/:title</label>
+						<label htmlFor="1" className="option">/:title</label>
 					</div>
 					<div className="selection">
 						<input type="radio" onChange={this.handleInput} name="urlID" value="2" id="2" checked={urlID == 2}/>
-						<label htmlFor="2" className="url">/:category/:title</label>
+						<label htmlFor="2" className="option">/:category/:title</label>
 					</div>
 					<div className="selection">
 						<input type="radio" onChange={this.handleInput} name="urlID" value="3" id="3" checked={urlID == 3}/>
-						<label htmlFor="3" className="url">/:year/:month/:title</label>
+						<label htmlFor="3" className="option">/:year/:month/:title</label>
 					</div>
 					<div className="selection">
 						<input type="radio" onChange={this.handleInput} name="urlID" value="4" id="4" checked={urlID == 4}/>
-						<label htmlFor="4" className="url">/:year/:month/:day/:title</label>
+						<label htmlFor="4" className="option">/:year/:month/:day/:title</label>
 					</div>
 				</li>
 			</ul>
@@ -263,41 +263,6 @@ class Config extends Component {
 				ul li > label,
 				ul li button {
 					margin: 15px 0;
-				}
-				input[type=radio] {
-					display: none;
-				}
-				input[type=radio]:checked + label.url::before {
-					width: 15px;
-					height: 15px;
-					border: 5px solid #f0f0f0;
-					background: #555;
-				}
-				label.url {
-					display: flex;
-					align-items: center;
-					position: relative;
-					background: white;
-					padding: 8px 16px;
-					box-shadow: 1px 1px 5px rgba(0,0,0,.3);
-					margin: 5px 0;
-					border-radius: 5px;
-					max-width: 400px;
-					cursor: pointer;
-
-					transition: ease .3s;
-				}
-				label.url:hover {
-					background: #f0f0f0;
-				}
-				label.url::before {
-					content: "";
-					width: 25px;
-					height: 25px;
-					margin: 0 16px 0 0;
-					background: rgb(243, 245, 247);
-					border-radius: 5px;
-					display: inline-block;
 				}
 				button {
 					max-width: 200px;

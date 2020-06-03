@@ -14,7 +14,7 @@ class Modal extends Component {
 			token:"",
 			show: false,
 			display: "none",
-			opacity: 1,
+			opacity: 0,
 			invalidEmail: false,
 			existsUsername: false,
 			existsEmail: false,
@@ -23,6 +23,7 @@ class Modal extends Component {
 			step: 0
 		};
 
+		this.componentDidMount = this.componentDidMount.bind(this);
 		this.checkUsername = this.checkUsername.bind(this);
 		this.checkEmail = this.checkEmail.bind(this);
 		this.getToken = this.getToken.bind(this);
@@ -46,6 +47,21 @@ class Modal extends Component {
 				show
 			});
 		})
+	} 
+	async componentDidMount() {
+		try {
+			const req = await fetch("/blog/categories");
+
+			const {categories} = await req.json();
+
+			this.setState({
+				categories
+			});
+
+			console.log(this.state)
+		} catch(err) {
+			console.error(err);
+		}
 	}
 	async checkUsername(e) {
 		try {
@@ -128,13 +144,12 @@ class Modal extends Component {
 				token
 			});
 
-			const req = await fetch("/blog/categories");
-			const data = await req.json();
+			const {categories} = this.props;
 
-			if (data.categories.lenght > 0) {
+			if (categories.lenght > 0) {
 				this.setState({
 					step: 3,
-					categories: data.categories
+					categories
 				});
 			} else {
 				this.createUser();
@@ -185,7 +200,7 @@ class Modal extends Component {
 			display: "flex"
 		});
 
-		setTimeout(() => this.setState({opacity: 1}), 10);
+		setTimeout(() => this.setState({opacity: 1}), 100);
 	}
 	hide() {
 		this.setState({
@@ -208,7 +223,7 @@ class Modal extends Component {
 				[name]: target.value
 			});
 		else {
-			var feed = Object.assing([], this.state.feed);
+			var feed = Object.assign([], this.state.feed);
 			if (target.checked)
 				feed.push(name);
 			else
@@ -266,17 +281,29 @@ class Modal extends Component {
 			ui = <div>
 				<span>{existsEmail ? "Ya recibes nuestros posts por email, " : ""}¿Deseas recibir notificaciones cuando haya nuevos posts?</span>
 				<button className="gray" onClick={this.getToken}>Recibir</button>
-				<button className="black" onClick={this.createUser}>No Recibir</button>
+				<button className="black" onClick={this.next}>No Recibir</button>
 			</div>;
 		}
 		//Select feed if categories
 		else if (step === 3) {
 			ui = <div>
-				{categories.map(cat => (<div>
-					<label htmlFor={cat}>{cat[0].toUpperCase() + cat.slice(1)}</label>
-					<input onChange={this.handleInput} type="checkbox" name={cat}/>
-				</div>))}
+				<span>Selecciona las categorias</span>
+				<ul>
+					{categories.map(category => <li key={category.name}>
+						<input onChange={this.handleInput} type="checkbox" name={category.name} id={category.name}/>
+						<label htmlFor={category.name} className="option">{category.alias}</label>
+					</li>)}
+				</ul>
 				<button className="black" onClick={this.createUser}>Enviar</button>
+				<style jsx>{`
+					ul {
+						overflow-y: auto;
+						padding: 0 5px;
+					}
+					button.black {
+
+					}
+				`}</style>
 			</div>;
 		}
 		//Finish

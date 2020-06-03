@@ -14,7 +14,6 @@ class Home extends Component {
 		if (/\/?page=\d*/.test(asPath))
 			page = asPath.match(/\d/)[0] * 1;
 
-
 		if (req)
 			isSubscribe = req.session.isSubscribe;
 		else
@@ -40,7 +39,7 @@ class Home extends Component {
 		return data;
 	}
 	render() {
-		const {page, posts, next, prev, recommended, blogData, isSubscribe} = this.props;
+    const {page, posts, next, prev, recommended, blogData, isSubscribe} = this.props;
 
 		const generatePagesCount = () => {
 			var pages = [];

@@ -12,41 +12,43 @@ export default class Alert extends Component {
 			left: "-100%"
 		};
 
-		this.setClose = this.setClose.bind(this);
-		this.clearClose = this.clearClose.bind(this);
-
+		this.setTime = this.setTime.bind(this);
+		this.clearTime = this.clearTime.bind(this);
 		this.timeout = null;
 
-		store.subscribe((() => {
+		store.subscribe(() => {
 			const {message, show} = store.getState().alert;
-			console.log(message, show)
+
 			this.setState({
 				message,
 				show
 			});
 
-		})).bind(this);
+			if (show) {
+				this.setTime();
+			}
+		});
 	}
-	setClose() {
-		console.log("Error")
-		this.timeout = window.setTimeout(store.dispatch(hideAlert()), 5000);
+	setTime() {
+		this.timeout = setTimeout(() => store.dispatch(hideAlert()), 5000);
 	}
-	clearClose() {
-		window.clearTimeout(this.timeout);
+	clearTime() {
+		clearTimeout(this.timeout);
 	}
 	render() {
 		const {message, show} = this.state;
 
-		return <div id="alert" style={{left: show ? 0 : "-100%"}} onMouseOver={this.clearClose} onMouseOut={this.setClose}>
+		return <div id="alert" style={{left: show ? 0 : "-100%"}} onMouseOver={this.clearTime} onMouseOut={this.setTime}>
 				<span>{message}</span>
 			<style jsx>{`
 				#alert {
 					position: fixed;
-					padding: 15px 25px;
+					padding: 20px 50px;
+					max-width: 100%;
 					background: #505050;
 					bottom: 5%;
 					color: white;
-					box-shadow: 1px 1px 3px rgba(0,0,0,.3);
+					box-shadow: 1px 1px 3px rgba(0,0,0,.5);
 					border-radius: 0 5px 5px 0;
 					display: flex;
 					transition: ease .3s;

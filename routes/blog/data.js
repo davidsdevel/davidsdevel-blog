@@ -73,6 +73,8 @@ router
 			case "import-posts":
 				if (cms === "blogger")
 					await db.importPostsFromBlogger(data);
+				if (cms === "wordpress")
+					await db.importPostsFromWordPress(data);
 				else
 					res.status(401);
 

@@ -24,13 +24,13 @@ export default class Editor extends Component {
 		this.timeout = null;
 		this.quill = null;
 
+		this.closeModal = this.closeModal.bind(this);
 		this.componentDidMount = this.componentDidMount.bind(this);
 		this.handleInput = this.handleInput.bind(this);
-		this.save = this.save.bind(this);
-		this.publish = this.publish.bind(this);
 		this.imageHandler = this.imageHandler.bind(this);
+		this.publish = this.publish.bind(this);
+		this.save = this.save.bind(this);
 		this.setImage = this.setImage.bind(this);
-		this.closeModal = this.closeModal.bind(this);
 	}
 	async componentDidMount() {
 		try {
@@ -114,6 +114,7 @@ export default class Editor extends Component {
 
 		if (this.props.data) {
 			const {ID, title,description,image,postStatus,url,content,category,tags,isPublished} = this.props.data;
+			const {categories} = this.state;
 
 			this.setState({
 				ID,
@@ -123,7 +124,7 @@ export default class Editor extends Component {
 				postStatus,
 				url: /(\w*-)*/.test(url) && url !== "null" ? url : "",
 				content,
-				category: category === "null" ? "" : category,
+				category: category === "null" ? categories[0].name : category,
 				tags,
 				isPublished
 			});
