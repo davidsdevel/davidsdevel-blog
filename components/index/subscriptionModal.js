@@ -31,9 +31,17 @@ class Modal extends Component {
 		this.exit = this.exit.bind(this);
 		this.next = this.next.bind(this);
 		this.prev = this.prev.bind(this);
+		this.show = this.show.bind(this);
+		this.hide = this.hide.bind(this);
 
 		store.subscribe(() => {
 			const {show} = store.getState().subscriptionModal;
+
+			if (show)
+				this.show();
+			else
+				this.hide();
+
 			this.setState({
 				show
 			});
@@ -172,6 +180,20 @@ class Modal extends Component {
 			console.error("Error Setting feed, " + err);
 		}
 	}
+	show() {
+		this.setState({
+			display: "flex"
+		});
+
+		setTimeout(() => this.setState({opacity: 1}), 10);
+	}
+	hide() {
+		this.setState({
+			opacity: 0
+		});
+
+		setTimeout(() => this.setState({display: "none"}), 610);
+	}
 	handleInput({target}) {
 		const {name, type} = target;
 
@@ -215,7 +237,7 @@ class Modal extends Component {
 		});
 	}
 	render() {
-		const {show, step, existsUsername, existsEmail, name, categories, invalidEmail} = this.state;
+		const {show, display, opacity, step, existsUsername, existsEmail, name, categories, invalidEmail} = this.state;
 		var ui;
 
 		//Get Username
@@ -264,24 +286,25 @@ class Modal extends Component {
 			</div>;
 		}
 		return <div>
-			<div id="shadow" style={{display: show ? "flex" : "none", opacity: show ? 1 : 0}}>
+			<div id="shadow" style={{display, opacity}}>
 				<div id="subscription-main">
 					<img src="/assets/arrow.svg" onClick={() => step === 0 ? this.exit() : this.prev()}/>
 					{ui}
 				</div>
 			</div>
 			<style jsx>{`
+				${show ? "body {overflow-y: hidden}" : ""}
 				#shadow {
 					top: 0;
 					left: 0;
 					background: rgba(0,0,0,.5);
 					position: fixed;
-					display: flex;
 					width: 100%;
 					height: 100%;
 					justify-content: space-around;
 					align-items: center;
 					z-index: 1;
+					transition: ease .6s;
 				}
 				#shadow #subscription-main {
 					position: relative;
