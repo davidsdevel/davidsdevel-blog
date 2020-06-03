@@ -1,12 +1,17 @@
 import React from "react";
+import store from "../../store";
+import {showModal} from "../../store/actions";
+import Modal from "../index/subscriptionModal";
 
-const Share = ({url, title}) => {
+const Share = ({url, title, isSubscribe}) => {
 	const encodedURL = encodeURI("https://blog.davidsdevel.com" + url);
+
 	return <div id="share-container">
-		<span style={{fontSize: "18px", fontWeight: "bold"}}>¿Te gustó?</span>
+		<Modal/>
+		<span className="bold"><b>¿Te gustó?</b></span>
 		<br/>
 		<span>¡Compartelo con tus amigos!</span>
-		<div>
+		<div id="share">
 			<a 
 				href={`https://www.facebook.com/sharer/sharer.php?u=${encodedURL}&t=${encodeURI(title)}`}
 				target="_blank"
@@ -29,7 +34,20 @@ const Share = ({url, title}) => {
 				<img src="/assets/linkedin.svg" />
 			</a>
 		</div>
+		{
+			!isSubscribe &&
+			<div>
+				<span style={{margin: "50px 0 25px", display: "block"}}><b>Ó</b><br/>!Sucribete! Y obtén actualizaciones de mi blog</span>
+				<button className="black" onClick={() => store.dispatch(showModal())}>Suscríbete</button>
+			</div>
+		}
 		<style jsx>{`
+			b {
+				font-size: 18px;
+				fontWeight: bold;
+				margin: 5px 0;
+				display: block;
+			}
 			#share-container {
 				text-align: center;
 				width: 90%;
@@ -38,10 +56,14 @@ const Share = ({url, title}) => {
 				padding: 20px 0;
 				border-left: solid 4px #03A9F4;
 			}
+			button.black {
+				width: calc(20% + 105px);
+			}
 			a img {
 				width: 35px;
 				margin: 30px 5% 0;
 			}
+
 			@media screen and (min-width: 480px) {
 				#share-container {
 					width: 80%;

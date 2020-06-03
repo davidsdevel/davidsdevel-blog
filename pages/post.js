@@ -11,16 +11,23 @@ class Post extends Component {
 	static async getInitialProps({query, req, asPath}) {
 
 		try {
+			var isSubscribe = false;
 			const r = await fetch(`${process.env.ORIGIN}/posts/single?ID=${query.ID}&fields=image,content,title,tags,updated,description,category,ID`);
 
 			const path = asPath.split("/");
 
 			query = await r.json();
 
+			if (req)
+				isSubscribe = req.session.isSubscribe;
+			else
+				isSubscribe = localStorage.getItem("isSubscribe");
+
 			query = {
 				...query,
 				pathname: asPath,
-				viewUrl: path[path.length - 1]
+				viewUrl: path[path.length - 1],
+				isSubscribe
 			}
 
 			return query;
@@ -72,7 +79,7 @@ class Post extends Component {
 		document.body.appendChild(script);
 	}
 	render() {
-		const {pathname, image, content, title, tags, updated, description, category, status, ID} = this.props;
+		const {isSubscribe, pathname, image, content, title, tags, updated, description, category, status, ID} = this.props;
 		if (status === "dont-exists")
 			return <ErrorPage status={404} message={<div><p>Ups. No hay nada por aqui</p><span>¿Te perdiste? Bueno dejame llevarte hasta el <Link href="/"><a>Inicio</a></Link></span></div>}/>;
 
@@ -107,7 +114,7 @@ class Post extends Component {
 					</li>
 				))}
 			</ul>
-			<Share url={pathname} title={title}/>
+			<Share url={pathname} title={title} isSubscribe={isSubscribe}/>
 			<div className="banner-container">
 				{setBanner()}
 			</div>
