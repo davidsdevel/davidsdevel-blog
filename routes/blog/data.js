@@ -84,7 +84,7 @@ router
 
 				res.json({
 					status: "success"
-				})
+				});
 				break;
 			default:
 				res.status(404);
