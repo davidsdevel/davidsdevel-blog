@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const url = require("url");
-const Jimp = require('jimp');
+const Jimp = require("jimp");
 const qs = require("qs");
 const fetch = require("isomorphic-fetch");
 const {readFileSync} = require("fs");
@@ -24,6 +24,7 @@ router
 	.get("/logout", (req, res) => {
 		if (!req.session.adminAuth)
 			res.sendStatus(404);
+
 		else {
 			req.session.adminAuth = false;
 
@@ -31,21 +32,23 @@ router
 		}
 
 	})
-	.post('/fb-webhook', (req, res) => {  
+	.post("/fb-webhook", (req, res) => {  
 
-		let body = req.body;
+		let {body} = req;
 		// Checks this is an event from a page subscription
-		if (body.object === 'application') {
+		if (body.object === "application") {
 		
 			// Iterates over each entry - there may be multiple if batched
 			body.entry.forEach(async entry => {
 				let commentId = entry.changes[0].value.id;
 				try {
-					const fetchToken = await fetch(`https://graph.facebook.com/oauth/access_token?client_id=${fbClientID}&client_secret=${fbClientSecret}&grant_type=client_credentials`);
-					const tokenData = await fetchToken.json();
+					//TODO: use long live access token
 
-					const fetchUrl = await fetch(`https://graph.facebook.com/${commentId}?fields=permalink_url&access_token=${tokenData['access_token']}`);
+					const access_token = await req.fb.getAccessToken();
+
+					const fetchUrl = await fetch(`https://graph.facebook.com/${commentId}?fields=permalink_url&access_token=${access_token}`);
 					const linkData = await fetchUrl.json();
+
 					const {permalink_url} = linkData;
 
 					console.log(permalink_url);
@@ -63,28 +66,28 @@ router
 				// Gets the message. entry.messaging is an array, but
 			});
 			// Returns a '200 OK' response to all requests
-			res.status(200).send('EVENT_RECEIVED');
+			res.status(200).send("EVENT_RECEIVED");
 		} else {
 			// Returns a '404 Not Found' if event is not from a page subscription
 			res.sendStatus(404);
 		}
 	})
-	.get('/fb-webhook', (req, res) => {
+	.get("/fb-webhook", (req, res) => {
 
 		// Your verify token. Should be a random string.
 		let VERIFY_TOKEN = "C@mila";
 			
 		// Parse the query params
-		let mode = req.query['hub.mode'];
-		let token = req.query['hub.verify_token'];
-		let challenge = req.query['hub.challenge'];
+		let mode = req.query["hub.mode"];
+		let token = req.query["hub.verify_token"];
+		let challenge = req.query["hub.challenge"];
 			
 		// Checks if a token and mode is in the query string of the request
 		if (mode && token) {
 			// Checks the mode and token sent is correct
-			if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+			if (mode === "subscribe" && token === VERIFY_TOKEN) {
 				// Responds with the challenge token from the request
-				console.log('WEBHOOK_VERIFIED');
+				console.log("WEBHOOK_VERIFIED");
 				res.status(200).send(challenge);
 			
 			} else {
@@ -101,7 +104,7 @@ router
 			const mime = urlSplitted[urlSplitted.length - 1];
 			res.type(mime);
 
-			const image = await Jimp.read(url.startsWith("/") ? "http://localhost:3000" + url : url);
+			const image = await Jimp.read(url.startsWith("/") ? `http://localhost:3000${  url}` : url);
 
 			image.resize(width ? width * 1 : Jimp.AUTO, height ? height * 1 : Jimp.AUTO).getBuffer(Jimp.AUTO, (err, buffer) => {
 				if (err) {
@@ -124,17 +127,17 @@ router
 
 		var tags = "";
 
-		data.tags.split(/\,\s*/).forEach(e => (tags += `<li class="jsx-3065913865 jsx-552310415"><a class="jsx-3065913865 jsx-552310415" href="/search?q=${e}">${e}</a></li>`))
+		data.tags.split(/,\s*/).forEach(e => (tags += `<li class="jsx-3065913865 jsx-552310415"><a class="jsx-3065913865 jsx-552310415" href="/search?q=${e}">${e}</a></li>`));
 
 		template = template
-			.replace(/\%TITLE\%/g, data.title)
-			.replace(/\%DESCRIPTION\%/g, data.description)
-			.replace(/\%URL\%/g, data.url)
-			.replace(/\%IMAGE\%/g, data.image)
-			.replace(/\%CONTENT\%/g, data.content)
+			.replace(/%TITLE%/g, data.title)
+			.replace(/%DESCRIPTION%/g, data.description)
+			.replace(/%URL%/g, data.url)
+			.replace(/%IMAGE%/g, data.image)
+			.replace(/%CONTENT%/g, data.content)
 			.replace(/%TAGS%/g, tags);
 
-			res.send(template);
+		res.send(template);
 	});
 
 module.exports = router;

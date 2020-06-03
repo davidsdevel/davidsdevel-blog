@@ -1,6 +1,13 @@
 ------ Subscription --------
 Asunto: Gracias por suscribirte
 
+Muchas gracias por suscribirte {Nombre}, pero aun falta un paso importante
+
+Verifica tu direccion de correo mediante el siguiente enlace
+
+{verify_url}
+
+
 
 
 

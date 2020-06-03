@@ -35,11 +35,11 @@ export default class Editor extends Component {
 	async componentDidMount() {
 		try {
 			const req = await fetch("/blog/categories");
-			const data = await req.json();
+			const {categories} = await req.json();
 
 			this.setState({
-				categories: data,
-				category: data[0]
+				categories,
+				category: categories[0].name
 			});
 		} catch(err) {
 			console.error(err);
@@ -79,7 +79,7 @@ export default class Editor extends Component {
 				const node = super.create(data);
 
 				node.setAttribute('data-src', data.src);
-				node.setAttribute('src', `/image?url=${data.src}?width=50`);
+				node.setAttribute('src', `/resize-image?url=${data.src}&width=50`);
 				node.setAttribute('alt', _this.state.title + " - David's Devel");
 				node.setAttribute('title', _this.state.title + " - David's Devel");
 				node.setAttribute('style', `width: ${data.width}px;`);

@@ -28,6 +28,7 @@ const Head = props => (
 	    <meta content='es_LA' property='og:locale'/>
   
 	    <meta content='article' property='og:type'/>
+		<meta name="author" content="David González"/>
 	    <meta property='article:author' content='https://www.facebook.com/David.ImpulseWD' />
 	    <meta property='article:publisher' content='https://www.facebook.com/davidsdevel' />
 	    <meta content={props.category[0].toUpperCase() + props.category.slice(1)} property='article:section'/>

@@ -60,10 +60,12 @@ export default class Dashboard extends Component {
 					<li onClick={() => this.changeTab("stats")}>
 						<img src="/images/stats-menu.png"/>
 					</li>
-					<li onClick={() => this.changeTab("social")}>Social Media</li>
-					<li onClick={() => this.changeTab("email")}>
-						<img src="/images/email-menu.png"/>
-					</li>
+					{/*
+						<li onClick={() => this.changeTab("social")}>Social Media</li>
+						<li onClick={() => this.changeTab("email")}>
+							<img src="/images/email-menu.png"/>
+						</li>
+					*/}
 					<li onClick={() => this.changeTab("import")}>Manejo de datos</li>
 					<li onClick={() => this.changeTab("config")}>
 						<img src="/images/config.png"/>

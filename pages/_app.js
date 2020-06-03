@@ -53,7 +53,16 @@ export default class CustomApp extends App {
 		try {
 			const {viewUrl, referer} = this.props;
 
-			const req = await fetch(`${process.env.ORIGIN}/posts/set-view?url=${viewUrl}&referer=${referer}`);
+			const req = await fetch(`${process.env.ORIGIN}/posts/set-view`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					url: viewUrl,
+					referer
+				})
+			});
 
 			await req.text();
 		} catch(err) {
@@ -143,6 +152,9 @@ export default class CustomApp extends App {
 					padding: 0;
 					font-family: Roboto, Helvetica;
 				}
+				hr {
+					border: .5px rgba(0,0,0,.1) solid;
+				}
 				.title {
 					font-size: 26px;
 					font-weight: bold;
@@ -169,7 +181,7 @@ export default class CustomApp extends App {
 					background: white;
 				    padding: 10px 20px;
 				    border: none;
-				    box-shadow: grey 1px 1px 2px;
+				    box-shadow: rgba(0,0,0,.3) 1px 1px 2px;
 				    border-radius: 10px;
 				}
 				input[type="text"].search {
@@ -206,9 +218,6 @@ export default class CustomApp extends App {
 				button:disabled:hover {
 					background: black;
 					color: gray;
-				}
-				li {
-					list-style: none;
 				}
 				@keyframes rotation {
 					0% {

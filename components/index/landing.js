@@ -18,37 +18,30 @@ class Landing extends Component {
 		});
 	}
 	render() {
+		const {isSubscribe, description} = this.props;
+
 		return <div>
 			<header style={{height: this.state.clientHeight}}>
-				<button className="black" onClick={() => store.dispatch(showModal())}>Suscríbete</button>
+				{
+					!isSubscribe &&
+					<div id="subscription">
+						<div id="one"/>
+						<div id="two"/>
+						<div id="tree"/>
+						<div id="four"/>
+						<button className="black" onClick={() => store.dispatch(showModal())}>Suscríbete</button>
+					</div>
+				}
 				<button id="circle" onClick={() => {scroll(0, this.state.clientHeight - 70); FB.AppEvents.logEvent('Landing Scroll')}}>
 					<img src="/assets/arrow.svg" />
 				</button>
 				<div id="header-shadow">
+					<span>{isSubscribe ? description : "Mantente al tanto de las actualizaciones de mi blog"}</span>
 					<img src="/images/davidsdevel-rombo.png"/>
-					<span>Mantente al tanto de las actualizaciones de mi blog</span>
 				</div>
 				<Modal/>
 			</header>
 			<style jsx>{`
-				button.black {
-    				width: 80%;
-    				right: 10%;
-    				top: ${this.state.clientHeight - 180}px;;
-    				position: absolute;
-    				font-weight: bold;
-				}
-				#header-shadow {
-					overflow: hidden;
-					width: 100%;
-					height: 100%;
-					background: rgba(0, 0, 0, .5)
-				}
-				#header-shadow img {
-					width: 30%;
-					margin: 20% auto 15%;
-					display: block;
-				}
 				header {
 					width: 100%;
 					height: 640px;
@@ -57,6 +50,63 @@ class Landing extends Component {
 					background-position: center;
     				background-size: cover;
 					overflow: hidden;
+					position: relative;
+				}
+				div#subscription {
+					width: calc(80% - 100px);
+    				right: calc(10% + 50px);
+    				top: ${this.state.clientHeight - 180}px;
+    				position: absolute;
+				}
+				button.black {
+    				font-weight: bold;
+    				width: 100%;
+				}
+				div#subscription div {
+					width: 25px;
+					height: 25px;
+					border: solid rgba(255, 255, 255, .3) 0px;
+					position: absolute;
+				}
+				div#subscription div#one {
+					border-right-width: 1px;
+					border-bottom-width: 1px;
+					top: -50px;
+					left: -50px;
+				}
+				div#subscription div#two {
+					border-left-width: 1px;
+					border-bottom-width: 1px;
+					top: -50px;
+					right: -50px;
+
+				}
+				div#subscription div#tree {
+					border-left-width: 1px;
+					border-top-width: 1px;
+					bottom: -50px;
+					right: -50px;
+
+				}
+				div#subscription div#four {
+					border-right-width: 1px;
+					border-top-width: 1px;
+					bottom: -50px;
+					left: -50px;
+				}
+				#header-shadow {
+					overflow: hidden;
+					display: flex;
+					flex-direction: column-reverse;
+					justify-content: space-evenly;
+					align-items: center;
+					width: 100%;
+					height: 100%;
+					background: rgba(0, 0, 0, .5)
+				}
+				#header-shadow img {
+					width: 30%;
+					display: block;
 				}
 				header span {
 					padding: 0 10%;
@@ -77,7 +127,7 @@ class Landing extends Component {
     				height: 60px;
     				box-shadow: rgba(0, 0, 0, .5) 2px 2px 3px;
     				position: absolute;
-    				top: ${this.state.clientHeight - 90}px;
+    				bottom: 15px;
     				right: 50%;
     				margin-right: -30px;
     				cursor: pointer;
@@ -93,35 +143,37 @@ class Landing extends Component {
     				header {
 						background-image: url(/images/landing-mobile-480p.jpg);
 					}
-					button.black {
+					div#subscription {
 						width: 50%;
 						right: 25%;
-    				}
+					}
 				}
 				@media screen and (min-width: 720px) {
 					header {
 						background-image: url(/images/landing-desktop.jpg);
 					}
-					#header-shadow img {
-						width: 100px;
-    					position: absolute;
-    					right: 20%;
-    					top: 0;
+					#header-shadow {
+						flex-direction: row;
+						justify-content: space-between;
+						align-items: center;
 					}
-					button.black {
+					#header-shadow img {
+						width: 150px;
+						margin: 0 15% 0 0;
+					}
+					div#subscription {
 						right: 10%;
 						width: 30%;
 						top: 320px;
 					}
 					header span {
-						margin: 250px 0 0 5%;
-						padding: 0;
+						padding: 0 0 0 5%;
     					font-size: 35px;
-    					width: 30%;
+    					width: 35%;
     					text-align: left;
 					}
 					header button#circle {
-						top: ${this.state.clientHeight - 150}px;
+						bottom: 80px;
 					}
 				}
 				@media screen and (min-width: 960px) {

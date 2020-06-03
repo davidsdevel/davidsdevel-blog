@@ -11,8 +11,7 @@ class Post extends Component {
 	static async getInitialProps({query, req, asPath}) {
 
 		try {
-			console.log(query);
-			const r = await fetch(`${process.env.ORIGIN}/posts/single?ID=${query.ID}&fields=image,content,title,tags,updated,description,category`);
+			const r = await fetch(`${process.env.ORIGIN}/posts/single?ID=${query.ID}&fields=image,content,title,tags,updated,description,category,ID`);
 
 			const path = asPath.split("/");
 
@@ -73,7 +72,7 @@ class Post extends Component {
 		document.body.appendChild(script);
 	}
 	render() {
-		const {pathname, image, content, title, tags, updated, description, category, status} = this.props;
+		const {pathname, image, content, title, tags, updated, description, category, status, ID} = this.props;
 		if (status === "dont-exists")
 			return <ErrorPage status={404} message={<div><p>Ups. No hay nada por aqui</p><span>¿Te perdiste? Bueno dejame llevarte hasta el <Link href="/"><a>Inicio</a></Link></span></div>}/>;
 
@@ -116,7 +115,7 @@ class Post extends Component {
 			<h4>Comentarios</h4>
 			<div id="comments-container" dangerouslySetInnerHTML={{__html: `<div
 			 class="fb-comments"
-			 data-href="https://blog.davidsdevel.com${pathname}"
+			 data-href="https://blog.davidsdevel.com/post?ID=${ID}"
 			 data-width="100%"
 			 data-numposts="20"
 			></div>`}}/>
@@ -206,8 +205,11 @@ class Post extends Component {
 				b {
 					color: black;
 				}
+				main p {
+					text-align: justify;
+				}
 				main img {
-					max-width: calc(100% - 32px);
+					max-width: calc(100%);
 					height: auto;
 				}
 				main img.lazy {
@@ -228,6 +230,11 @@ class Post extends Component {
 					margin: 15px auto;
 					border-left: 5px gray solid;
 					padding-left: 15px;
+				}
+				@media screen and (min-width: 780px) {
+					main p {
+						text-align: left;
+					}
 				}
 				@media screen and (min-width: 960px) {
 					blockquote {

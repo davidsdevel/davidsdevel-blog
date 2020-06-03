@@ -54,7 +54,7 @@ class Posts extends Component {
 			console.error(err);
 		}
 	}
-	async delete(url) {
+	async delete(ID, url) {
 		try {
 			if (!confirm("¿Esta seguro de eliminar esta publicacion?"))
 				return;
@@ -65,6 +65,7 @@ class Posts extends Component {
 					"Content-Type": "application/json"
 				},
 				body: JSON.stringify({
+					ID,
 					url
 				})
 			});
@@ -113,7 +114,7 @@ class Posts extends Component {
 						{posts.map(e => <li className="post" key={`post-${e.ID}`}>
 							{
 								e.image ? 
-								<div className="image" style={{backgroundImage: `url(/image?url=${e.image}&height=100)`}}/>
+								<div className="image" style={{backgroundImage: `url(/resize-image?url=${e.image}&height=100)`}}/>
 								:
 								<div className="image-title">{e.title === null ? "N" : e.title[0]}</div>
 							}
@@ -135,17 +136,17 @@ class Posts extends Component {
 									<div className="buttons">
 										{
 											e.postStatus === "published" &&
-											<button className="white" onClick={() => window.open(`/${e.category}/${e.url}`, "_blank")}>Ver</button>
+											<button className="white" onClick={() => window.open(`${e.url}`, "_blank")}>Ver</button>
 										}
 										<button className="gray" onClick={() => this.edit(e.ID)}>Editar</button>
-										<button className="black" onClick={() => this.delete(e.url)}>Eliminar</button>
+										<button className="black" onClick={() => this.delete(e.ID, e.url)}>Eliminar</button>
 									</div>
 								</div>
 							</div>
 						</li>)}
 						<style jsx>{`
 							ul {
-								margin: 15px auto 0;
+								margin: 75px auto 0;
 							}
 							ul > li.post {
 								padding: 25px 5%;

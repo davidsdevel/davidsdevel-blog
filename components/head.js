@@ -50,6 +50,21 @@ const Head = props => (
 		<meta content={props.url ? "https://davidsdevel-blog.herokuapp.com" + props.url: defaultOGURL} name='twitter:url'/>
 
 		<link rel="manifest" href="/manifest.json"/>
+		<script type="application/ld+json">{`{
+			"@context":"https:\/\/schema.org",
+			"@type":"Developer",
+			"url":"https:\/\/blog.davidsdevel.com",
+			"sameAs":[
+				"https:\/\/www.facebook.com\/davidsdevel\/",
+				"https:\/\/www.instagram.com\/davidsdevel\/",
+				"https:\/\/es.linkedin.com\/in\/davidsdevel",
+				"https:\/\/www.youtube.com\/user\/davidsdevel",
+				"https:\/\/twitter.com\/davidsdevel"
+			],
+			"@id":"https:\/\/blog.davidsdevel.com\/#developer",
+			"name":"Thinking for Innovation",
+			"logo":"http:\/\/blog.davidsdevel.com\/images\/davidsdevel-rombo.png"
+		}`}</script>
 	</NextHead>
 );
 

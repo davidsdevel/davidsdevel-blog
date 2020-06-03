@@ -4,7 +4,7 @@ router
 	.get("/:action", async (req, res) => {
 		try {
 			const {action} = req.params;
-			const {page, url, referer, fields, ID, category, q} = req.query;
+			const {page, fields, ID, q} = req.query;
 
 			var data;
 
@@ -51,7 +51,7 @@ router
 						}
 					});
 					return newData;
-				}
+				};
 				if (action === "all-edit" ||
 					action === "all" ||
 					action === "search" ||
@@ -78,15 +78,15 @@ router
 	.delete("/:action", async (req, res) => {
 		try {
 			const {action} = req.params;
-			const {url} = req.body;
+			const {ID, url} = req.body;
 
 			switch(action) {
-				case "delete":
-					res.json(await req.db.deletePost(url));
-					break;
-				default:
-					res.sendStatus(404);
-					break;
+			case "delete":
+				res.json(await req.db.deletePost(ID, url));
+				break;
+			default:
+				res.sendStatus(404);
+				break;
 			}
 		} catch(err) {
 			res.status(500).send(err.toString());
@@ -95,33 +95,35 @@ router
 	.post("/:action", async (req, res) => {
 		try {
 			const {action} = req.params;
+			const {url, referer} = req.body;
+
 			var id;
 			switch(action) {
-				case "publish":
-					id = await req.db.publishPost(req.body);
-					break;
-				case "save":
-					id = await req.db.savePost(req.body);
-					break;
-				case "set-view":
+			case "publish":
+				id = await req.db.publishPost(req.body);
+				break;
+			case "save":
+				id = await req.db.savePost(req.body);
+				break;
+			case "set-view":
 
-					if (req.session.adminAuth)
-						return res.send("success");
+				if (req.session.adminAuth)
+					return res.send("success");
 
-					try {
-						await req.posts.setView(url, referer, req.userAgent);
-					} catch(err) {
-						if (err === "dont-exists")
-							return res.status(404).send(err);
-						else
-							return res.status(500).send(err);
-					}
+				try {
+					await req.posts.setView(url, referer, req.userAgent);
+				} catch(err) {
+					if (err === "dont-exists")
+						return res.status(404).send(err);
+					else
+						return res.status(500).send(err);
+				}
 				return res.send("success");
 			}
 
 			res.send(id.toString());
 		} catch(err) {
-			console.error(err)
+			console.error(err);
 			res.status(500).send(err);
 		}
 	});

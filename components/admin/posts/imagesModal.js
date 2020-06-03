@@ -43,7 +43,7 @@ export default class ImagesModal extends Component {
 				fetching: true
 			});
 
-			const req = await fetch("/data/images");
+			const req = await fetch("/blog/images");
 
 			const data = await req.json();
 

@@ -5,6 +5,7 @@ class Config extends Component {
 		super();
 
 		this.state = {
+			canSave: false,
 			categoryName: "",
 			categoryAlias: "",
 			categories: [],
@@ -16,6 +17,7 @@ class Config extends Component {
 		this.addCategory = this.addCategory.bind(this);
 		this.deleteCategory = this.deleteCategory.bind(this);
 		this.handleInput = this.handleInput.bind(this);
+		this.saveConfig = this.saveConfig.bind(this);
 	}
 	async addCategory() {
 		try {
@@ -93,8 +95,51 @@ class Config extends Component {
 		const {name, value} = target;
 
 		this.setState({
-			[name]: value
+			[name]: value,
+			canSave: true
 		});
+	}
+	async saveConfig() {
+		try {
+			this.setState({
+				canSave: false
+			});
+
+			const {title, description, urlID} = this.state;
+
+			const req = await fetch("/blog/config", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					data: {
+						title,
+						description,
+						url: urlID
+					}
+				})
+			});
+
+			const {status} = await req.json();
+
+			if (status === "success") {
+				alert("Guardado Exitosamente");
+			}
+			else {
+				this.setState({
+					canSave: true
+				});
+				alert("Error al guardar la configuración");
+			}
+
+		} catch(err) {
+			console.error(err)
+			this.setState({
+				canSave: true
+			});
+			alert("Error al guardar la configuración");
+		}
 	}
 	async componentDidMount() {
 		try {
@@ -114,7 +159,7 @@ class Config extends Component {
 		}
 	}
 	render() {
-		const {categories, categoryName, categoryAlias, urlID, title, description} = this.state;
+		const {canSave, categories, categoryName, categoryAlias, urlID, title, description} = this.state;
 
 		const Categories = () => <ul id="categories">
 			{categories.map(({name, alias}) => <li key={name}>
@@ -147,10 +192,11 @@ class Config extends Component {
 					color: gray;
 				}
 			`}</style>
-		</ul>
-		return <div>
+		</ul>;
+
+		return <div id="config-main">
 			<div className="top">
-				<button className="black">Guardar</button>
+				<button className="black" onClick={this.saveConfig} disabled={!canSave}>Guardar</button>
 				<span className="title">Configuración</span>
 			</div>
 			<ul>
@@ -162,6 +208,7 @@ class Config extends Component {
 					<span className="sub-title">Descripción</span>
 					<textarea onChange={this.handleInput} placeholder="Descripción" name="description" value={description}/>
 				</li>
+				<hr/>
 				<li>
 					<span className="sub-title">Categorías</span>
 					<label htmlFor="categoryName">Nombre</label>
@@ -174,6 +221,7 @@ class Config extends Component {
 						<Categories/>
 					}
 				</li>
+				<hr/>
 				<li>
 					<span className="sub-title">Ruta de las entradas</span>
 					<div className="selection">
@@ -195,16 +243,21 @@ class Config extends Component {
 				</li>
 			</ul>
 			<style jsx>{`
+				#config-main {
+					width: 100%;
+				}
 				ul {
 					display: flex;
 					flex-direction: column;
 					padding: 50px 0;
+					margin: auto;
+					max-width: 400px;
 				}
 				ul li {
 					display: flex;
 					flex-direction: column;
+					margin: 25px 0;
 					max-width: 400px;
-					margin: 25px 0 0;
 				}
 				ul li span,
 				ul li > label,
@@ -245,6 +298,9 @@ class Config extends Component {
 					background: rgb(243, 245, 247);
 					border-radius: 5px;
 					display: inline-block;
+				}
+				button {
+					max-width: 200px;
 				}
 			`}</style>
 		</div>

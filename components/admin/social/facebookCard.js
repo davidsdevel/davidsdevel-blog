@@ -171,7 +171,7 @@ const FacebookCard = ({content, pageName, pageImage}) => {
 				padding: 0 2px;
 				position: relative;
 				text-decoration: none;
-				flex-grow: 1
+				flex-grow: 1;
 			}
 			#buttons > div > div::after {
 				bottom: -5px;

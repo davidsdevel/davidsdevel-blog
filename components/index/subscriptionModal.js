@@ -20,7 +20,7 @@ class Modal extends Component {
 			existsEmail: false,
 			categories: [],
 			feed: [],
-			step: 3
+			step: 0
 		};
 
 		this.checkUsername = this.checkUsername.bind(this);
@@ -34,7 +34,6 @@ class Modal extends Component {
 
 		store.subscribe(() => {
 			const {show} = store.getState().subscriptionModal;
-			console.log(show)
 			this.setState({
 				show
 			});
@@ -160,9 +159,12 @@ class Modal extends Component {
 			if (data.status === "OK") {
 				if (data.success) {
 					localStorage.setItem("userID", data.ID);
+					localStorage.setItem("isSubscribe", true);
+
 					this.setState({
 						step: 4
 					});
+
 					setTimeout(() => this.exit(), 1000);
 				}
 			}

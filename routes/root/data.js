@@ -3,7 +3,7 @@ const {join} = require("path");
 const {existsSync, mkdirSync, unlinkSync} = require("fs");
 
 router
-	.post('/upload/:type', (req,res) => {
+	.post("/upload/:type", (req, res) => {
 		const {file} = req.files;
 		const {name, mime, width} = req.body;
 		const {type} = req.params;
@@ -37,25 +37,6 @@ router
 			res.json(data);
 		} catch(err) {
 			console.error(err);
-			res.status(500).send(err.toString());
-		}
-	})
-	.get("/data/:type", async (req, res) => {
-		try {
-			const {type} = req.params;
-
-			switch(type) {
-			case "images":
-				res.json(await req.db.getImages());
-				break;
-			case "stats":
-				res.json(await req.db.getStats());
-				break;
-			default:
-				res.sendStatus(404);
-				break;
-			}
-		} catch(err) {
 			res.status(500).send(err.toString());
 		}
 	});

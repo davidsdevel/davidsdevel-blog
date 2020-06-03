@@ -27,32 +27,32 @@ const appLoad = (state = loadBar, action) => {
 };
 const subscriptionModal = (state = modal, action) => {
 	switch(action.type) {
-		case "SHOW_MODAL":
-			return {
-				show: true
-			};
-		case "HIDE_MODAL":
-			return {
-				show: false
-			}
-		default: return state;
+	case "SHOW_MODAL":
+		return {
+			show: true
+		};
+	case "HIDE_MODAL":
+		return {
+			show: false
+		};
+	default: return state;
 	}
-}
+};
 const search = (state = searchState, action) => {
 	switch(action.type) {
-		case "SEARCH":
-			return {
-				...state,
-				actual: action.search
-			};
-		case "BIND":
-			return {
-				...state,
-				bind: action.bind
-			}
-		default: return state;
+	case "SEARCH":
+		return {
+			...state,
+			actual: action.search
+		};
+	case "BIND":
+		return {
+			...state,
+			bind: action.bind
+		};
+	default: return state;
 	}
-}
+};
 
 let reducer = combineReducers({
 	appLoad,

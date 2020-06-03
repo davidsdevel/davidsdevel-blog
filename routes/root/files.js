@@ -1,10 +1,11 @@
 const router = require("express").Router();
+const Jimp = require("jimp");
 
 router
 	.get("/manifest.json", (req, res) => res.json({
 		start_url: "http://localhost:3000",
 		description: "JavaScript, tecnología, informática y mas JavaScript en este blog. Un simple blog de un desarrollador JavaScript Venezolano.",
-		icons: [{"src":"/touch-icon.png","sizes":"192x192","type":"image/png"}],
+		icons: [{"src":"/touch-icon.png", "sizes":"192x192", "type":"image/png"}],
 		name: "David's Devel - Blog",
 		short_name: "David's Devel",
 		orientation: "portrait",
@@ -30,10 +31,9 @@ router
 		res.send(robot.replace(/\t/g, ""));
 	})
 	.get("/feed", (req, res) => req.router.feed({req, res}))
-	.get("/firebase-messaging-sw.js", (req, res) => res.sendFile(join(__dirname, "..", "fcm-sw.js")))
 	.get("/:type/:secret/:name", async (req, res, next) => {
 		try {
-			const {type, secret, name} = req.params;
+			const {secret, name} = req.params;
 
 			if (!/^\d\d\d\d\d\d\d\d\d\d$/.test(secret))
 				return next();

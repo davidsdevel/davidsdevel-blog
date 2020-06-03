@@ -6,7 +6,8 @@
     "dev": "set NODE_ENV=development&& node server",
     "build": "next build",
     "start": "next build && set NODE_ENV=production&& node server",
-    "listen": "set NODE_ENV=production&& node server"
+    "listen": "set NODE_ENV=production&& node server",
+    "lint": "eslint -c .eslintrc.js ."
   },
   "main": "server.js",
   "dependencies": {
@@ -27,6 +28,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "redux": "^4.0.5",
+    "socket.io": "^2.3.0",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {

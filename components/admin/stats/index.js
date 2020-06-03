@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import Card from "./statsSingleCard";
 import Chart from "./chart";
+import Linear from "./linearChart";
 
 export default class Stats extends Component {
 	constructor() {
@@ -24,7 +25,7 @@ export default class Stats extends Component {
 	}
 	async fetchStatsData() {
 		try {
-			const req = await fetch("/data/stats");
+			const req = await fetch("/blog/stats");
 
 			const {general, posts, mostView, mostCommented} = await req.json();
 
@@ -65,6 +66,8 @@ export default class Stats extends Component {
 				<div>
 					<span className="title">Visitas al Blog</span>
 					<div>
+						<Linear title="Vistas" data={general.viewsPerDay} rows={30}/>
+
 						<Chart title="Horas" data={general.hours} size="small"/>
 						<Chart title="Días" data={general.days} size="small"/>
 						<Chart title="Paises" data={general.locations}/>

@@ -16,5 +16,5 @@ fetch("https://fcm.googleapis.com/fcm/send", {
 		to: "cZH4p4ccCeg:APA91bFZLfQioCyTYB-62W-jxkRaz68VtRiXX73ixLE2T-T14DcTODqaRtsEIcYQL3l2ePA7wGOUpfat-hzZCau6WH2Gh1aIugyzixdfnG5VE2mNCuqeHTasMjiMW3aTTXRsdxCWPKme"
 	})
 })
-.then(req => req.json())
-.then(data => console.log(data));
+	.then(req => req.json())
+	.then(data => console.log(data));

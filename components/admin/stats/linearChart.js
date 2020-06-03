@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 
-export default class Chart extends Component {
+export default class LinearChart extends Component {
 	render() {
-		var {data, title, size} = this.props;
+		var {data, title, size, align} = this.props;
 
 		var major;
 		if (Array.isArray(data)) {
@@ -18,7 +18,9 @@ export default class Chart extends Component {
 
 		const getPercent = value => ((100 * value) / major);
 
-		return <div style={{width: `${size === "small" ? 50 : 100}%`, display: "inline-block"}}>
+		data.reverse();
+
+		return <div style={{width: "100%", display: "inline-block"}}>
 			<div className="chart-container">
 				<span className="title">{title}</span>
 				<ul>
@@ -34,20 +36,17 @@ export default class Chart extends Component {
 							alphaChannel = 0.1;
 
 						return <li key={key+value}>
-							<span>{key}</span>
 							<div className="bar-container">
-								<div style={{width: `${percent}%`, background: `rgba(3,169,244,${alphaChannel})`}}/>
-								<span className="total" style={{left: `${percent + 1}%`}}>{value}</span>
+								<div style={{height: `${percent}%`, background: `rgba(3,169,244,${alphaChannel})`}}/>
+								<span className="total" style={{bottom: `${percent + 20}%`}}>{value}</span>
+								<span className="key" dangerouslySetInnerHTML={{__html: key.replace("-", "<br/>")}}/>
 							</div>
-						</li>
+						</li>;
 					})}
 				</ul>
 			</div>
 			<style jsx>{`
 				.title {
-					font-size: 24px;
-					display: block;
-					text-align: center;
 					margin: 0 0 50px;
 				}
 				.chart-container {
@@ -60,48 +59,48 @@ export default class Chart extends Component {
 					margin: 0 auto 50px;
 					display: inline-block;
 				}
+				.chart-container ul {
+					height: 150px;
+					display: flex;
+					flex-direction: row-reverse;
+				}
 				.chart-container ul li {
-					margin: 1px 0;
-					height: 20px;
+					margin: 0 1px;
+					width: 3.333%;
 					position: relative;
 					display: flex;
-					align-items: center;
+					flex-direction: column-reverse;
 				}
 				ul li span {
-					${title === "Visitas" || title === "Comentarios" ? 
-						"width: 59%;"
-						:
-						"width: 29%;"
-					}
-					text-align: right;
+					transition: ease .2s;
+					text-align: center;
+					margin-bottom: -30px;
+					font-size: 12px;
+					opacity: 0;
+					width: 100%;
 				}
 				ul li .bar-container {
 					position: absolute;
 					display: flex;
-					align-items: center;
+					align-items: flex-end;
 					height: 100%;
-					${title === "Visitas" || title === "Comentarios" ? 
-						"width: 30%;left: 60%;"
-						:
-						"width: 60%;left: 30%;"
-					}
+					width: 100%;
 				}
 				ul li .bar-container div {
 					cursor: pointer;
 					position: absolute;
 					height: 100%;
-					border-radius: 0 5px 5px 0;
+					border-radius: 5px 5px 0 0;
+					width: 20px;
 				}
 				ul li .bar-container .total {
 					position: absolute;
-					opacity: 0;
 					cursor: default;
-					transition: ease .2s;
-					text-align: left;
 				}
-				ul li .bar-container div:hover + .total {
+				ul li .bar-container div:hover ~ span {
 					opacity: 1
 				}
+
 			`}</style>
 		</div>
 	}
