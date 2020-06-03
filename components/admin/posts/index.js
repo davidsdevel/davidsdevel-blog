@@ -44,7 +44,11 @@ class Posts extends Component {
 	async edit(ID) {
 		try {
 			const req = await fetch(`${process.env.ORIGIN}/posts/single-edit?ID=${ID}&fields=ID,title,description,image,postStatus,url,content,category,tags`);
-			const editData = await req.json();
+			var editData = await req.json();
+
+			const splitURL = editData.url.split("/");
+
+			editData.url = splitURL[splitURL.length - 1];
 
 			this.setState({
 				editData,
@@ -123,7 +127,7 @@ class Posts extends Component {
 								<div>
 									{
 										e.tags &&
-										<span className="tags">{e.tags}</span>
+										<span className="tags">{e.tags.join(", ")}</span>
 									}
 									<div className="align">
 										<img src="/assets/bubbles.svg"/>
@@ -238,7 +242,7 @@ class Posts extends Component {
 			{ui}
 			<style jsx>{`
 				button.black {
-					margin: 20px 0;
+					top: 17px;
 				}
 			`}</style>
 		</div>
