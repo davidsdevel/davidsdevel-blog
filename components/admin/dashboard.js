@@ -90,6 +90,7 @@ export default class Dashboard extends Component {
 					background: #f7f7f7;
 					padding: 10px 0;
 					z-index: 1;
+					min-height: 50px;
 				}
 				:global(.top button) {
 					position: absolute;
