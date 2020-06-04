@@ -66,7 +66,9 @@ export default class Dashboard extends Component {
 							<img src="/images/email-menu.png"/>
 						</li>
 					*/}
-					<li onClick={() => this.changeTab("import")}>Manejo de datos</li>
+					<li onClick={() => this.changeTab("import")}>
+							<img src="/images/data.png"/>
+					</li>
 					<li onClick={() => this.changeTab("config")}>
 						<img src="/images/config.png"/>
 					</li>
