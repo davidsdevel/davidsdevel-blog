@@ -57,8 +57,6 @@ class Modal extends Component {
 			this.setState({
 				categories
 			});
-
-			console.log(this.state)
 		} catch(err) {
 			console.error(err);
 		}

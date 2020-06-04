@@ -119,25 +119,31 @@ router
 			res.status(500).send(err.toString());
 		}
 	})
-	.get("/preview/:secret/:ID", async (req, res) => {
-		const {ID} = req.params;
+	.get("/preview/:secret/:ID", async (req, res, next) => {
+		const {ID, secret} = req.params;
+
+		console.log(parseInt(`0x${secret}` * 1));
+
+		if (parseInt(`0x${secret}` * 1) !== 3)
+			return next();
+
 		const data = await req.db.getPostByID(ID);
 
-		var template = readFileSync("./templates/previewPost").toString();
+		const {image, content, title, tags, updated, description, category, published} = data;
 
-		var tags = "";
-
-		data.tags.split(/,\s*/).forEach(e => (tags += `<li class="jsx-3065913865 jsx-552310415"><a class="jsx-3065913865 jsx-552310415" href="/search?q=${e}">${e}</a></li>`));
-
-		template = template
-			.replace(/%TITLE%/g, data.title)
-			.replace(/%DESCRIPTION%/g, data.description)
-			.replace(/%URL%/g, data.url)
-			.replace(/%IMAGE%/g, data.image)
-			.replace(/%CONTENT%/g, data.content)
-			.replace(/%TAGS%/g, tags);
-
-		res.send(template);
+		req.nextApp.render(req, res, "/post", {
+			isSubscribe: false,
+			isPreview: true,
+			image,
+			content,
+			title,
+			tags,
+			updated,
+			description,
+			category,
+			ID: data.ID,
+			published
+		});
 	});
 
 module.exports = router;

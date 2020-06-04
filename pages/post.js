@@ -13,16 +13,20 @@ class Post extends Component {
 
 		try {
 			var isSubscribe = false;
-			const r = await fetch(`${process.env.ORIGIN}/posts/single?ID=${query.ID}&fields=image,content,title,tags,updated,description,category,ID,description,published`);
-
 			const path = asPath.split("/");
 
-			query = await r.json();
+			if (!query.isPreview) {
 
-			if (req)
+				const r = await fetch(`${process.env.ORIGIN}/posts/single?ID=${query.ID}&fields=image,content,title,tags,updated,description,category,ID,description,published`);
+				
+				
+				query = await r.json();
+				
+				if (req)
 				isSubscribe = req.session.isSubscribe;
-			else
+				else
 				isSubscribe = localStorage.getItem("isSubscribe");
+			}
 
 			query = {
 				...query,
@@ -81,7 +85,6 @@ class Post extends Component {
 	}
 	render() {
 		const {status} = this.props;
-		console.log()
 
 		if (status === "dont-exists")
 			return <ErrorPage status={404} message={<div><p>Ups. No hay nada por aqui</p><span>¿Te perdiste? Bueno dejame llevarte hasta el <Link href="/"><a>Inicio</a></Link></span></div>}/>;
