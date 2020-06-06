@@ -11,8 +11,8 @@ router
 		orientation: "portrait",
 		display: "fullscreen",
 		gcm_sender_id: "103953800507",
-		theme_color: "#fff",
-		background_color:"#fff"
+		theme_color: "#000",
+		background_color:"#000"
 	}))
 	.get("/sitemap.xml", (req, res) => req.router.sitemap({req, res}))
 	.get("/robots.txt", (req, res) => {
