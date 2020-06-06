@@ -10,7 +10,8 @@ class Card extends Component  {
 		this.state = {
 			shareDisplay: "none",
 			shareOpacity: 0,
-			savedPostsIDs: []
+			savedPostsIDs: [],
+			isSaving: false
 		};
 
 		this.toggleShare = this.toggleShare.bind(this);
@@ -19,6 +20,10 @@ class Card extends Component  {
 	}
 	async savePost(ID) {
 		try {
+			this.setState({
+				isSaving: true
+			});
+
 			var savedPosts = [];
 			var ids =  [];
 
@@ -42,11 +47,16 @@ class Card extends Component  {
 			localStorage.setItem("saved-posts-ids", JSON.stringify(ids));
 
 			this.setState({
-				savedPostsIDs: [ID]
-			})
+				savedPostsIDs: [ID],
+				isSaving: false
+			});
 
 			alert("Guardado con Exito");
 		} catch(err) {
+			this.setState({
+				isSaving: false
+			});
+			alert("Error al guardar la entrada");
 			console.error(err);
 		}
 	}
@@ -84,7 +94,7 @@ class Card extends Component  {
 	}
 	render() {
 		const {image, content, title, url, comments, ID} = this.props;
-		const {savedPostsIDs} = this.state;
+		const {savedPostsIDs, isSaving} = this.state;
 
 		return <div className="blog-card">
 			<Link href={"/post?ID=" + ID} as={`/${url}`}>
@@ -107,10 +117,16 @@ class Card extends Component  {
 				<p>{content.length > 200 ? content.slice(0, 197) + "..." : content}</p>
 				<div className="comment-container">
 					{
-						savedPostsIDs.indexOf(ID) > -1 ?
+						(savedPostsIDs.indexOf(ID) > -1 && !isSaving) &&
 						<img src="/images/saved.png" />
-						:
+					}
+					{
+						(savedPostsIDs.indexOf(ID) === -1 && !isSaving) &&
 						<img onClick={() => this.savePost(ID)} className="download-icon" src="/images/download.png" />
+					}
+					{
+						isSaving &&
+						<img src="/assets/spinner-black.svg" style={{animation: "rotation linear 1s infinite"}}/>
 					}
 					<div>
 						<span>{comments}</span>
