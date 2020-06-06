@@ -75,6 +75,9 @@ export default class CustomApp extends App {
 		}
 	}
 	componentDidMount() {
+		if (process.env.NODE_ENV !== "development")
+			navigator.serviceWorker.register("/offline-sw.js").then(e => e.update());
+
 		if (!this.props.pageProps.hideLayout)
 			messaging.init();
 

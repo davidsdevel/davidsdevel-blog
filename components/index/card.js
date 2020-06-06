@@ -9,10 +9,46 @@ class Card extends Component  {
 		super();
 		this.state = {
 			shareDisplay: "none",
-			shareOpacity: 0
+			shareOpacity: 0,
+			savedPostsIDs: []
 		};
 
 		this.toggleShare = this.toggleShare.bind(this);
+		this.savePost = this.savePost.bind(this);
+		this.toggleShare = this.toggleShare.bind(this);
+	}
+	async savePost(ID) {
+		try {
+			var savedPosts = [];
+			var ids =  [];
+
+			if (localStorage["saved-posts"])
+				savedPosts = JSON.parse(localStorage["saved-posts"]);
+
+			if (localStorage["saved-posts-ids"])
+				ids = JSON.parse(localStorage["saved-posts-ids"]);
+
+			const req = await fetch(`${process.env.ORIGIN}/posts/single?ID=${ID}&fields=description,title,image,url,comments,category,ID`);
+			const post = await req.json();
+
+			const cache = await caches.open("offline-app");
+
+			await cache.add(`${process.env.ORIGIN}/posts/single?ID=${ID}&fields=image,content,title,tags,updated,description,category,ID,description,published`);
+
+			savedPosts.push(post);
+			ids.push(ID);
+
+			localStorage.setItem("saved-posts", JSON.stringify(savedPosts));
+			localStorage.setItem("saved-posts-ids", JSON.stringify(ids));
+
+			this.setState({
+				savedPostsIDs: [ID]
+			})
+
+			alert("Guardado con Exito");
+		} catch(err) {
+			console.error(err);
+		}
 	}
 	toggleShare() {
 		this.setState({
@@ -36,8 +72,19 @@ class Card extends Component  {
 
 		}
 	}
+	componentDidMount() {
+		var ids =  [];
+
+		if (localStorage["saved-posts-ids"])
+			ids = JSON.parse(localStorage["saved-posts-ids"]);
+
+		this.setState({
+			savedPostsIDs: ids
+		});
+	}
 	render() {
-		const {image, content, title, url, comments, category, ID} = this.props;
+		const {image, content, title, url, comments, ID} = this.props;
+		const {savedPostsIDs} = this.state;
 
 		return <div className="blog-card">
 			<Link href={"/post?ID=" + ID} as={`/${url}`}>
@@ -59,8 +106,16 @@ class Card extends Component  {
 				}
 				<p>{content.length > 200 ? content.slice(0, 197) + "..." : content}</p>
 				<div className="comment-container">
-					<span>{comments}</span>
-					<img src="/assets/bubbles.svg" style={{height: "18px", margin: "0 10px"}}/>
+					{
+						savedPostsIDs.indexOf(ID) > -1 ?
+						<img src="/images/saved.png" />
+						:
+						<img onClick={() => this.savePost(ID)} className="download-icon" src="/images/download.png" />
+					}
+					<div>
+						<span>{comments}</span>
+						<img src="/assets/bubbles.svg" className="comment-icon"/>
+					</div>
 				</div>
 				<div>
 					<button className="view-more" onClick={() => {Router.push("/post?ID=" + ID, `/${url}`); FB.AppEvents.logEvent('View Post On Button')}}>Ver Mas</button>
@@ -71,7 +126,23 @@ class Card extends Component  {
 			<style jsx>{`
 				.comment-container {
 					padding: 20px;
+					display: flex;
 					text-align: right;
+					justify-content: space-between;
+					align-items: center;
+				}
+				.comment-container div {
+					display: flex;
+					align-items: center;
+				}
+				.comment-container img {
+					height: 18px;
+				}
+				.comment-container img.download-icon {
+					cursor: pointer;
+				}
+				.comment-container div .comment-icon {
+					margin: 0 10px;
 				}
 				.blog-card {
 					width: 90%;

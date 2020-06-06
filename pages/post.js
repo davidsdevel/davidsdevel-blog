@@ -14,16 +14,25 @@ class Post extends Component {
 		try {
 			var isSubscribe = false;
 			const path = asPath.split("/");
-
+			const postPath = `${process.env.ORIGIN}/posts/single?ID=${query.ID}&fields=image,content,title,tags,updated,description,category,ID,description,published`;
 			if (!query.isPreview) {
+				try {
+					const r = await fetch(postPath);
 
-				const r = await fetch(`${process.env.ORIGIN}/posts/single?ID=${query.ID}&fields=image,content,title,tags,updated,description,category,ID,description,published`);
-				
-				
-				query = await r.json();
-				
+					query = await r.json();
+					
+				} catch(err) {
+					console.log(err.type)
+					if (err.toString() === "TypeError: Failed to fetch") {
+						const cache = await caches.open("offline-app");
+
+						const res = await cache.match(postPath);
+
+						query = await res.json();
+					}
+				}
 				if (req)
-				isSubscribe = req.session.isSubscribe;
+					isSubscribe = req.session.isSubscribe;
 				else
 				isSubscribe = localStorage.getItem("isSubscribe");
 			}

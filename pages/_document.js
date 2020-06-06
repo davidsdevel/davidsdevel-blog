@@ -1,12 +1,20 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document';
+import React from "react";
 
 export default class CustomDocument extends Document {
 	static async getInitialProps(ctx) {
 		const path = ctx.asPath;
 		const initialProps = await Document.getInitialProps(ctx);
+
 		return { ...initialProps, path}
 	}
 	render() {
+		const {buildId} = this.props.__NEXT_DATA__;
+		const {files, lowPriorityFiles, polyfillFiles, devFiles} = this.props;
+
+		const devID = NextScript.contextType[1]._devOnlyInvalidateCacheQueryString;
+		const toCache = ([`static/${buildId}/pages/_app.js${devID}`,`static/${buildId}/pages/index.js${devID}`]).concat(files, lowPriorityFiles, polyfillFiles, devFiles).map(e => (`/_next/${e}${devID}`));
+
 		return (
 			<Html style={{scrollBehavior: "smooth"}} prefix="og: https://ogp.me/ns# fb: https://ogp.me/ns/fb# article: https://ogp.me/ns/article#">
 				<Head/>
@@ -16,6 +24,12 @@ export default class CustomDocument extends Document {
 						<div id="fb-root"/>
 						<Main />
 						<NextScript />
+						{
+							process.env.NODE_ENV !== "development" &&
+							<script dangerouslySetInnerHTML={{
+								__html: `caches.open("offline-app").then(function (cache) {cache.addAll(${JSON.stringify(toCache)});});`}
+							}/>
+						}
 					</body>
 					:
 					<body style={{display: "block"}}>
