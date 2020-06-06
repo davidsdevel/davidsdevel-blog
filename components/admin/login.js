@@ -5,7 +5,8 @@ export default class Login extends Component {
 		super();
 		this.state = {
 			username: "",
-			password: ""
+			password: "",
+			isLoad: false
 		}
 		this.login = this.login.bind(this);
 		this.handleInput = this.handleInput.bind(this);
@@ -13,6 +14,10 @@ export default class Login extends Component {
 	async login(e) {
 		try {
 			e.preventDefault();
+
+			this.setState({
+				isLoad: true
+			});
 
 			const {username, password} = this.state;
 
@@ -36,8 +41,14 @@ export default class Login extends Component {
 				this.props.onLogin();
 			else if (status === "Error")
 				alert(message);
+
 		} catch(err) {
+			alert("Error al iniciar sesión")
 			console.error(err);
+		} finally {
+			this.setState({
+				isLoad: false
+			});
 		}
 	}
 	handleInput({target}) {
@@ -48,12 +59,19 @@ export default class Login extends Component {
 		});
 	}
 	render() {
+		const {isLoad} = this.state;
+
 		return <div id="container">
 			<img src="/images/davidsdevel-rombo.png"/>
 			<form onSubmit={this.login}>
-				<input type="text" name="username" placeholder="Username" onChange={this.handleInput}/>
-				<input type="password" name="password" placeholder="Password" onChange={this.handleInput}/>
-				<button className="black">Login</button>
+				<input disabled={isLoad} type="text" name="username" placeholder="Username" onChange={this.handleInput}/>
+				<input disabled={isLoad} type="password" name="password" placeholder="Password" onChange={this.handleInput}/>
+				{
+					isLoad ?
+						<img src="/assets/spinner-black.svg" style={{display: "block", width: 50, margin: "auto", animation: "rotation linear 1s infinite"}}/> 
+					:
+						<button className="black">Login</button>
+				}
 			</form>
 			<style jsx>{`
 				#container {
@@ -62,7 +80,7 @@ export default class Login extends Component {
     				height: 100%;
     				background: #f7f7f7;
 				}
-				#container img {
+				#container > img {
 					width: 10%;
 					margin: 50px auto 80px;
 					display: block;
