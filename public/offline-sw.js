@@ -40,9 +40,6 @@ self.addEventListener('fetch', function(event) {
 	if (self.navigator.onLine) {
 		return;
 	}
-	
-	var url = event.request.url.replace(/https?:\/\/(\w*\.)?\w*(\.\w\w*)?(:\d*)?/, "");
-
 	event.respondWith(
 		caches.match(event.request).then(function(response) {
 			return response || fetch(event.request);
