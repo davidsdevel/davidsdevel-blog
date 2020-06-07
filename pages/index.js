@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Head from '../components/head'
 import Landing from '../components/index/landing';
 import Card from '../components/index/card';
+import Banners from '../components/banners';
 import {setBanner} from "../lib/banners";
 import fetch from "isomorphic-fetch";
 
@@ -111,18 +112,6 @@ class Home extends Component {
 			`}</style>
 		</div>;
 
-		const Banners = () => <aside className="banners">
-			<a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
-				<img src="/images/payoneer.png"/>
-			</a>
-			{
-				posts.length > 2 && 
-				<a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
-					<img src="/images/platzi.png"/>
-				</a>
-			}
-		</aside>;
-
 		return (
 			<div>
 				<Head title={blogData.title + " - Blog"} description={blogData.description}/>
@@ -165,12 +154,12 @@ class Home extends Component {
 								/>
 							})}
 						</div>
-						<Banners/>
+						<Banners length={posts.length}/>
 					</div>
 					:
 					<div id="entries">
 						<span>No Hay Entradas</span>
-						<Banners/>
+						<Banners length={posts.length}/>
 					</div>
 				}
 				<div id="pagination-container">

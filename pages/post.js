@@ -7,6 +7,7 @@ import {setBanner} from "../lib/banners";
 import fetch from "isomorphic-fetch";
 import ErrorPage from "./_error";
 import HandleDate from "../lib/handleDate";
+import Banners from "../components/banners";
 
 class Post extends Component {
 	static async getInitialProps({query, req, asPath}) {
@@ -22,7 +23,6 @@ class Post extends Component {
 					query = await r.json();
 					
 				} catch(err) {
-					console.log(err.type)
 					if (err.toString() === "TypeError: Failed to fetch") {
 						const cache = await caches.open("offline-app");
 
@@ -117,14 +117,7 @@ class Post extends Component {
 					<span className="publish-date">{HandleDate.getGMTString(published)}</span>
 				</div>
 				<main dangerouslySetInnerHTML={{__html: content}}/>
-				<aside className="banners">
-					<a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
-					  <img src="/images/payoneer.png" />
-					</a>
-					<a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Platzi Banner")}>
-					  <img src="/images/platzi.png" />
-					</a>
-				</aside>
+				<Banners length={3}/>
 			</div>
 			<ul id="tags">
 				{tags.map(e => (

@@ -1,10 +1,9 @@
 import React, {Component} from "react";
 import Head from "../components/head";
 import Share from '../components/post/share';
-import About from '../components/post/about';
-import Link from "next/link";
 import NextHead from "next/head";
 import {setBanner} from "../lib/banners";
+import Banners from "../components/banners";
 
 const Post = () =>  (
 		<div>
@@ -53,11 +52,7 @@ const Post = () =>  (
 					Mi Fanpage de Facebook Igual: <a href="https://www.facebook.com/davidsdevel" target="_blank">David's Devel</a><br />
 					¡Ahora tengo <a href="https://www.instagram.com/davidsdevel/" target="_blank">Instagram</a>!
 				</main>
-				<aside className="banners">
-					<a href="https://share.payoneer.com/nav/8KWKN89znbmVoxDtLaDPDhoy-Hh5_0TAHI8v5anfhDJ6wN3NOMMU3rpV5jk6FSfq9t5YNnTcg-XSxqiV1k7lwA2" target="_blank" onClick={() => FB.AppEvent.logEvent("Click on Payoneer Banner")}>
-						<img src="/images/payoneer.png"/>
-					</a>
-				</aside>
+				<Banners length={1}/>
 			</div>
 			<Share url="/about" title="Conoce más acerca de David's Devel"/>
 			<div className="banner-container">
