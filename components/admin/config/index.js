@@ -1,4 +1,6 @@
 import React, {Component} from "react";
+import store from "../../../store";
+import {adminHideLoad} from "../../../store/actions";
 
 class Config extends Component {
 	constructor() {
@@ -153,6 +155,8 @@ class Config extends Component {
 				title,
 				description
 			});
+
+			store.dispatch(adminHideLoad());
 		} catch(err) {
 			alert("Error al obtener las categorías");
 			console.error(err);

@@ -10,6 +10,9 @@ let searchState = {
 	actual: "",
 	bind: ""
 };
+let adminLoad = {
+	show: false
+}
 
 const alert = (state = {message: "", show: false}, action) => {
 	switch(action.type) {
@@ -67,12 +70,26 @@ const search = (state = searchState, action) => {
 	default: return state;
 	}
 };
+const admin = (state = adminLoad, action) => {
+	switch(action.type) {
+	case "ADMIN_SHOW_LOAD":
+		return {
+			show: true
+		};
+	case "ADMIN_HIDE_LOAD":
+		return {
+			show: false
+		};
+	default: return state;
+	}
+}
 
 let reducer = combineReducers({
 	appLoad,
 	subscriptionModal,
 	search,
-	alert
+	alert,
+	admin
 });
 
 export default createStore(reducer);

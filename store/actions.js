@@ -22,6 +22,12 @@ const bindSearch = query => ({
 	type: "BIND",
 	bind: query
 });
+const adminShowLoad = () => ({
+	type: "ADMIN_SHOW_LOAD"
+});
+const adminHideLoad = () => ({
+	type: "ADMIN_HIDE_LOAD"
+});
 
 export {
 	viewLoad,
@@ -30,5 +36,7 @@ export {
 	bindSearch,
 	search,
 	showAlert,
-	hideAlert
+	hideAlert,
+	adminShowLoad,
+	adminHideLoad
 };

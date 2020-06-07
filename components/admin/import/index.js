@@ -1,4 +1,6 @@
 import React, {Component} from "react";
+import store from "../../../store";
+import {adminHideLoad} from "../../../store/actions";
 
 export default class Import extends Component {
 	constructor() {
@@ -68,6 +70,9 @@ export default class Import extends Component {
 		}
 
 		input.click();
+	}
+	componentDidMount() {
+		store.dispatch(adminHideLoad());
 	}
 	render() {
 		const {sending} = this.state;

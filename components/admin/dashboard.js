@@ -5,16 +5,26 @@ import SocialMedia from "./social";
 import Import from "./import";
 import Config from "./config";
 import Router from "next/router";
+import store from "../../store";
+import {adminShowLoad} from "../../store/actions";
 
 export default class Dashboard extends Component {
 	constructor() {
 		super();
 		this.state = {
-			tab: "posts"
+			tab: "posts",
+			opacity: 1,
+			display: "flex"
 		}
 		this.changeTab = this.changeTab.bind(this);
+		this.show = this.show.bind(this);
+		this.hide = this.hide.bind(this);
+
+		store.subscribe(() => store.getState().admin.show ? this.show() : this.hide());
 	}
 	changeTab(tab) {
+		store.dispatch(adminShowLoad());
+
 		this.setState({
 			tab
 		});
@@ -36,9 +46,87 @@ export default class Dashboard extends Component {
 			console.error(err);
 		}
 	}
+	show() {
+		this.setState({
+			display: "flex",
+			opacity: 1
+		});
+	}
+	hide() {
+		this.setState({
+			opacity: 0
+		});
+
+		setTimeout(() => this.setState({display: "none"}), 310);
+	}
 	render() {
-		var {tab} = this.state;
+		var {tab, opacity, display} = this.state;
 		var UI;
+
+		const load = <div id="load-container" style={{display, opacity}}>
+			<span>Cargando</span>
+			<div id="load-points">
+				<span className="one"></span>
+				<span className="two"></span>
+				<span className="tree"></span>
+			</div>
+			<style jsx>{`
+				#load-container {
+					align-items: center;
+					justify-content: center;
+					flex-direction: column;
+					position: absolute;
+    				width: 100%;
+					height: 100%;
+					background: #f7f7f7;
+					z-index: 1;
+					transition: .3s ease;
+				}
+				#load-container > span {
+					font-size: 24px;
+					font-weight: bold;
+					text-align: center;
+				}
+				#load-container #load-points {
+					display: flex;
+					width: 75px;
+    				position: relative;
+					height: 25px;
+					margin-top: 5px;
+				}
+				#load-container #load-points span {
+					width: 15px;
+					height: 15px;
+					background: black;
+					border-radius: 50%;
+					position: absolute;
+					top: 100%;
+					animation: top ease-in-out .9s infinite;
+				}
+				#load-container #load-points span.one {
+					left: calc(0% - 7.5px);
+				}
+				#load-container #load-points span.two {
+					animation-delay: .3s;
+					left: calc(50% - 7.5px)
+				}
+				#load-container #load-points span.tree {
+					animation-delay: .6s;
+					left: calc(100% - 7.5px);
+				}
+				@keyframes top {
+					0% {
+						top: 100%;
+					}
+					50% {
+						top: 0%;
+					}
+					100% {
+						top: 100%;
+					}
+				}
+			`}</style>
+		</div>;
 
 		if (tab === "posts")
 			UI = <Posts/>;
@@ -79,6 +167,7 @@ export default class Dashboard extends Component {
 			</aside>
 			<div id="content">
 				{UI}
+				{load}
 			</div>
 			<style jsx>{`
 				:global(.top) {
