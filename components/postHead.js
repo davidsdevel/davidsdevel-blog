@@ -6,12 +6,12 @@ const defaultDescription = "JavaScript, tecnología, informática y mas JavaScri
 const defaultOGURL = "https://davidsdevel-blog.herokuapp.com";
 const defaultOGImage = "https://davidsdevel-blog.herokuapp.com/images/og.jpg";
 
-const Head = props => (
+const Head = ({description, title, image, url, category, published, tags}) => (
 	<NextHead>
-	    <title>{props.title + " - David's Devel" || "David's Devel - Blog"}</title>
+	    <title>{title + " - David's Devel" || "David's Devel - Blog"}</title>
 	    <meta
 			name="description"
-			content={props.description || defaultDescription}
+			content={description || defaultDescription}
 	    />
 	    <meta name="viewport" content="width=device-width, initial-scale=1" />
 	    <link rel="icon" sizes="192x192" href="/touch-icon.png" />
@@ -19,8 +19,8 @@ const Head = props => (
 	    <link rel="mask-icon" href="/favicon-mask.svg" color="#49B882" />
 	    <link rel="icon" href="/favicon.ico" />
 
-	    <link href={props.image || defaultOGImage} rel='image_src'/>
-	    <link rel="canonical" href={props.url ? "https://davidsdevel-blog.herokuapp.com" + props.url: defaultOGURL}/>
+	    <link href={image || defaultOGImage} rel='image_src'/>
+	    <link rel="canonical" href={url ? "https://davidsdevel-blog.herokuapp.com" + url: defaultOGURL}/>
 
 	    <meta property="og:site_name" content="David's Devel - Blog" />
 	    <meta content='100000619759917' property='fb:admins'/>
@@ -31,29 +31,29 @@ const Head = props => (
 		<meta name="author" content="David González"/>
 	    <meta property='article:author' content='https://www.facebook.com/David.ImpulseWD' />
 	    <meta property='article:publisher' content='https://www.facebook.com/davidsdevel' />
-	    <meta content={props.category[0].toUpperCase() + props.category.slice(1)} property='article:section'/>
-	    <meta content={props.published} property='article:published_time'/>
-	    {props.tags.map(e => (<meta key={`tag-${e}`} content={e} property="article:tag"/>))}
+	    <meta content={category[0].toUpperCase() + category.slice(1)} property='article:section'/>
+	    <meta content={published} property='article:published_time'/>
+	    {tags.map(e => (<meta key={`tag-${e}`} content={e} property="article:tag"/>))}
 
 	    <meta content='@davidsdevel' name='twitter:site'/>
 	    <meta content='@davidsdevel' name='twitter:creator'/>
 	    <meta content='summary_large_image' name='twitter:card'/>
   
-	    <meta content={props.title || "David's Devel"} property='og:title'/>
-	    <meta content={props.title || "David's Devel"} itemProp='name'/>
-	    <meta content={props.title || "David's Devel"} name='twitter:title'/>
+	    <meta content={title || "David's Devel"} property='og:title'/>
+	    <meta content={title || "David's Devel"} itemProp='name'/>
+	    <meta content={title || "David's Devel"} name='twitter:title'/>
 
-    	<meta content={props.description || defaultDescription} itemProp='description'/>
-    	<meta content={props.description || defaultDescription} property='og:description'/>
-    	<meta content={props.description || defaultDescription} name='twitter:description'/>
+    	<meta content={description || defaultDescription} itemProp='description'/>
+    	<meta content={description || defaultDescription} property='og:description'/>
+    	<meta content={description || defaultDescription} name='twitter:description'/>
 
-		<meta content={props.image || defaultOGImage} property='og:image'/>
-		<meta content={props.image || defaultOGImage} name='twitter:image'/>
-    	<meta content={props.image || defaultOGImage} itemProp='image'/>
+		<meta content={image || defaultOGImage} property='og:image'/>
+		<meta content={image || defaultOGImage} name='twitter:image'/>
+    	<meta content={image || defaultOGImage} itemProp='image'/>
 
-    	<meta content={props.url ? "https://davidsdevel-blog.herokuapp.com" + props.url: defaultOGURL} itemProp='url'/>
-    	<meta content={props.url ? "https://davidsdevel-blog.herokuapp.com" + props.url: defaultOGURL} property='og:url'/>
-    	<meta content={props.url ? "https://davidsdevel-blog.herokuapp.com" + props.url: defaultOGURL} name='twitter:url'/>
+    	<meta content={url ? "https://davidsdevel-blog.herokuapp.com" + url: defaultOGURL} itemProp='url'/>
+    	<meta content={url ? "https://davidsdevel-blog.herokuapp.com" + url: defaultOGURL} property='og:url'/>
+    	<meta content={url ? "https://davidsdevel-blog.herokuapp.com" + url: defaultOGURL} name='twitter:url'/>
 
   		<link rel="manifest" href="/manifest.json"/>
 	</NextHead>

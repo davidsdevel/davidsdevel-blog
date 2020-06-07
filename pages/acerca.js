@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import Head from "../components/head";
 import Share from '../components/post/share';
 import NextHead from "next/head";

@@ -1,6 +1,5 @@
 import React from "react";
 import {string} from "prop-types";
-import Link from "next/link";
 
 const ShareCard = ({url, title, style}) => {
 	const encodedURL = encodeURI(url);

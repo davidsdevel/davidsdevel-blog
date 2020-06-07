@@ -16,7 +16,7 @@ class Card extends Component  {
 
 		this.toggleShare = this.toggleShare.bind(this);
 		this.savePost = this.savePost.bind(this);
-		this.toggleShare = this.toggleShare.bind(this);
+		this.componentDidMount = this.componentDidMount.bind(this);
 	}
 	async savePost(ID) {
 		try {

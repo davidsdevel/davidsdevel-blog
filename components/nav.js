@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import Link from 'next/link';
 import Router from "next/router";
-import {string} from "prop-types";
 
 const links = [
 	{ href: '/acerca', label: 'Acerca de mi' },
@@ -36,8 +35,7 @@ class Nav extends Component {
 			mobileBar: {
 				top: "-72px"
 			},
-			inputBackground: "none",
-			titleOpacity: 1
+			inputBackground: "none"
 		}
 		this.handleInput = this.handleInput.bind(this);
 		this.toggleSearch = this.toggleSearch.bind(this);
@@ -50,7 +48,6 @@ class Nav extends Component {
 	}
 	toggleMenu() {
 		if(this.state.menuIsOpen) {
-
 			this.setState({
 				menuStyle: {
 					left: "-100%"
@@ -105,7 +102,6 @@ class Nav extends Component {
 				titleOpacity: 1
 			});
 		}
-
 		else
 			this.setState({
 				inputWidth: "70%",
@@ -170,12 +166,10 @@ class Nav extends Component {
 		}
 	}
 	render() {
-		const {title} = this.props;
-		const {mobileBar, titleOpacity, inputBackground, inputStyle, search, menuStyle, shadowStyle, arrowStyle} = this.state;
+		const {mobileBar, inputBackground, inputStyle, search, menuStyle, shadowStyle, arrowStyle} = this.state;
 		return <nav id="nav">
 			<div id="mobile-bar" style={mobileBar}>
 				<img onClick={this.toggleMenu} id="menu-icon" src="/assets/menu.svg"/>
-				<span id="title" style={{opacity: titleOpacity}}>{title}</span>
 				<div id="input" style={{background: inputBackground}}>
 					<img className="inline" onClick={this.toggleSearch} style={{float: "left"}} src="/assets/search.svg"/>
 					<input onKeyUp={this.find} value={search} className="inline search" style={inputStyle} type="text" placeholder="Busqueda" onChange={this.handleInput}/>
@@ -225,17 +219,6 @@ class Nav extends Component {
 					left: 5%;
 					z-index: 2;
 					cursor: pointer;
-				}
-				#nav #title {
-					position: absolute;
-					width: 100%;
-					text-align: center;
-					left: 0;
-					top: 25px;
-					font-size: 20px;
-
-					transition: ease .2s;
-					transition-delay: .6s;
 				}
 				#nav #input {
 					border-radius: 50px;
@@ -343,10 +326,6 @@ class Nav extends Component {
 			`}</style>
 		</nav>
 	}
-}
-
-Nav.propTypes = {
-	title: string
 }
 
 export default Nav
