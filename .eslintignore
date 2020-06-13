@@ -1,5 +1,4 @@
 public
 node_modules
 *.css
-components
-pages
+test.js
