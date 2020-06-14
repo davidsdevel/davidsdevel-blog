@@ -13,6 +13,21 @@ post: {
 	image: String,
 	url: String,
 	views: Number
+	author: String<AuthorType>
+}
+Colaborators: {
+	ID: Number<PrimaryKeyNotNull>
+	name: String,
+	lastName: String,
+	description: String,
+	ocupation: String,
+	photo: String<URL>,
+	email: String,
+	password: String,
+	facebook: String<URL>,
+	twitter: String<URL>,
+	instagram: String<URL>,
+	linkedin: String<URL>
 }
 user: {
 	name: String,

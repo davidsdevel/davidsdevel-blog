@@ -1,120 +1,115 @@
-const router = require("express").Router();
+const router = require('express').Router();
 
-async function configdata(db, {categories, urlID, title, description}) {
-	try {
-		var data = {};
+async function configdata(db, {
+  categories, urlID, title, description,
+}) {
+  try {
+    const data = {};
 
-		if (categories)
-			data.categories = await db.getCategories();
+    if (categories) { data.categories = await db.getCategories(); }
 
-		if (urlID)
-			data.urlID = await db.getUrlID();
+    if (urlID) { data.urlID = await db.getUrlID(); }
 
-		if (title)
-			data.title = await db.getBlogTitle();
+    if (title) { data.title = await db.getBlogTitle(); }
 
-		if (description)
-			data.description = await db.getBlogDescription();
+    if (description) { data.description = await db.getBlogDescription(); }
 
-		return data;
-	} catch(err) {
-		return err;
-	}
+    return data;
+  } catch (err) {
+    return err;
+  }
 }
 
 router
-	.get("/:action", async (req, res) => {
-		try {
-			const {action} = req.params;
-			var data;
+  .get('/:action', async (req, res) => {
+    try {
+      const { action } = req.params;
+      let data;
 
-			switch (action) {
-			case "categories":
-				data = await configdata(req.db, {
-					categories: true
-				});
-				break;
-			case "config":
-				data = await configdata(req.db, {
-					categories: true,
-					title: true,
-					urlID: true,
-					description: true
-				});
-				break;
-			case "images":
-				data = await req.db.getImages();
-				break;
-			case "stats":
-				console.log("> Stats");
-				data = await req.db.getStats();
-				break;
-			default:
-				res.sendStatus(404);
-				break;
-			}
+      switch (action) {
+        case 'categories':
+          data = await configdata(req.db, {
+            categories: true,
+          });
+          break;
+        case 'config':
+          data = await configdata(req.db, {
+            categories: true,
+            title: true,
+            urlID: true,
+            description: true,
+          });
+          break;
+        case 'images':
+          data = await req.db.getImages();
+          break;
+        case 'stats':
+          console.log('> Stats');
+          data = await req.db.getStats();
+          break;
+        default:
+          res.sendStatus(404);
+          break;
+      }
 
-			res.json(data);
+      res.json(data);
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err.toString());
+    }
+  })
+  .post('/:action', async ({ params, body, db }, res) => {
+    try {
+      const { action } = params;
+      const {
+        name, alias, cms, data,
+      } = body;
 
-		} catch(err) {
-			console.error(err);
-			res.status(500).send(err.toString());
-		}
-	})
-	.post("/:action", async ({params, body, db}, res) => {
-		try {
-			const {action} = params;
-			const {name, alias, cms, data} = body;
+      switch (action) {
+        case 'add-category':
+          res.send(await db.addCategory(name, alias));
+          break;
+        case 'import-posts':
+          if (cms === 'blogger') { await db.importPostsFromBlogger(data); }
+          if (cms === 'wordpress') { await db.importPostsFromWordPress(data); } else { res.status(401); }
 
-			switch(action) {
-			case "add-category":
-				res.send(await db.addCategory(name, alias));
-				break;
-			case "import-posts":
-				if (cms === "blogger")
-					await db.importPostsFromBlogger(data);
-				if (cms === "wordpress")
-					await db.importPostsFromWordPress(data);
-				else
-					res.status(401);
+          res.send('success');
 
-				res.send("success");
+          break;
+        case 'config':
+          await db.saveConfig(data);
 
-				break;
-			case "config":
-				await db.saveConfig(data);
+          res.json({
+            status: 'success',
+          });
+          break;
+        default:
+          res.status(404);
+          break;
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err.toString());
+    }
+  })
+  .delete('/:action', async ({ params, body, db }, res) => {
+    try {
+      const { action } = params;
+      const { name } = body;
 
-				res.json({
-					status: "success"
-				});
-				break;
-			default:
-				res.status(404);
-				break;
-			}
-		} catch(err) {
-			console.error(err);
-			res.status(500).send(err.toString());
-		}
-	})
-	.delete("/:action", async ({params, body, db}, res) => {
-		try {
-			const {action} = params;
-			const {name} = body;
+      switch (action) {
+        case 'delete-category':
+          res.send(await db.deleteCategory(name));
+          break;
+        default:
+          res.status(404);
+          break;
+      }
+    } catch (err) {
+      console.error(err);
 
-			switch(action) {
-			case "delete-category":
-				res.send(await db.deleteCategory(name));
-				break;
-			default:
-				res.status(404);
-				break;
-			}
-		} catch(err) {
-			console.error(err);
-
-			res.status(500).send(err.toString());
-		}
-	});
+      res.status(500).send(err.toString());
+    }
+  });
 
 module.exports = router;
