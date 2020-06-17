@@ -10,19 +10,10 @@ router
     if (req.db) {
       const blogIsInstalled = await req.db.isInstalled();
 
-      if (!blogIsInstalled) { res.redirect(302, '/install'); } else { next(); }
-    } else { res.redirect(302, '/install'); }
-  })
-  .get('/install', async (req, res, next) => {
-    res.type('html');
-
-    if (req.db) {
-      const blogIsInstalled = await req.db.isInstalled();
-
-      if (!blogIsInstalled) { res.sendFile(join(__dirname, '..', '..', 'install')); } else { return next(); }
-    } else { res.sendFile(join(__dirname, '..', '..', 'install')); }
-
-    return next();
+      if (!blogIsInstalled) { return res.redirect(302, '/install'); }
+      else { return req.handle(req, res); }
+    }
+    else { return res.redirect(302, '/install'); }
   })
   .post('/admin-login', (req, res) => {
     const { username, password } = req.body;

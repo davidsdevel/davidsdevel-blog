@@ -276,8 +276,8 @@ class Posts extends Component {
     return (
       <div style={{ width: '90%' }}>
         <Head>
-          <link href="/quill.snow.css" rel="stylesheet" />
-          <script src="/quill.js" />
+          <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet"/>
+          <script src="https://cdn.quilljs.com/1.3.6/quill.js"/>
         </Head>
         {
 				!editting

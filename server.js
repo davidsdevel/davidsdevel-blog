@@ -2,7 +2,7 @@
 const express = require('express');
 
 const server = express();
-const next = require('next');
+const nextApp = require('next');
 
 // Express Middlewares
 const session = require('express-session');
@@ -24,7 +24,7 @@ const usersRouter = require('./routes/users');
 const blogRouter = require('./routes/blog');
 
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
+const app = nextApp({ dev });
 const handle = app.getRequestHandler();
 
 const PORT = process.env.PORT || 3000;
@@ -33,83 +33,96 @@ const db = new DB(dev);
 const posts = new PostsManager(db);
 const router = new Router(db);
 const facebook = new FacebookAPI({
-  appID: '337231497026333',
-  appSecret: 'd381bb7dcf6bd6c6adb0806985de7d49',
+  appID: process.env.APP_ID,
+  appSecret: process.env.APP_SECRET,
 });
-
-const sess = {
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    maxAge: 3600000 * 24,
-  },
-  store: new KnexSessionStore({
-    knex: db.db,
-  }),
-};
-
-if (!dev) {
-  sess.cookie.secure = true;
-  server.set('trust proxy', 1); // trust first proxy
-}
 
 server
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
   .use(fileUpload())
   .use(userAgent)
-  .use(session(sess));
+  .use('/', rootRouter)
+  .use('/posts', postsRouter)
+  .use('/users', usersRouter)
+  .use('/blog', blogRouter)
 
-async function Init() {
+/**
+ * Test Database
+ * 
+ * @param {Object} data
+ * 
+ * @return {Promise<String>}
+ */
+async function testDatabase({
+  client, user, password, server: host, port, database,
+}) {
+  try {
+    const isValidate = await db.testConnection(client, user, password, host, port, database);
+
+    if (isValidate)
+      return Promise.resolve('success');
+    else
+      return Promise.resolve('error');
+
+  } catch(err) { return Promise.reject(err); }
+}
+
+async function install({
+  client, user, password, server: host, port, database,
+}) {
+  try {
+
+    
+    await db.connect(client, user, password, host, port, database);
+    await db.init();
+    
+    req.db = db;
+    req.posts = posts;
+    req.router = router;
+    req.fb = facebook;
+    req.handle = handle;
+
+    const sess = {
+      secret: 'keyboard cat',
+      resave: false,
+      saveUninitialized: true,
+      cookie: {
+        maxAge: 3600000 * 24,
+      },
+      store: new KnexSessionStore({
+        knex: db.db,
+      }),
+    };
+    
+    if (!dev) {
+      sess.cookie.secure = true;
+      server.set('trust proxy', 1); // trust first proxy
+    }
+
+    server.use(session(sess));
+
+    return Promise.resolve();
+  } catch(err) {
+    return Promise.reject(err);
+  }
+}
+
+async function initApp() {
   try {
     console.log('Preparing...');
     await app.prepare();
     console.log('Prepared');
 
     server
-      .use('/', rootRouter)
-      .use('/posts', postsRouter)
-      .use('/users', usersRouter)
-      .use('/blog', blogRouter)
-      .get('/test-connection', async (req, res) => {
-        try {
-          const {
-            client, user, password, server: host, port, database,
-          } = req.query;
-
-          const isValidate = await db.testConnection(client, user, password, host, port, database);
-
-          if (isValidate) { res.send('success'); } else { res.send('error'); }
-        } catch (err) {
-          res.sendStatus(500).send('error');
-        }
-      })
-      .get('/init-app', async (req) => {
-        const {
-          client, user, password, server: host, port, database,
-        } = req.query;
-
-        await db.connect(client, user, password, host, port, database);
-        await db.init();
-
-        req.db = db;
-        req.posts = posts;
-        req.router = router;
-        req.fb = facebook;
-
-        return next();
-      })
-      .get('/images/:all', (req, res) => handle(req, res))
-      .get('/assets/:all', (req, res) => handle(req, res))
-      .get('/:title', renderPost(), (pass, req, res) => {
+      .get('/:title', renderPost(), (pass, req, res, next) => {
         if (pass && req.urlID === '1') {
           return app.render(req, res, '/post', req.data);
         }
 
         return next();
       })
-      .get('/:category/:title', renderPost(), async (pass, req, res) => {
+      .get('/:category/:title', renderPost(), async (pass, req, res, next) => {
         let sameCategory = false;
 
         try {
@@ -135,7 +148,7 @@ async function Init() {
 
         return next();
       })
-      .get('/:year/:month/:title', renderPost(), (pass, req, res) => {
+      .get('/:year/:month/:title', renderPost(), (pass, req, res, next) => {
         const { year } = req.params;
 
         if (/\d\d\d\d/.test(year) && req.urlID === '3') {
@@ -144,7 +157,7 @@ async function Init() {
 
         return next();
       })
-      .get('/:year/:month/:day/:title', renderPost(), (pass, req, res) => {
+      .get('/:year/:month/:day/:title', renderPost(), (pass, req, res, next) => {
         const { year, month, day } = req.params;
 
         if ((!/\d\d\d\d/.test(year) || !/\d\d?/.test(month) || !/\d\d?/.test(day)) && req.urlID === '4') {
@@ -154,6 +167,9 @@ async function Init() {
         return next();
       })
       .get('*', async (req, res) => {
+        if (/\/images\/.*|\/assets\/.*|\/favicon.ico/.test(req.url))
+          return handle(req, res);
+
         if (req.db) {
           const blogIsInstalled = await req.db.isInstalled();
 
@@ -169,4 +185,7 @@ async function Init() {
   }
 }
 
-Init();
+module.exports = {
+  testDatabase,
+  initApp
+}

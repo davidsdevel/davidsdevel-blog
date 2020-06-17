@@ -1,4 +1,5 @@
 const renderPost = () => async function (req, res, next) {
+  console.log(req.url)
   switch (req.params.title) {
     case 'feed':
     case 'terminos':
@@ -11,12 +12,15 @@ const renderPost = () => async function (req, res, next) {
     case 'fb-webhook':
     case 'favicon.ico':
     case 'touch-icon.png':
-      return next(false);
+      return req.handle(req, res);
 
     default: break;
   }
 
-  if (/.*\.\w\w*$/ig.test(req.url) || /^_|webpack|next|react-refresh|main\.js/.test(req.params.title)) { return next(false); }
+  if (
+    /.*\.\w\w*$/ig.test(req.url)
+    || /^_|webpack|next|react-refresh|main\.js/.test(req.params.title)
+  ) { return req.handle(req, res); }
 
   try {
     const {
@@ -30,19 +34,19 @@ const renderPost = () => async function (req, res, next) {
     if (ID === '1') { data = await req.db.getPostByTitle(url); }
 
     if (ID === '2') {
-      if (!category) { return next(false); }
+      if (!category) { return req.handle(req, res); }
 
       data = await req.db.getPostByCategory(category, url);
       url = `${category}/${url}`;
     }
     if (ID === '3') {
-      if (day) { return next(false); }
+      if (day && !/^\d\d\d\d$/.test(year) && /^\d\d?$/.test(month)) { return req.handle(req, res); }
 
       data = await req.db.getPostByYearMonth(year, month, url);
       url = `${year}/${month}/${url}`;
     }
     if (ID === '4') {
-      if (!day) { return next(false); }
+      if (!day && !/^\d\d\d\d$/.test(year) && /^\d\d?$/.test(month) && /^\d\d?/.test(day)) { return req.handle(req, res); }
 
       data = await req.db.getPostByYearMonthDay(year, month, day, url);
       url = `${year}/${month}/${day}/${url}`;
@@ -54,14 +58,14 @@ const renderPost = () => async function (req, res, next) {
     };
     req.urlID = ID;
 
-    next(true);
+    return next(true);
   } catch (err) {
     console.log(err);
 
-    if (err === 'dont-exists') { return next(false); }
+    if (err === 'dont-exists') { return req.handle(req, res); }
   }
 
-  return next();
+  return req.handle(req, res);
 };
 
 module.exports = {

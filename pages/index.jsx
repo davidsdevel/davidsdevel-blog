@@ -15,16 +15,17 @@ class Home extends Component {
 
     let data;
 
-    const rdata = await fetch(`${process.env.ORIGIN}/blog/config`);
+    const rdata = await fetch(`${process.env.ORIGIN}/api/blog/config`);
     const blogData = await rdata.json();
 
     try {
-      const r = await fetch(`${process.env.ORIGIN}/posts/all?page=${page}&fields=description,title,image,url,comments,category,ID`);
-      const rmv = await fetch(`${process.env.ORIGIN}/posts/most-viewed?fields=description,title,image,url,comments,category,ID`);
+      const r = await fetch(`${process.env.ORIGIN}/api/posts/all?page=${page}&fields=description,title,image,url,comments,category,ID`);
+      const rmv = await fetch(`${process.env.ORIGIN}/api/posts/most-viewed?fields=description,title,image,url,comments,category,ID`);
 
       const { posts, next, prev } = await r.json();
 
-      if (req) { isSubscribe = req.session.isSubscribe; } else { isSubscribe = localStorage.getItem('isSubscribe'); }
+      if (req) { isSubscribe = req.session.isSubscribe; }
+      else { isSubscribe = localStorage.getItem('isSubscribe'); }
 
       data = {
         posts,
@@ -33,17 +34,20 @@ class Home extends Component {
         recommended: await rmv.json(),
       };
     } catch (err) {
+      console.log(err);
       if (err.toString() === 'TypeError: Failed to fetch') {
         isOffline = true;
       }
+    } finally {
+
+      return {
+        ...data,
+        isOffline,
+        isSubscribe,
+        blogData,
+        page,
+      };
     }
-    return {
-      ...data,
-      isOffline,
-      isSubscribe,
-      blogData,
-      page,
-    };
   }
 
   constructor(props) {
