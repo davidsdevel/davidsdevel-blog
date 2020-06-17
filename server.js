@@ -36,10 +36,10 @@ var sess = {
 	saveUninitialized: true,
 	cookie: {
 		maxAge: 3600000 * 24 
-	},
+	},/*
 	store: new KnexSessionStore({
 		knex: db.db
-	})
+	})*/
 };
 
 if (!dev) {

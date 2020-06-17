@@ -2,15 +2,20 @@ const Knex = require("knex");
 
 
 let db = Knex({
-	client: "sqlite3",
+	client: "mysql",
 	connection: {
-		filename: "./data.db"
-	}
+		user: "root",
+		server: "127.0.0.1",
+		port:"3306",
+		password: "",
+		database: "blog"
+	},
+	useNullAsDefault: true
 });
 
 async function main() {
 	try {
-		const rows = await db.select("ID", "title", "created", "published", "updated").from("posts");
+		const rows = await db.truncate("posts");
 
 		if (rows.length > 0)
 			return Promise.resolve(rows);
