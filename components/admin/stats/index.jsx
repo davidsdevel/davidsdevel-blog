@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import Card from './statsSingleCard';
-import Chart from './chart';
-import Linear from './linearChart';
 import store from '../../../store';
 import { adminHideLoad } from '../../../store/actions';
+import LineChart from "./lineChart";
+import BarChart from "./barChart";
+import PieChart from "./pieChart";
+
 
 export default class Stats extends Component {
   constructor() {
@@ -28,21 +30,23 @@ export default class Stats extends Component {
 
   async fetchStatsData() {
     try {
-      const req = await fetch('/blog/stats');
+      const req = await fetch('/api/blog/stats');
 
       const {
         general, posts, mostView, mostCommented,
       } = await req.json();
 
       if (!general) {
+        store.dispatch(adminHideLoad());
+
         return this.setState({
           fetching: false,
           haveData: false,
         });
       }
 
-      const viewsPosts = posts.filter((e) => e.views > 0).map((e) => ({ key: e.url, value: e.views }));
-      const commentsPosts = posts.filter((e) => e.comments > 0).map((e) => ({ key: e.url, value: e.comments }));
+      const viewsPosts = posts.filter((e) => e.views > 0).map((e) => ({ name: e.url, vistas: e.views }));
+      const commentsPosts = posts.filter((e) => e.comments > 0).map((e) => ({ name: e.url, vistas: e.comments }));
 
       this.setState({
         general,
@@ -62,9 +66,13 @@ export default class Stats extends Component {
 
   render() {
     const {
-      general, mostView, mostCommented, viewsPosts, commentsPosts, haveData,
+      general,
+      mostView,
+      mostCommented,
+      viewsPosts,
+      commentsPosts,
+      haveData,
     } = this.state;
-    console.log(general.viewsPerDay);
     return (
       <div>
         {
@@ -73,33 +81,39 @@ export default class Stats extends Component {
   <div>
     <span className="title">Visitas al Blog</span>
     <div>
-      <Linear title="Vistas" data={general.viewsPerDay} rows={30} />
-
-      <Chart title="Horas" data={general.hours} size="small" />
-      <Chart title="Días" data={general.days} size="small" />
-      <Chart title="Paises" data={general.locations} />
-      <Chart title="Sistemas Operativos" data={general.os} size="small" />
-      <Chart title="Navegadores" data={general.browsers} size="small" />
-      <Chart title="Origen" data={general.origins} />
+      <span className="title">Vistas</span>
+      <LineChart data={general.viewsPerDay}/>
+      <span className="title">Horas</span>
+      <BarChart data={general.hours} dataKey="time"/>
+      <span className="title">Días</span>
+      <BarChart data={general.days} dataKey="days"/>
+      <span className="title">Países</span>
+      <PieChart data={general.locations}/>
+      <span className="title">Navegadores</span>
+      <PieChart data={general.browsers}/>
+      <span className="title">Sistema Operativo</span>
+      <PieChart data={general.os}/>
+      <span className="title">Origen</span>
+      <PieChart data={general.origins}/>
     </div>
     <span className="title">Más Visto</span>
     <Card data={mostView} />
     <span className="title">Más Comentado</span>
     <Card data={mostCommented} />
     <span className="title">Entradas</span>
-    <Chart title="Visitas" data={viewsPosts} />
+    <BarChart data={viewsPosts} layout='vertical'/>
     {
-							commentsPosts.lenght > 0
-							&& <Chart title="Comentarios" data={commentsPosts} />
-						}
+      commentsPosts.lenght > 0
+        && <Chart title="Comentarios" data={commentsPosts} />
+    }
   </div>
-				  )
-				  : (
+  )
+  : (
   <div className="center">
     <img src="/images/stats.png" />
     <span>No hay datos para mostrar</span>
   </div>
-				  )
+  )
 }
         <style jsx>
           {`

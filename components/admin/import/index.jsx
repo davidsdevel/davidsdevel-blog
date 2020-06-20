@@ -39,7 +39,7 @@ export default class Import extends Component {
             formData.append('data', e.target.result);
             formData.append('cms', cms);
 
-            const req = await fetch('/blog/import-posts', {
+            const req = await fetch('/api/blog/import-posts', {
               method: 'POST',
               body: formData,
             });

@@ -6,34 +6,38 @@ const fetch = require('isomorphic-fetch');
 const { join } = require('path');
 
 router
-  .get('/', async (req, res, next) => {
-    if (req.db) {
-      const blogIsInstalled = await req.db.isInstalled();
+  .post('/admin-login', async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      
+      const login = await req.db.login(email, password);
 
-      if (!blogIsInstalled) { return res.redirect(302, '/install'); }
-      else { return req.handle(req, res); }
+      if (login.pass) {
+        delete login.message;
+        delete login.pass;
+
+        req.session.adminAuth = true;
+        req.session.account = login;
+        
+        res.json({
+          status: 'OK',
+        });
+      } else {
+        res.json({
+          status: 'Error',
+          message: login.message,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      res.status(500).send(err.toString());
     }
-    else { return res.redirect(302, '/install'); }
-  })
-  .post('/admin-login', (req, res) => {
-    const { username, password } = req.body;
-
-    if (username === 'davidsdevel' && password === '1234') {
-      req.session.adminAuth = true;
-
-      res.json({
-        status: 'OK',
-      });
-    } else {
-      res.json({
-        status: 'Error',
-        message: 'Usuario o contraseña incorrectos',
-      });
-    }
-  })
-  .get('/logout', (req, res) => {
-    if (!req.session.adminAuth) { res.sendStatus(404); } else {
+    })
+    .get('/logout', (req, res) => {
+    if (!req.session.adminAuth) { res.sendStatus(404); }
+    else {
       req.session.adminAuth = false;
+      req.session.account = undefined;
 
       res.send('success');
     }

@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 
 export default class SocialMedia extends Component {
-  statusChangeCallback(response) { // Called with the results from FB.getLoginStatus().
-    console.log('statusChangeCallback');
-    console.log(response); // The current login status of the person.
+  statusChangeCallback(response) {
     if (response.status === 'connected') { // Logged into your webpage and Facebook.
       testAPI(response.access_token);
     } else { // Not logged into your webpage or we are unable to tell.
@@ -21,7 +19,7 @@ export default class SocialMedia extends Component {
   testAPI(access_token) {
     // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
 
-    fetch('/blog/set_fb_access_token', {
+    fetch('/api/blog/set_fb_access_token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

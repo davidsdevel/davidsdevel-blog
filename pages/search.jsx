@@ -23,7 +23,7 @@ class Search extends Component {
     const { q } = query;
 
     if (q) {
-      const searchReq = await fetch(`${process.env.ORIGIN}/posts/search?q=${q}&page=1&fields=description,title,image,url,comments,category`);
+      const searchReq = await fetch(`${process.env.ORIGIN}/api/posts/search?q=${q}&page=1&fields=description,title,image,url,comments,category`);
 
       const data = await searchReq.json();
 
@@ -41,7 +41,7 @@ class Search extends Component {
       const { search } = this.props;
       const { page, posts } = this.state;
 
-      const req = await fetch(`/posts/search?q=${search}&page=${page + 1}&fields=description,title,image,url,comments,category`);
+      const req = await fetch(`/api/posts/search?q=${search}&page=${page + 1}&fields=description,title,image,url,comments,category`);
       const data = await req.json();
 
       this.setState({
@@ -50,7 +50,7 @@ class Search extends Component {
         page: page + 1,
       });
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 

@@ -25,7 +25,7 @@ class Config extends Component {
   async addCategory() {
     try {
       const { categoryName: name, categoryAlias: alias } = this.state;
-      const req = await fetch('/blog/add-category', {
+      const req = await fetch('/api/blog/add-category', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ class Config extends Component {
     try {
       if (!confirm('¿Estás seguro de eliminar esta categoría?')) { return; }
 
-      const req = await fetch('/blog/delete-category', {
+      const req = await fetch('/api/blog/delete-category', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ class Config extends Component {
 
       const { title, description, urlID } = this.state;
 
-      const req = await fetch('/blog/config', {
+      const req = await fetch('/api/blog/config', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ class Config extends Component {
 
   async componentDidMount() {
     try {
-      const req = await fetch('/blog/config');
+      const req = await fetch('/api/blog/config');
 
       const {
         categories, urlID, title, description,

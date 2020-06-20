@@ -20,9 +20,9 @@ export default class Login extends Component {
         isLoad: true,
       });
 
-      const { username, password } = this.state;
+      const { email, password } = this.state;
 
-      if (!username || !password) { return alert('Ingrese los datos'); }
+      if (!email || !password) { return alert('Ingrese los datos'); }
 
       const req = await fetch(`${process.env.ORIGIN}/admin-login`, {
         method: 'POST',
@@ -30,7 +30,7 @@ export default class Login extends Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username,
+          email,
           password,
         }),
       });
@@ -63,19 +63,20 @@ export default class Login extends Component {
       <div id="container">
         <img src="/images/davidsdevel-rombo.png" />
         <form onSubmit={this.login}>
-          <input disabled={isLoad} type="text" name="username" placeholder="Username" onChange={this.handleInput} />
-          <input disabled={isLoad} type="password" name="password" placeholder="Password" onChange={this.handleInput} />
+          <input disabled={isLoad} type="email" name="email" placeholder="Email" onChange={this.handleInput} />
+          <input disabled={isLoad} type="password" name="password" placeholder="Contraseña" onChange={this.handleInput} />
           {
 					isLoad
 					  ? (
-  <img
-    src="/assets/spinner-black.svg"
-    style={{
-      display: 'block', width: 50, margin: 'auto', animation: 'rotation linear 1s infinite',
-    }}
-  />
+              <img
+                src="/assets/spinner-black.svg"
+                style={{
+                  display: 'block', width: 50, margin: 'auto', animation: 'rotation linear 1s infinite',
+                }}
+              />
 					  )
-					  :						<button className="black">Login</button>
+					  :
+            <button className="black">Iniciar Sesión</button>
 				}
         </form>
         <style jsx>

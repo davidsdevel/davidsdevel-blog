@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import fetch from 'isomorphic-fetch';
 import ImagesModal from './imagesModal';
 
 export default class Editor extends Component {
@@ -35,7 +34,7 @@ export default class Editor extends Component {
 
   async componentDidMount() {
     try {
-      const req = await fetch('/blog/categories');
+      const req = await fetch('/api/blog/categories');
       const { categories } = await req.json();
 
       this.setState({
@@ -111,7 +110,7 @@ export default class Editor extends Component {
         toolbar: toolbarOptions,
       },
       theme: 'snow',
-      debug: 'info',
+      debug: process.env.NODE_ENV !== 'development' ? 'info' : '',
     });
 
     if (this.props.data) {
@@ -208,13 +207,13 @@ export default class Editor extends Component {
       urlEncoded.append('url', url);
       urlEncoded.append('category', category);
 
-      const req = await fetch('/posts/save', {
+      const req = await fetch('/api/posts/save', {
         method: 'POST',
         body: urlEncoded,
       });
       const data = await req.text();
       this.setState({
-        postStatus: 'saved',
+        postStatus: 'draft',
         isSaved: true,
         ID: data,
         sending: false,
@@ -246,7 +245,7 @@ export default class Editor extends Component {
       urlEncoded.append('category', category);
       urlEncoded.append('postStatus', postStatus);
 
-      const req = await fetch('/posts/publish', {
+      const req = await fetch('/api/posts/publish', {
         method: 'POST',
         body: urlEncoded,
       });

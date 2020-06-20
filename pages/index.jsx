@@ -34,7 +34,7 @@ class Home extends Component {
         recommended: await rmv.json(),
       };
     } catch (err) {
-      console.log(err);
+      console.error(err);
       if (err.toString() === 'TypeError: Failed to fetch') {
         isOffline = true;
       }

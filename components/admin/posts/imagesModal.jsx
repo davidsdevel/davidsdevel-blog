@@ -44,7 +44,7 @@ export default class ImagesModal extends Component {
         fetching: true,
       });
 
-      const req = await fetch('/blog/images');
+      const req = await fetch('/api/blog/images');
 
       const data = await req.json();
 
@@ -72,7 +72,6 @@ export default class ImagesModal extends Component {
         const file = files[0];
 
         if (!files || !files.length) {
-          console.log('No files selected');
           return;
         }
 

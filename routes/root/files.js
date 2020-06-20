@@ -64,7 +64,7 @@ Sitemap: https://blog.davidsdevel.com/sitemap.xml`;
         res.send(file.buffer);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
       if (err === 'dont-exists') { res.status(404).send(err.toString()); } else { res.status(500).send(err.toString()); }
     }
 

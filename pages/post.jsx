@@ -14,7 +14,7 @@ class Post extends Component {
     try {
       let isSubscribe = false;
       const path = asPath.split('/');
-      const postPath = `${process.env.ORIGIN}/posts/single?ID=${query.ID}&fields=image,content,title,tags,updated,description,category,ID,description,published`;
+      const postPath = `${process.env.ORIGIN}/api/posts/single?ID=${query.ID}&fields=image,content,title,tags,updated,description,category,ID,description,published`;
       if (!query.isPreview) {
         try {
           const r = await fetch(postPath);
@@ -41,7 +41,7 @@ class Post extends Component {
 
       return query;
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   }
 

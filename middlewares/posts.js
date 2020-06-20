@@ -1,5 +1,4 @@
-const renderPost = () => async function (req, res, next) {
-  console.log(req.url)
+const renderPost = () => async (req, res, next) => {
   switch (req.params.title) {
     case 'feed':
     case 'terminos':
@@ -60,12 +59,8 @@ const renderPost = () => async function (req, res, next) {
 
     return next(true);
   } catch (err) {
-    console.log(err);
-
     if (err === 'dont-exists') { return req.handle(req, res); }
   }
-
-  return req.handle(req, res);
 };
 
 module.exports = {

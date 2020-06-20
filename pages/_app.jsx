@@ -55,7 +55,7 @@ export default class CustomApp extends App {
     try {
       const { viewUrl, referer } = this.props;
 
-      const req = await fetch(`${process.env.ORIGIN}/posts/set-view`, {
+      const req = await fetch(`${process.env.ORIGIN}/api/posts/set-view`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

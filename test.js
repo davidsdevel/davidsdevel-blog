@@ -1,6 +1,5 @@
 // Server
 const express = require('express');
-
 const server = express();
 const nextApp = require('next');
 
@@ -22,12 +21,12 @@ const rootRouter = require('./routes/root');
 const apiRouter = require('./routes/api');
 
 const dev = process.env.NODE_ENV !== 'production';
-const app = nextApp({ dev, quiet: dev });
+const app = nextApp({ dev });
 const handle = app.getRequestHandler();
 
 const PORT = process.env.PORT || 3000;
 
-const db = new DB(dev);
+const db = new DB();
 const posts = new PostsManager(db);
 const router = new Router(db);
 const facebook = new FacebookAPI({
@@ -35,10 +34,28 @@ const facebook = new FacebookAPI({
   appSecret: process.env.APP_SECRET,
 });
 
+const sess = {
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 3600000 * 24,
+  },
+  /*store: new KnexSessionStore({
+    knex: db.db,
+  }),*/
+};
+    
+ /*if (!dev) {
+   sess.cookie.secure = true;
+   server.set('trust proxy', 1); // trust first proxy
+ }*/
+      
 server
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
   .use(fileUpload())
+  .use(session(sess))
   .use(userAgent)
   .use('/', rootRouter)
   .use('/api', apiRouter);
@@ -69,34 +86,14 @@ async function install(req, {
 }) {
   try {
 
-    
     await db.connect(client, user, password, host, port, database);
-    await db.init();
+    await db.init("David", "González", "davidsdevel@gmail.com", "1234");
     
     req.db = db;
     req.posts = posts;
     req.router = router;
     req.fb = facebook;
     req.handle = handle;
-
-    const sess = {
-      secret: 'keyboard cat',
-      resave: false,
-      saveUninitialized: true,
-      cookie: {
-        maxAge: 3600000 * 24,
-      },
-      /*store: new KnexSessionStore({
-        knex: db.db,
-      }),*/
-    };
-    
-    if (!dev) {
-      sess.cookie.secure = true;
-      server.set('trust proxy', 1); // trust first proxy
-    }
-
-    server.use(session(sess));
 
     return Promise.resolve();
   } catch(err) {
@@ -119,12 +116,12 @@ async function initApp() {
     console.log('Prepared');
 
     server
-      .get('/:title', renderPost(), (pass, req, res) => {
+      .get('/:title', renderPost(), (pass, req, res, next) => {
         if (pass && req.urlID === '1') {
           return app.render(req, res, '/post', req.data);
         }
 
-        return;
+        return next();
       })
       .get('/:category/:title', renderPost(), async (pass, req, res) => {
         let sameCategory = false;
@@ -142,7 +139,7 @@ async function initApp() {
             }
           }
         } catch (err) {
-          console.error(err);
+          console.error("> Posts Category", err);
           return res.status(500).send(err.toString());
         }
 
@@ -150,30 +147,25 @@ async function initApp() {
           return app.render(req, res, '/post', req.data);
         }
 
-        return;
+        return next();
       })
       .get('/:year/:month/:title', renderPost(), (pass, req, res, next) => {
         const { year } = req.params;
 
         if (/\d\d\d\d/.test(year) && req.urlID === '3') {
-          app.render(req, res, '/post', req.data);
+          return app.render(req, res, '/post', req.data);
         }
-
-        return;
+        return next();
       })
       .get('/:year/:month/:day/:title', renderPost(), (pass, req, res, next) => {
         const { year, month, day } = req.params;
 
         if ((!/\d\d\d\d/.test(year) || !/\d\d?/.test(month) || !/\d\d?/.test(day)) && req.urlID === '4') {
-          app.render(req, res, '/post', req.data);
+          return app.render(req, res, '/post', req.data);
         }
-
-        return;
+        return next()
       })
-      .get('*', async (req, res) => {
-        console.log(req.url)
-        return handle(req, res);
-      })
+      .get('*', (req, res) => handle(req, res))
       .listen(PORT, (err) => {
         if (err) throw new Error(err);
         console.log(`> App Listen on Port: ${PORT}`);

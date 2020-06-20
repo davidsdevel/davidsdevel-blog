@@ -1,6 +1,5 @@
 // Server
 const express = require('express');
-
 const server = express();
 const nextApp = require('next');
 
@@ -19,9 +18,7 @@ const FacebookAPI = require('./lib/server/FacebookAPI');
 
 // Router
 const rootRouter = require('./routes/root');
-const postsRouter = require('./routes/posts');
-const usersRouter = require('./routes/users');
-const blogRouter = require('./routes/blog');
+const apiRouter = require('./routes/api');
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = nextApp({ dev });
@@ -29,7 +26,7 @@ const handle = app.getRequestHandler();
 
 const PORT = process.env.PORT || 3000;
 
-const db = new DB(dev);
+const db = new DB();
 const posts = new PostsManager(db);
 const router = new Router(db);
 const facebook = new FacebookAPI({
@@ -37,75 +34,78 @@ const facebook = new FacebookAPI({
   appSecret: process.env.APP_SECRET,
 });
 
-server
-  .use(express.json())
-  .use(express.urlencoded({ extended: true }))
-  .use(fileUpload())
-  .use(userAgent)
-  .use('/', rootRouter)
-  .use('/posts', postsRouter)
-  .use('/users', usersRouter)
-  .use('/blog', blogRouter)
+const sess = {
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 3600000 * 24,
+  },
+  /*store: new KnexSessionStore({
+    knex: db.db,
+  }),*/
+};
+    
+ /*if (!dev) {
+   sess.cookie.secure = true;
+   server.set('trust proxy', 1); // trust first proxy
+ }*/
+ server
+ .use(express.json())
+ .use(express.urlencoded({ extended: true }))
+ .use(fileUpload())
+ .use(session(sess))
+ .use(userAgent)
+ .use('/', rootRouter)
+ .use('/api', apiRouter);
 
 /**
- * Test Database
- * 
- * @param {Object} data
- * 
- * @return {Promise<String>}
- */
+* Test Database
+* 
+* @param {Object} data
+* 
+* @return {Promise<String>}
+*/
 async function testDatabase({
-  client, user, password, server: host, port, database,
+ client, user, password, server: host, port, database,
 }) {
-  try {
-    const isValidate = await db.testConnection(client, user, password, host, port, database);
+ try {
+   const isValidate = await db.testConnection(client, user, password, host, port, database);
 
-    if (isValidate)
-      return Promise.resolve('success');
-    else
-      return Promise.resolve('error');
+   if (isValidate)
+     return Promise.resolve('success');
+   else
+     return Promise.resolve('error');
 
-  } catch(err) { return Promise.reject(err); }
+ } catch(err) { return Promise.reject(err); }
 }
 
-async function install({
-  client, user, password, server: host, port, database,
+/**
+ * Install
+ * 
+ * @param {ExpressRequest} req 
+ * @param {Object} databaseData 
+ * 
+ * @return {Promise<void>}
+ */
+async function install(req, {
+ client, user, password, server: host, port, database,
 }) {
-  try {
+ try {
 
-    
-    await db.connect(client, user, password, host, port, database);
-    await db.init();
-    
-    req.db = db;
-    req.posts = posts;
-    req.router = router;
-    req.fb = facebook;
-    req.handle = handle;
+   await db.connect(client, user, password, host, port, database);
+   await db.init("David", "González", "davidsdevel@gmail.com", "1234");
+   
+   req.db = db;
+   req.posts = posts;
+   req.router = router;
+   req.fb = facebook;
+   req.handle = handle;
 
-    const sess = {
-      secret: 'keyboard cat',
-      resave: false,
-      saveUninitialized: true,
-      cookie: {
-        maxAge: 3600000 * 24,
-      },
-      store: new KnexSessionStore({
-        knex: db.db,
-      }),
-    };
-    
-    if (!dev) {
-      sess.cookie.secure = true;
-      server.set('trust proxy', 1); // trust first proxy
-    }
-
-    server.use(session(sess));
-
-    return Promise.resolve();
-  } catch(err) {
-    return Promise.reject(err);
-  }
+   return Promise.resolve();
+ } catch(err) {
+   return Promise.reject(err);
+ }
 }
 
 async function initApp() {
@@ -122,7 +122,7 @@ async function initApp() {
 
         return next();
       })
-      .get('/:category/:title', renderPost(), async (pass, req, res, next) => {
+      .get('/:category/:title', renderPost(), async (pass, req, res) => {
         let sameCategory = false;
 
         try {
@@ -138,7 +138,7 @@ async function initApp() {
             }
           }
         } catch (err) {
-          console.error(err);
+          console.error("> Posts Category", err);
           return res.status(500).send(err.toString());
         }
 
@@ -152,30 +152,19 @@ async function initApp() {
         const { year } = req.params;
 
         if (/\d\d\d\d/.test(year) && req.urlID === '3') {
-          app.render(req, res, '/post', req.data);
+          return app.render(req, res, '/post', req.data);
         }
-
         return next();
       })
       .get('/:year/:month/:day/:title', renderPost(), (pass, req, res, next) => {
         const { year, month, day } = req.params;
 
         if ((!/\d\d\d\d/.test(year) || !/\d\d?/.test(month) || !/\d\d?/.test(day)) && req.urlID === '4') {
-          app.render(req, res, '/post', req.data);
+          return app.render(req, res, '/post', req.data);
         }
-
-        return next();
+        return next()
       })
-      .get('*', async (req, res) => {
-        if (/\/images\/.*|\/assets\/.*|\/favicon.ico/.test(req.url))
-          return handle(req, res);
-
-        if (req.db) {
-          const blogIsInstalled = await req.db.isInstalled();
-
-          if (!blogIsInstalled) { res.sendStatus(404); } else { handle(req, res); }
-        } else { res.sendStatus(404); }
-      })
+      .get('*', (req, res) => handle(req, res))
       .listen(PORT, (err) => {
         if (err) throw new Error(err);
         console.log(`> App Listen on Port: ${PORT}`);
@@ -187,5 +176,6 @@ async function initApp() {
 
 module.exports = {
   testDatabase,
-  initApp
+  initApp,
+  install
 }

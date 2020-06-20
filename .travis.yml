@@ -1,0 +1,7 @@
+deploy:
+  provider: releases
+  api_key: "15e7828749caaa2cd38c08ac3ffbc7f5db03b4da"
+  file: "./dist/master.zip"
+  skip_cleanup: true
+  on:
+    tags: true

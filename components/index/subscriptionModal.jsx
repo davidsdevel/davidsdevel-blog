@@ -48,7 +48,7 @@ class Modal extends Component {
 
   async componentDidMount() {
     try {
-      const req = await fetch('/blog/categories');
+      const req = await fetch('/api/blog/categories');
 
       const { categories } = await req.json();
 
@@ -68,7 +68,7 @@ class Modal extends Component {
 
       if (!name || !lastname) { return alert('Ingresa tus datos'); }
 
-      const req = await fetch(`/users/check-username?name=${name}&lastname=${lastname}`);
+      const req = await fetch(`/api/users/check-username?name=${name}&lastname=${lastname}`);
       const data = await req.json();
 
       if (data.exists) {
@@ -97,7 +97,7 @@ class Modal extends Component {
 
       if (invalidEmail) { return; }
 
-      const req = await fetch(`/users/check-email?email=${email}`);
+      const req = await fetch(`/api/users/check-email?email=${email}`);
       const data = await req.json();
 
       if (data.exists) {
@@ -165,7 +165,7 @@ class Modal extends Component {
         feed, email, name, lastname, token,
       } = this.state;
 
-      const req = await fetch('/users/create-user', {
+      const req = await fetch('/api/users/create-user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

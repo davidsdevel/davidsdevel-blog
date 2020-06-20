@@ -35,7 +35,7 @@ export default class Colaborators extends Component {
 
   async componentDidMount() {
     try {
-      const req = await fetch('/colaborators/all');
+      const req = await fetch('/api/colaborators/all');
       const { colaborators } = await req.json();
 
       this.setState({

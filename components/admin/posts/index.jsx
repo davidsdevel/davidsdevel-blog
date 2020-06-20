@@ -29,7 +29,7 @@ class Posts extends Component {
 
   async fetchPosts() {
     try {
-      const req = await fetch(`${process.env.ORIGIN}/posts/all-edit?fields=ID,title,postStatus,comments,views,url,tags,image,category`);
+      const req = await fetch(`${process.env.ORIGIN}/api/posts/all-edit?fields=ID,title,postStatus,comments,views,url,tags,image,category`);
 
       const { posts } = await req.json();
 
@@ -68,7 +68,7 @@ class Posts extends Component {
 
   async edit(ID) {
     try {
-      const req = await fetch(`${process.env.ORIGIN}/posts/single-edit?ID=${ID}&fields=ID,title,description,image,postStatus,url,content,category,tags`);
+      const req = await fetch(`${process.env.ORIGIN}/api/posts/single-edit?ID=${ID}&fields=ID,title,description,image,postStatus,url,content,category,tags`);
       const editData = await req.json();
 
       const splitURL = editData.url.split('/');
@@ -88,7 +88,7 @@ class Posts extends Component {
     try {
       if (!confirm('¿Esta seguro de eliminar esta publicacion?')) { return; }
 
-      const req = await fetch(`${process.env.ORIGIN}/posts/delete`, {
+      const req = await fetch(`${process.env.ORIGIN}/api/posts/delete`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
