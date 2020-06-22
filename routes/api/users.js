@@ -13,9 +13,7 @@ router
         case 'check-email':
           res.json(await req.db.checkEmail(email));
           break;
-        default:
-          // code...
-          break;
+        default: break;
       }
     } catch (err) {
       console.error(err);

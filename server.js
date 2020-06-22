@@ -1,5 +1,6 @@
 // Server
 const express = require('express');
+
 const server = express();
 const nextApp = require('next');
 
@@ -41,71 +42,67 @@ const sess = {
   cookie: {
     maxAge: 3600000 * 24,
   },
-  /*store: new KnexSessionStore({
+  /* store: new KnexSessionStore({
     knex: db.db,
-  }),*/
+  }), */
 };
-    
- /*if (!dev) {
+
+/* if (!dev) {
    sess.cookie.secure = true;
    server.set('trust proxy', 1); // trust first proxy
- }*/
- server
- .use(express.json())
- .use(express.urlencoded({ extended: true }))
- .use(fileUpload())
- .use(session(sess))
- .use(userAgent)
- .use('/', rootRouter)
- .use('/api', apiRouter);
+ } */
+server
+  .use(express.json())
+  .use(express.urlencoded({ extended: true }))
+  .use(fileUpload())
+  .use(session(sess))
+  .use(userAgent)
+  .use('/', rootRouter)
+  .use('/api', apiRouter);
 
 /**
 * Test Database
-* 
+*
 * @param {Object} data
-* 
+*
 * @return {Promise<String>}
 */
 async function testDatabase({
- client, user, password, server: host, port, database,
+  client, user, password, server: host, port, database,
 }) {
- try {
-   const isValidate = await db.testConnection(client, user, password, host, port, database);
+  try {
+    const isValidate = await db.testConnection(client, user, password, host, port, database);
 
-   if (isValidate)
-     return Promise.resolve('success');
-   else
-     return Promise.resolve('error');
-
- } catch(err) { return Promise.reject(err); }
+    if (isValidate) { return Promise.resolve('success'); }
+    return Promise.resolve('error');
+  } catch (err) { return Promise.reject(err); }
 }
 
 /**
  * Install
- * 
- * @param {ExpressRequest} req 
- * @param {Object} databaseData 
- * 
+ *
+ * @param {ExpressRequest} req
+ * @param {Object} databaseData
+ *
  * @return {Promise<void>}
  */
 async function install(req, {
- client, user, password, server: host, port, database,
+  client, user, password, server: host, port, database,
 }) {
- try {
+  try {
+    await db.connect(client, user, password, host, port, database);
+    await db.init('David', 'González', 'davidsdevel@gmail.com', '1234');
 
-   await db.connect(client, user, password, host, port, database);
-   await db.init("David", "González", "davidsdevel@gmail.com", "1234");
-   
-   req.db = db;
-   req.posts = posts;
-   req.router = router;
-   req.fb = facebook;
-   req.handle = handle;
+    req.db = db;
+    req.posts = posts;
+    req.router = router;
+    req.fb = facebook;
+    req.handle = handle;
 
-   return Promise.resolve();
- } catch(err) {
-   return Promise.reject(err);
- }
+    return Promise.resolve();
+  } catch (err) {
+    return Promise.reject(err);
+  }
 }
 
 async function initApp() {
@@ -122,7 +119,7 @@ async function initApp() {
 
         return next();
       })
-      .get('/:category/:title', renderPost(), async (pass, req, res) => {
+      .get('/:category/:title', renderPost(), async (pass, req, res, next) => {
         let sameCategory = false;
 
         try {
@@ -138,7 +135,7 @@ async function initApp() {
             }
           }
         } catch (err) {
-          console.error("> Posts Category", err);
+          console.error('> Posts Category', err);
           return res.status(500).send(err.toString());
         }
 
@@ -162,7 +159,7 @@ async function initApp() {
         if ((!/\d\d\d\d/.test(year) || !/\d\d?/.test(month) || !/\d\d?/.test(day)) && req.urlID === '4') {
           return app.render(req, res, '/post', req.data);
         }
-        return next()
+        return next();
       })
       .get('*', (req, res) => handle(req, res))
       .listen(PORT, (err) => {
@@ -177,5 +174,5 @@ async function initApp() {
 module.exports = {
   testDatabase,
   initApp,
-  install
-}
+  install,
+};

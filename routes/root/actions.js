@@ -3,13 +3,12 @@ const urlModule = require('url');
 const Jimp = require('jimp');
 const qs = require('qs');
 const fetch = require('isomorphic-fetch');
-const { join } = require('path');
 
 router
   .post('/admin-login', async (req, res) => {
     try {
       const { email, password } = req.body;
-      
+
       const login = await req.db.login(email, password);
 
       if (login.pass) {
@@ -18,7 +17,7 @@ router
 
         req.session.adminAuth = true;
         req.session.account = login;
-        
+
         res.json({
           status: 'OK',
         });
@@ -32,10 +31,9 @@ router
       console.error(err);
       res.status(500).send(err.toString());
     }
-    })
-    .get('/logout', (req, res) => {
-    if (!req.session.adminAuth) { res.sendStatus(404); }
-    else {
+  })
+  .get('/logout', (req, res) => {
+    if (!req.session.adminAuth) { res.sendStatus(404); } else {
       req.session.adminAuth = false;
       req.session.account = undefined;
 

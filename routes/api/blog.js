@@ -2,12 +2,12 @@ const router = require('express').Router();
 
 /**
  * Config Data
- * 
+ *
  * @public
- * 
- * @param {Object} db 
- * @param {Object} options 
- * 
+ *
+ * @param {Object} db
+ * @param {Object} options
+ *
  * @return {Object}
  */
 async function configdata(db, {
@@ -82,15 +82,13 @@ router
           res.send(await db.addCategory(name, alias));
           break;
         case 'import-posts':
-          if (cms === 'blogger') { 
+          if (cms === 'blogger') {
             await db.importPostsFromBlogger(data);
-            res.send("success");
-          }
-          else if (cms === 'wordpress') { 
+            res.send('success');
+          } else if (cms === 'wordpress') {
             await db.importPostsFromWordPress(data);
-            res.send("success");
-          }
-          else { res.sendStatus(401); }
+            res.send('success');
+          } else { res.sendStatus(401); }
 
           break;
         case 'config':
@@ -99,6 +97,7 @@ router
           res.json({
             status: 'success',
           });
+
           break;
         default:
           res.status(404);

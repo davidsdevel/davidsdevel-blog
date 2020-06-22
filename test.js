@@ -71,7 +71,7 @@ async function testDatabase({
   client, user, password, server: host, port, database,
 }) {
   try {
-    const isValidate = await db.testConnection(client, user, password, host, port, database);
+    const isValidate = await DB.testConnection(client, user, password, host, port, database);
 
     if (isValidate)
       return Promise.resolve('success');

@@ -61,6 +61,8 @@ const renderPost = () => async (req, res, next) => {
   } catch (err) {
     if (err === 'dont-exists') { return req.handle(req, res); }
   }
+
+  return next(true);
 };
 
 module.exports = {

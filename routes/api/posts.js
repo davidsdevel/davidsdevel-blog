@@ -8,13 +8,13 @@ const router = require('express').Router();
  *
  * @return {Object}
  */
-function parse (postData, fields) {
+function parse(postData, fields) {
   const newData = {};
 
   const parsedFields = fields.split(',');
 
   Object.entries(postData).forEach((e) => {
-    for (let i = 0; i < parsedFields.length; i = i + 1) {
+    for (let i = 0; i < parsedFields.length; i += 1) {
       const name = e[0];
       const value = e[1];
 
@@ -25,7 +25,7 @@ function parse (postData, fields) {
   });
 
   return newData;
-};
+}
 
 router
   .get('/:action', async (req, res, next) => {
@@ -67,6 +67,10 @@ router
         default: break;
       }
 
+      if (data === 'dont-exists') {
+        return res.status(404).send(data);
+      }
+
       if (fields) {
         if (action === 'all-edit'
           || action === 'all'
@@ -78,16 +82,16 @@ router
             ...data,
             posts: data.posts.map((e) => parse(e, fields)),
           };
-        }
-        else { data = parse(data, fields); }
+        } else { data = parse(data, fields); }
       }
 
       res.json(data);
     } catch (err) {
       console.error(err);
-      if (err === 'dont-exists') { res.status(404).send(err); }
-      else { res.status(500).send(err); }
+      res.status(500).send(err);
     }
+
+    return next();
   })
   .delete('/:action', async (req, res) => {
     try {
@@ -123,12 +127,8 @@ router
 
           if (req.session.adminAuth) { return res.send('success'); }
 
-          try {
-            await req.posts.setView(url, referer, req.userAgent);
-          } catch (err) {
-            if (err === 'dont-exists') { return res.status(404).send(err); }
-            return res.status(500).send(err);
-          }
+          await req.posts.setView(url, referer, req.userAgent);
+
           return res.send('success');
         default: break;
       }
