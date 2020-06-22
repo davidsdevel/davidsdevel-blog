@@ -2,6 +2,17 @@ import React, { Component } from 'react';
 import { bool } from 'prop-types';
 import store from '../../store';
 import { hideModal } from '../../store/actions';
+import Messaging from '../lib/client/Messaging';
+
+const messaging = new Messaging({
+  apiKey: 'AIzaSyAzcg06Z-3ukLDhVkvxM7V0lCNwYTwHpho',
+  authDomain: 'davids-devel-1565378708258.firebaseapp.com',
+  databaseURL: 'https://davids-devel-1565378708258.firebaseio.com',
+  projectId: 'davids-devel-1565378708258',
+  storageBucket: '',
+  messagingSenderId: '167456236988',
+  appId: '1:167456236988:web:0896b0297732acc2',
+});
 
 class Modal extends Component {
   constructor() {
@@ -48,6 +59,8 @@ class Modal extends Component {
 
   async componentDidMount() {
     try {
+      messaging.init();
+
       const req = await fetch('/api/blog/categories');
 
       const { categories } = await req.json();

@@ -6,21 +6,10 @@ import Load from '../components/loadBar';
 import Nav from '../components/nav';
 import Modal from '../components/index/subscriptionModal';
 import Footer from '../components/index/footer';
-import Messaging from '../lib/client/Messaging';
 import Facebook from '../lib/client/FacebookSDK';
 import Alert from '../components/alert';
 import store from '../store';
 import { showAlert } from '../store/actions';
-
-const messaging = new Messaging({
-  apiKey: 'AIzaSyAzcg06Z-3ukLDhVkvxM7V0lCNwYTwHpho',
-  authDomain: 'davids-devel-1565378708258.firebaseapp.com',
-  databaseURL: 'https://davids-devel-1565378708258.firebaseio.com',
-  projectId: 'davids-devel-1565378708258',
-  storageBucket: '',
-  messagingSenderId: '167456236988',
-  appId: '1:167456236988:web:0896b0297732acc2',
-});
 
 export default class CustomApp extends App {
   constructor() {
@@ -65,8 +54,6 @@ export default class CustomApp extends App {
           referer,
         }),
       });
-
-      await req.text();
     } catch (err) {
       console.error(err);
     }
@@ -74,8 +61,6 @@ export default class CustomApp extends App {
 
   componentDidMount() {
     if (process.env.NODE_ENV !== 'development') { navigator.serviceWorker.register('/offline-sw.js').then((e) => e.update()); }
-
-    if (!this.props.pageProps.hideLayout) { messaging.init(); }
 
     if (!this.props.pageProps.hideLayout || this.props.Component.name === 'Admin') { Facebook.init(); }
 
