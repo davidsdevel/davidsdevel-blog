@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { bool } from 'prop-types';
 import store from '../../store';
 import { hideModal } from '../../store/actions';
-import Messaging from '../lib/client/Messaging';
+import Messaging from '../../lib/client/Messaging';
 
 const messaging = new Messaging({
   apiKey: 'AIzaSyAzcg06Z-3ukLDhVkvxM7V0lCNwYTwHpho',
