@@ -86,7 +86,7 @@ async function install(req, {
 }) {
   try {
 
-    await db.connect(client, user, password, host, port, database);
+    await db.connect(client, process.env.DATABASE_URL);
     await db.init("David", "González", "davidsdevel@gmail.com", "1234");
     
     req.db = db;
@@ -106,13 +106,8 @@ async function initApp() {
     console.log('Preparing...');
     await app.prepare();
     await install(server.request, {
-        client: "mysql",
-        user: "root",
-        password: "",
-        server: "localhost",
-        port: "3306",
-        database: "blog"
-    })
+      client: "pg"
+    });
     console.log('Prepared');
 
     server
