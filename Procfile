@@ -1,1 +1,1 @@
-web: set NODE_ENV=production&& node ./test.js
+web: node ./test.js
