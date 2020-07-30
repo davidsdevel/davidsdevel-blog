@@ -85,6 +85,12 @@ async function install(req, {
     await db.connect(client, process.env.DATABASE_URL);
     await db.init("David", "González", "davidsdevel@gmail.com", "1234");
     
+    sess.store = new KnexSessionStore({
+      knex: db.db,
+    });
+
+    server.use(session(sess));
+
     req.db = db;
     req.posts = posts;
     req.router = router;
@@ -104,12 +110,6 @@ async function initApp() {
     await install(server.request, {
       client: "pg"
     });
-    
-    sess.store = new KnexSessionStore({
-      knex: db.db,
-    });
-
-    server.use(session(sess))
 
     console.log('Prepared');
 
