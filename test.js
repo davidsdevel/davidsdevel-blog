@@ -41,15 +41,15 @@ const sess = {
   cookie: {
     maxAge: 3600000 * 24,
   },
-  /*store: new KnexSessionStore({
+  store: new KnexSessionStore({
     knex: db.db,
-  }),*/
+  }),
 };
     
- /*if (!dev) {
+ if (!dev) {
    sess.cookie.secure = true;
    server.set('trust proxy', 1); // trust first proxy
- }*/
+ }
       
 server
   .use(express.json())
