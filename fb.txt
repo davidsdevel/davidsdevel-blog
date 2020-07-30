@@ -1,4 +1,12 @@
 
+"dependencies": {
+    "bcrypt": "^3.0.6",
+    "express-ip": "^1.0.3",
+  },
+  "devDependencies": {
+    "mysql": "^2.17.1"
+  }
+  
 FB.ui({
   method: 'share',
   href: 'https://developers.facebook.com/docs/'
@@ -55,3 +63,8 @@ FB.login(function(response){
 });
 
 FB.AppEvents.logEvent('Facebook Post Share');
+<<<<<<< HEAD
+=======
+
+FB.api("/me/pages")
+>>>>>>> c64b60dcd13c8d442e1c16143ff89218f6d75b2d

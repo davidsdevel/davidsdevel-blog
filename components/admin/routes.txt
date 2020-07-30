@@ -1,0 +1,4 @@
+/:title
+/:category/:title
+/:year/:month/:title
+/:year/:month/:day/:title

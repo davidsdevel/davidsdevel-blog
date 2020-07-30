@@ -1,0 +1,38 @@
+Server Internal Errors Codes
+
+Struct
+
+{
+	CODE: 1,
+	STATUS: 1,
+	DATA_STATUS: 1,
+	MESSAGE: "success",
+	API_LEVEL: "users.getUsers",
+	data: {...data}
+}
+
+API
+
+Database
+	Number = 1
+Mail
+	Number = 2
+Notification
+	Number = 3
+Socket
+	Number = 4
+FacebookAPI
+	Number = 5
+
+
+Status
+	Success = 1
+	Error = 2
+
+Data
+	HaveData = 1
+	NoData = 2
+
+
+
+
