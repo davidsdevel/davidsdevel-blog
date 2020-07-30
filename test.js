@@ -40,10 +40,7 @@ const sess = {
   saveUninitialized: true,
   cookie: {
     maxAge: 3600000 * 24,
-  },
-  store: new KnexSessionStore({
-    knex: db.db,
-  }),
+  }
 };
     
  if (!dev) {
@@ -55,7 +52,6 @@ server
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
   .use(fileUpload())
-  .use(session(sess))
   .use(userAgent)
   .use('/', rootRouter)
   .use('/api', apiRouter);
@@ -108,6 +104,13 @@ async function initApp() {
     await install(server.request, {
       client: "pg"
     });
+    
+    sess.store = new KnexSessionStore({
+      knex: db.db,
+    });
+
+    server.use(session(sess))
+
     console.log('Prepared');
 
     server
