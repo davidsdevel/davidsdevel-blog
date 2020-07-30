@@ -31,7 +31,5 @@
     "socket.io": "^2.3.0",
     "xml-js": "^1.6.11"
   },
-  "devDependencies": {
-    "sqlite3": "^4.2.0"
-  }
+  "devDependencies": {}
 }
