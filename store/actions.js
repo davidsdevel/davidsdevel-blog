@@ -1,34 +1,32 @@
 const viewLoad = () => ({
-	type: "VIEW_LOAD"
+  type: 'VIEW_LOAD',
 });
-const showAlert = message => ({
-	type: "SHOW_ALERT",
-	message
+const showAlert = (message) => ({
+  type: 'SHOW_ALERT',
+  message,
 });
 const hideAlert = () => ({
-	type: "HIDE_ALERT"
+  type: 'HIDE_ALERT',
 });
 const showModal = () => ({
-	type: "SHOW_MODAL"
+  type: 'SHOW_MODAL',
 });
 const hideModal = () => ({
-	type: "HIDE_MODAL"
+  type: 'HIDE_MODAL',
 });
-const search = search => ({
-	type: "SEARCH",
-	search
+const adminShowLoad = () => ({
+  type: 'ADMIN_SHOW_LOAD',
 });
-const bindSearch = query => ({
-	type: "BIND",
-	bind: query
+const adminHideLoad = () => ({
+  type: 'ADMIN_HIDE_LOAD',
 });
 
 export {
-	viewLoad,
-	showModal,
-	hideModal,
-	bindSearch,
-	search,
-	showAlert,
-	hideAlert
+  viewLoad,
+  showModal,
+  hideModal,
+  showAlert,
+  hideAlert,
+  adminShowLoad,
+  adminHideLoad,
 };

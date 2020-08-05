@@ -1,41 +1,38 @@
------ Posts -------
+Server Internal Errors Codes
 
-GET /posts/:action
+Struct
 
-Params
-	:action
-		all
-		all-edit
-		single
-		single-edit
-		most-view
-		search
+{
+	CODE: 1,
+	STATUS: 1,
+	DATA_STATUS: 1,
+	MESSAGE: "success",
+	API_LEVEL: "users.getUsers",
+	data: {...data}
+}
 
-Queries
-	page,
-	url,
-	referer,
-	fields,
-	ID,
-	category,
-	q
+API
 
-Return
-	{}
+Database
+	Number = 1
+Mail
+	Number = 2
+Notification
+	Number = 3
+Socket
+	Number = 4
+FacebookAPI
+	Number = 5
 
-POST /posts/:action
 
-Headers
-	Accept: "application/json"
-	Accept: "application/x-www-form-urlencoded"
+Status
+	Success = 1
+	Error = 2
 
-Params
-	:action
-		set-view
+Data
+	HaveData = 1
+	NoData = 2
 
-Body
-	url
-	userAgent
 
-POST
-set-view
+
+
