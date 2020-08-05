@@ -49,6 +49,12 @@ function compile(entry, output) {
   });
 }
 
+/**
+ * Compile CSS
+ *
+ * @param
+ *
+ */
 function compileCSS(entry, output) {
   console.log("> Compiling - ", entry.match(/\w*(-\w*)*\.css$/)[0]);
 

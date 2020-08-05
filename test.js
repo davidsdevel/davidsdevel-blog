@@ -7,7 +7,7 @@ const nextApp = require('next');
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
 const userAgent = require('express-ua-middleware');
-const KnexSessionStore = require('connect-session-knex')(session);
+//const KnexSessionStore = require('connect-session-knex')(session);
 const { renderPost } = require('./middlewares/posts');
 
 // APIS
@@ -104,7 +104,7 @@ async function install(req, {
 async function initApp() {
   try {
     console.log('Preparing...');
-    await app.prepare();
+    //await app.prepare();
     await install(server.request, {
       client: "pg"
     });
