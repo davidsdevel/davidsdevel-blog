@@ -112,7 +112,7 @@ async function initApp() {
     console.log('Preparing...');
     await app.prepare();
     await install(server.request, {
-      client: "sqlite3"
+      client: "pg"
     });
 
     console.log('Prepared');
