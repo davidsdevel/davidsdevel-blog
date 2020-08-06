@@ -1,7 +1,4 @@
-import * as firebase from 'firebase/app';
-import 'firebase/messaging';
-
-export default class Messaging {
+class Messaging {
   constructor(config) {
     this.config = config;
     let app;

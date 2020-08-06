@@ -7,7 +7,7 @@ const nextApp = require('next');
 const session = require('express-session');
 const fileUpload = require('express-fileupload');
 const userAgent = require('express-ua-middleware');
-const KnexSessionStore = require('connect-session-knex')(session);
+//const KnexSessionStore = require('connect-session-knex')(session);
 const { renderPost } = require('./middlewares/posts');
 const expressip = require('express-ip');
 
@@ -84,9 +84,9 @@ async function install(req, {
 
     await db.connect(client, process.env.DATABASE_URL);
 
-    sess.store = new KnexSessionStore({
+    /*sess.store = new KnexSessionStore({
       knex: db.db,
-    });
+    });*/
 
     server
       .use(session(sess))
@@ -112,7 +112,7 @@ async function initApp() {
     console.log('Preparing...');
     await app.prepare();
     await install(server.request, {
-      client: "pg"
+      client: "sqlite3"
     });
 
     console.log('Prepared');

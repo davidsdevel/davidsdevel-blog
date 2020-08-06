@@ -108,7 +108,7 @@ async function install(req, {
 async function initApp() {
   try {
     console.log('Preparing...');
-    await app.prepare();
+    //await app.prepare();
     console.log('Prepared');
 
     server

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Head from "next/head";
 import { bool } from 'prop-types';
 import store from '../../store';
 import { hideModal } from '../../store/actions';
@@ -36,6 +37,8 @@ class Modal extends Component {
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
 
+    this.messaging = null;
+
     store.subscribe(() => {
       const { show } = store.getState().subscriptionModal;
 
@@ -49,7 +52,7 @@ class Modal extends Component {
 
   async componentDidMount() {
     try {
-      const messaging = new Messaging({
+      this.messaging = new Messaging({
         apiKey: 'AIzaSyAzcg06Z-3ukLDhVkvxM7V0lCNwYTwHpho',
         authDomain: 'davids-devel-1565378708258.firebaseapp.com',
         databaseURL: 'https://davids-devel-1565378708258.firebaseio.com',
@@ -59,7 +62,7 @@ class Modal extends Component {
         appId: '1:167456236988:web:0896b0297732acc2',
       });
 
-      messaging.init();
+      this.messaging.init();
 
       const req = await fetch('/api/blog/categories');
 
@@ -149,7 +152,7 @@ class Modal extends Component {
 
   async getToken() {
     try {
-      const token = await window.fcm.getToken();
+      const token = await this.messaging.getToken();
 
       this.setState({
         token,
@@ -356,6 +359,11 @@ class Modal extends Component {
     }
     return (
       <div>
+      <Head>
+        <script src='https://www.gstatic.com/firebasejs/6.3.5/firebase-app.js'/>
+        <script src='https://www.gstatic.com/firebasejs/6.3.5/firebase-messaging.js'/>
+        <script src='/messaging.js'/>
+      </Head>
         <div id="shadow" style={{ display, opacity }}>
           <div id="subscription-main">
             <img src="/assets/arrow.svg" onClick={() => (step === 0 ? this.exit() : this.prev())} />
