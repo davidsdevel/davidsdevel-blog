@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 export default class EmailEditor extends Component {
   constructor() {
+    super();
+
     this.editor = null;
 
     this.componentDidMount = this.componentDidMount.bind(this);
