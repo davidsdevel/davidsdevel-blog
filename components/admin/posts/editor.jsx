@@ -34,6 +34,20 @@ export default class Editor extends Component {
 
   async componentDidMount() {
     try {
+      /*
+      var editor = grapesjs.init({
+      container : '#gjs',
+      plugins: ['gjs-plugin-ckeditor'],
+      pluginsOpts: {
+        'gjs-plugin-ckeditor': {
+          language:"es"
+        }
+      },
+      assetManager: {
+        upload: 'https://endpoint/upload/assets',
+        uploadName: 'files'
+      }
+  });*/
       const req = await fetch('/api/blog/categories');
       const { categories } = await req.json();
 

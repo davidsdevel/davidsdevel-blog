@@ -63,5 +63,8 @@ FB.login(function(response){
 });
 
 FB.AppEvents.logEvent('Facebook Post Share');
+<<<<<<< HEAD
+=======
 
 FB.api("/me/pages")
+>>>>>>> c64b60dcd13c8d442e1c16143ff89218f6d75b2d

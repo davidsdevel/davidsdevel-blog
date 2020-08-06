@@ -6,6 +6,7 @@ import SocialMedia from './social';
 import Import from './import';
 import Config from './config';
 import Colaborators from './colaborators';
+import Email from './email';
 import store from '../../store';
 import { adminShowLoad } from '../../store/actions';
 
@@ -135,7 +136,13 @@ export default class Dashboard extends Component {
       </div>
     );
 
-    if (tab === 'posts') { UI = <Posts />; } else if (tab === 'stats') { UI = <Stats />; } else if (tab === 'social') { UI = <SocialMedia />; } else if (tab === 'import') { UI = <Import />; } else if (tab === 'config') { UI = <Config />; } else if (tab === 'colaborators') { UI = <Colaborators />; }
+    if (tab === 'posts') { UI = <Posts />; }
+    else if (tab === 'stats') { UI = <Stats />; }
+    else if (tab === 'social') { UI = <SocialMedia />; }
+    else if (tab === 'import') { UI = <Import />; }
+    else if (tab === 'config') { UI = <Config />; }
+    else if (tab === 'colaborators') { UI = <Colaborators />; }
+    else if (tab === 'email') { UI = <Email />; }
 
     return (
       <div>
@@ -148,11 +155,11 @@ export default class Dashboard extends Component {
               <img src="/images/stats-menu.png" />
             </li>
             {/*
-						<li onClick={() => this.changeTab("social")}>Social Media</li>
-						<li onClick={() => this.changeTab("email")}>
-							<img src="/images/email-menu.png"/>
-						</li>
-					*/}
+				<li onClick={() => this.changeTab("social")}>Social Media</li>
+			*/}
+			<li onClick={() => this.changeTab("email")}>
+				<img src="/images/email-menu.png"/>
+			</li>
             <li onClick={() => this.changeTab('import')}>
               <img src="/images/data.png" />
             </li>

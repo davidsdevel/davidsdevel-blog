@@ -9,6 +9,7 @@ const fileUpload = require('express-fileupload');
 const userAgent = require('express-ua-middleware');
 const KnexSessionStore = require('connect-session-knex')(session);
 const { renderPost } = require('./middlewares/posts');
+const expressip = require('express-ip');
 
 // APIS
 const Router = require('./lib/router');
@@ -40,25 +41,20 @@ const sess = {
   saveUninitialized: true,
   cookie: {
     maxAge: 3600000 * 24,
-  },
-  /*store: new KnexSessionStore({
-    knex: db.db,
-  }),*/
+  }
 };
     
- /*if (!dev) {
+ if (!dev) {
    sess.cookie.secure = true;
    server.set('trust proxy', 1); // trust first proxy
- }*/
+ }
       
 server
   .use(express.json())
   .use(express.urlencoded({ extended: true }))
   .use(fileUpload())
-  .use(session(sess))
   .use(userAgent)
-  .use('/', rootRouter)
-  .use('/api', apiRouter);
+  .use(expressip().getIpInfoMiddleware);
 
 /**
  * Test Database
@@ -87,8 +83,18 @@ async function install(req, {
   try {
 
     await db.connect(client, process.env.DATABASE_URL);
+
+    sess.store = new KnexSessionStore({
+      knex: db.db,
+    });
+
+    server
+      .use(session(sess))
+      .use('/', rootRouter)
+      .use('/api', apiRouter);
+
     await db.init("David", "González", "davidsdevel@gmail.com", "1234");
-    
+
     req.db = db;
     req.posts = posts;
     req.router = router;
@@ -108,6 +114,7 @@ async function initApp() {
     await install(server.request, {
       client: "pg"
     });
+
     console.log('Prepared');
 
     server

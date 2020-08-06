@@ -115,6 +115,7 @@ router
       const { action } = req.params;
       const { url, referer } = req.body;
 
+      console.log(req.ipInfo)
       let id;
       switch (action) {
         case 'publish':
@@ -127,7 +128,7 @@ router
 
           if (req.session.adminAuth) { return res.send('success'); }
 
-          await req.posts.setView(url, referer, req.userAgent);
+          await req.posts.setView(url, referer, req.userAgent, 'Venezuela');
 
           return res.send('success');
         default: break;
