@@ -45,17 +45,16 @@ class Admin extends Component {
           <title>{"David's Devel - Admin"}</title>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
-          <link href="//cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" defer/>
-        <script src="//cdn.quilljs.com/1.3.6/quill.js" async/>
 
-        <link rel="stylesheet" href="//unpkg.com/grapesjs-preset-newsletter/dist/grapesjs-preset-newsletter.css" defer/>
-        <link rel="stylesheet" href="//unpkg.com/grapesjs/dist/css/grapes.min.css" defer/>
-        <link href="/grapesjs-preset-website.min.css" rel="stylesheet" defer/>
+          <link rel="stylesheet" href="//unpkg.com/grapesjs-preset-newsletter/dist/grapesjs-preset-newsletter.css" defer/>
+          <link rel="stylesheet" href="//unpkg.com/grapesjs/dist/css/grapes.min.css" defer/>
+          <link href="/grapesjs-preset-website.min.css" rel="stylesheet" defer/>
 
-        <script src="//unpkg.com/grapesjs" />
-        <script src='//unpkg.com/grapesjs-preset-newsletter' async/>
-        <script src="/grapesjs-preset-website.js" async></script>
-        <script src="/grapesjs-preset-ckeditor.js" async></script>
+          <script src="//unpkg.com/grapesjs" />
+          <script src="//cdn.ckeditor.com/ckeditor5/21.0.0/classic/ckeditor.js" async/>
+          <script src='//unpkg.com/grapesjs-preset-newsletter' async/>
+          <script src="/grapesjs-preset-website.js" async></script>
+          <script src="/grapesjs-preset-ckeditor.js" async></script>
         </Head>
         {
 				auth

@@ -72,7 +72,7 @@ function handleInputUser({target}) {
 // eslint-disable-next-line
 async function testDB() {
   try {
-    const mapped = Object.entries(databaseData).map(e => `${e[0]}=${e[1]}`);
+    const mapped = Object.entries(databaseData).map((e) => `${e[0]}=${e[1]}`);
 
     const res = await fetch(`/test-connection?${mapped.join('&')}`);
 

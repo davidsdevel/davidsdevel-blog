@@ -20,6 +20,12 @@ const adminShowLoad = () => ({
 const adminHideLoad = () => ({
   type: 'ADMIN_HIDE_LOAD',
 });
+const adminShowMenu = () => ({
+  type: 'ADMIN_SHOW_MENU',
+});
+const adminHideMenu = () => ({
+  type: 'ADMIN_HIDE_MENU',
+});
 
 export {
   viewLoad,
@@ -29,4 +35,6 @@ export {
   hideAlert,
   adminShowLoad,
   adminHideLoad,
+  adminShowMenu,
+  adminHideMenu,
 };

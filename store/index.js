@@ -12,6 +12,7 @@ const searchState = {
 };
 const adminLoad = {
   show: false,
+  showMenu: true
 };
 
 const alert = (state = { message: '', show: false }, action) => {
@@ -74,12 +75,24 @@ const admin = (state = adminLoad, action) => {
   switch (action.type) {
     case 'ADMIN_SHOW_LOAD':
       return {
+        ...state,
         show: true,
       };
     case 'ADMIN_HIDE_LOAD':
       return {
+        ...state,
         show: false,
       };
+    case 'ADMIN_SHOW_MENU':
+      return {
+        ...state,
+        showMenu: true
+      }
+    case 'ADMIN_HIDE_MENU':
+      return {
+        ...state,
+        showMenu: false
+      }
     default: return state;
   }
 };

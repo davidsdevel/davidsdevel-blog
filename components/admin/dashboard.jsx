@@ -17,12 +17,23 @@ export default class Dashboard extends Component {
       tab: 'posts',
       opacity: 1,
       display: 'flex',
+      showMenu: true
     };
     this.changeTab = this.changeTab.bind(this);
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
 
-    store.subscribe(() => (store.getState().admin.show ? this.show() : this.hide()));
+    store.subscribe(() => {
+    	const {show, showMenu} = store.getState().admin
+
+    	console.log(show, showMenu)
+
+    	show ? this.show() : this.hide();
+
+    	this.setState({
+    		showMenu
+    	});
+    });
   }
 
   changeTab(tab) {
@@ -64,7 +75,7 @@ export default class Dashboard extends Component {
   }
 
   render() {
-    const { tab, opacity, display } = this.state;
+    const { tab, opacity, display, showMenu } = this.state;
     let UI;
 
     const load = (
@@ -146,7 +157,7 @@ export default class Dashboard extends Component {
 
     return (
       <div>
-        <aside>
+        <aside style={{display: showMenu ? 'inline-block' : 'none'}}>
           <ul>
             <li onClick={() => this.changeTab('posts')}>
               <img src="/images/posts-menu.png" />
@@ -218,7 +229,7 @@ export default class Dashboard extends Component {
 					display: inline-block;
 					height: 100%;
 					left: 0;
-					background: black;
+					background: #1d1d1d;
 				}
 				aside ul li {
 					cursor: pointer;

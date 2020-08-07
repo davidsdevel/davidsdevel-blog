@@ -1,1 +1,1 @@
-web: node ./test.js
+web: yarn test

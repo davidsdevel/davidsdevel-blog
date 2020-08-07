@@ -115,7 +115,7 @@ router
       const { action } = req.params;
       const { url, referer } = req.body;
 
-      console.log(req.ipInfo)
+      console.log(req.ipInfo);
       let id;
       switch (action) {
         case 'publish':

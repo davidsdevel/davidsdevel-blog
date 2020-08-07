@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Head from 'next/head';
-import Editor from './editor';
+import Editor from './editorGrapes';
 import store from '../../../store';
-import { adminHideLoad } from '../../../store/actions';
+import { adminHideLoad, adminShowLoad } from '../../../store/actions';
 
 class Posts extends Component {
   constructor() {
@@ -62,12 +62,16 @@ class Posts extends Component {
     }
   }
 
-  async newPost() {
+  newPost() {
     this.setState({ editting: true, editData: undefined });
+
+    store.dispatch(adminShowLoad());
   }
 
   async edit(ID) {
     try {
+      store.dispatch(adminShowLoad());
+
       const req = await fetch(`${process.env.ORIGIN}/api/posts/single-edit?ID=${ID}&fields=ID,title,description,image,postStatus,url,content,category,tags`);
       const editData = await req.json();
 

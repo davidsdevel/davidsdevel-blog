@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
+import React, {Component} from "react";
 
-export default class EmailEditor extends Component {
+export default class PageEditor extends Component {
   constructor() {
-    super();
-
     this.editor = null;
 
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -11,10 +9,10 @@ export default class EmailEditor extends Component {
   componentDidMount() {
     this.editor = grapesjs.init({
       container : '#gjs',
-      plugins: ['gjs-preset-newsletter'],
+      plugins: ['gjs-preset-webpage'],
       pluginsOpts: {
-        'gjs-preset-newsletter': {
-          modalTitleImport: 'Import template'
+        'gjs-preset-webpage': {
+          // options
         }
       },
       assetManager: {
@@ -31,13 +29,6 @@ export default class EmailEditor extends Component {
     })*/
   }
   render() {
-    return <div id='gjs'>
-      <style jsx global>{
-        `#content {
-          padding: 0 !important;
-          width: 100% !important;
-        }`
-      }</style>
-    </div>
+    return <div id='gjs'></div>
   }
 }

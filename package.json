@@ -6,11 +6,13 @@
     "yarn": "1.22.4"
   },
   "scripts": {
+    "start": "set NODE_ENV=production&& node src/compile && next build && node test",
+    "start:dev": "",
+    "start:test": "",
     "dev": "set NODE_ENV=development&& node index",
-    "test": "node test",
+    "test": "set NODE_ENV=production&& node src/compile && next build && node test",
     "build": "set NODE_ENV=production&& node src/compile && next build",
     "build:dev": "set NODE_ENV=development&& node src/compile && next build",
-    "start": "set NODE_ENV=production&& node src/compile && next build && node test",
     "listen": "set NODE_ENV=production&& node server",
     "lint": "eslint -c .eslintrc.js ."
   },
