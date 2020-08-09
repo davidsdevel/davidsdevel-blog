@@ -46,8 +46,8 @@ class Admin extends Component {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
 
-          <link rel="stylesheet" href="//unpkg.com/grapesjs-preset-newsletter/dist/grapesjs-preset-newsletter.css" defer/>
           <link rel="stylesheet" href="//unpkg.com/grapesjs/dist/css/grapes.min.css" defer/>
+          <link rel="stylesheet" href="//unpkg.com/grapesjs-preset-newsletter/dist/grapesjs-preset-newsletter.css" defer/>
           <link href="/grapesjs-preset-website.min.css" rel="stylesheet" defer/>
 
           <script src="//unpkg.com/grapesjs" />

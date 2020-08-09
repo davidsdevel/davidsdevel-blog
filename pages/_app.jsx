@@ -17,6 +17,9 @@ export default class CustomApp extends App {
     this.state = {
       showLoad: false,
     };
+
+    this.paths = [];
+    this.sessionTime = 0;
   }
 
   static async getInitialProps({ Component, ctx }) {
@@ -60,34 +63,48 @@ export default class CustomApp extends App {
   }
 
   componentDidMount() {
-    if (process.env.NODE_ENV !== 'development') { navigator.serviceWorker.register('/offline-sw.js').then((e) => e.update()); }
-
-    if (!this.props.pageProps.hideLayout || this.props.Component.name === 'Admin') { Facebook.init(); }
-
-    this.setView();
-
     window.alert = (msg) => store.dispatch(showAlert(msg));
 
-    const html = document.getElementsByTagName('html')[0];
+    if (this.props.Component.name !== 'Admin') {
+      this.paths.push(this.props.router.asPath);
 
-    Router.events.on('routeChangeStart', () => {
-      html.style.scrollBehavior = '';
-      this.setState({
-        showLoad: true,
-      });
-    });
+      setInterval(() => this.sessionTime += 1, 1000);
 
-    Router.events.on('routeChangeComplete', () => {
+      if (process.env.NODE_ENV !== 'development') {
+          navigator.serviceWorker.register('/offline-sw.js').then((e) => e.update());
+      }
+
       Facebook.init();
+
       this.setView();
 
-      window.scrollTo(0, 0);
-      html.style.scrollBehavior = 'smooth';
+      window.addEventListener("unload", () => fetch('/api/set/unload'));
 
-      this.setState({
-        showLoad: false,
+      const html = document.getElementsByTagName('html')[0];
+
+      Router.events.on('routeChangeStart', () => {
+        html.style.scrollBehavior = '';
+    
+        this.setState({
+          showLoad: true,
+        });
       });
-    });
+    
+      Router.events.on('routeChangeComplete', () => {
+        Facebook.init();
+        this.setView();
+    
+        window.scrollTo(0, 0);
+    
+        this.paths.push(this.props.router.asPath);
+    
+        html.style.scrollBehavior = 'smooth';
+    
+        this.setState({
+          showLoad: false,
+        });
+      });
+    }
   }
 
   render() {
@@ -99,7 +116,7 @@ export default class CustomApp extends App {
         <Head>
           <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"/>
           {
-            pageProps.next  &&
+            pageProps.next &&
             <link rel="next" />
           }
           {
@@ -122,9 +139,9 @@ export default class CustomApp extends App {
         }
         <Component {...pageProps} />
         {
-                !pageProps.hideLayout
-                && <Footer />
-            }
+          !pageProps.hideLayout
+          && <Footer />
+        }
         <Alert />
         <style jsx global>
           {`

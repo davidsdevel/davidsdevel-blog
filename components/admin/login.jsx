@@ -37,7 +37,8 @@ export default class Login extends Component {
 
       const { status, message } = await req.json();
 
-      if (status === 'OK') { this.props.onLogin(); } else if (status === 'Error') { alert(message); }
+      if (status === 'OK') { this.props.onLogin(); }
+      else if (status === 'Error') { alert(message); }
     } catch (err) {
       alert('Error al iniciar sesión');
       console.error(err);

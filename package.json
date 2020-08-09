@@ -11,7 +11,7 @@
     "start:test": "",
     "dev": "set NODE_ENV=development&& node index",
     "test": "set NODE_ENV=production&& node src/compile && next build && node test",
-    "build": "set NODE_ENV=production&& node src/compile && next build",
+    "build": "node src/compile && next build",
     "build:dev": "set NODE_ENV=development&& node src/compile && next build",
     "listen": "set NODE_ENV=production&& node server",
     "lint": "eslint -c .eslintrc.js ."

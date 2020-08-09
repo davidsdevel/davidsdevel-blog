@@ -26,8 +26,6 @@ export default class Dashboard extends Component {
     store.subscribe(() => {
     	const {show, showMenu} = store.getState().admin
 
-    	console.log(show, showMenu)
-
     	show ? this.show() : this.hide();
 
     	this.setState({

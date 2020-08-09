@@ -16,7 +16,7 @@ export default class CustomDocument extends Document {
     const {
       files, lowPriorityFiles, polyfillFiles, devFiles, pages
     } = this.props;
-    console.log(pages);
+
     const devID = NextScript.contextType[1]._devOnlyInvalidateCacheQueryString;
     const toCache = Object.assign([], files, lowPriorityFiles, polyfillFiles, devFiles).filter(e => e).map(e => (`/_next/${e}${devID}`));
 

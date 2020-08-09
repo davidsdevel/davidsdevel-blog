@@ -31,8 +31,8 @@ const db = new DB();
 const posts = new PostsManager(db);
 const router = new Router(db);
 const facebook = new FacebookAPI({
-  appID: process.env.APP_ID,
-  appSecret: process.env.APP_SECRET,
+  appID: process.env.FACEBOOK_APP_ID,
+  appSecret: process.env.FACEBOOK_APP_SECRET,
 });
 
 const sess = {
@@ -112,7 +112,7 @@ async function initApp() {
     console.log('Preparing...');
     await app.prepare();
     await install(server.request, {
-      client: "pg"
+      client: "sqlite3"
     });
 
     console.log('Prepared');
@@ -166,6 +166,10 @@ async function initApp() {
           return app.render(req, res, '/post', req.data);
         }
         return next()
+      })
+      .get('/api/set/unload', (req, res) => {
+        console.log("Unload");
+        res.sendStatus(200);
       })
       .get('*', (req, res) => handle(req, res))
       .listen(PORT, (err) => {

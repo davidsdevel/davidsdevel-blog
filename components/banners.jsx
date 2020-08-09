@@ -9,9 +9,9 @@ const Banners = ({ length }) => (
     {
 		length > 2
 		&& (
-<a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent('Click on Platzi Banner')}>
-  <img src="/images/platzi.png" />
-</a>
+      <a href="https://platzi.com/r/davidsdevel/" target="_blank" onClick={() => FB.AppEvent.logEvent('Click on Platzi Banner')}>
+        <img src="/images/platzi.png" />
+      </a>
 		)
 	}
   </aside>

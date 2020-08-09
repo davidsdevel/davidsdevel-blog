@@ -6,6 +6,25 @@ const cssnano = require('cssnano');
 
 const isDev = process.env.NODE_ENV !== 'production';
 
+const files = [
+  {
+    src: resolve(__dirname, 'public', 'offline-sw.js'),
+    dest: resolve(__dirname, '..', 'public', 'offline-sw.js'),
+  },
+  {
+    src: resolve(__dirname, 'public', 'firebase-messaging-sw.js'),
+    dest: resolve(__dirname, '..', 'public', 'firebase-messaging-sw.js'),
+  },
+  {
+    src: resolve(__dirname, 'installation', 'index.js'),
+    dest: resolve(__dirname, '..', 'installation', 'src', 'index.js'),
+  },
+  {
+    src: resolve(__dirname, 'installation', 'index.css'),
+    dest: resolve(__dirname, '..', 'installation', 'src', 'index.css'),
+  },
+]
+
 /**
  *
  * Compile
@@ -17,6 +36,8 @@ const isDev = process.env.NODE_ENV !== 'production';
  */
 function compile(entry, output) {
   console.log('> Compiling - ', entry.match(/\w*(-\w*)*\.js$/)[0]);
+
+  
 
   return new Promise((pRes, rej) => {
     babel.transformFile(entry, {
@@ -75,32 +96,12 @@ function compileCSS(entry, output) {
 }
 
 async function main() {
-  try {
-    await compile(
-      resolve(__dirname, 'public', 'messaging.js'),
-      resolve(__dirname, '..', 'public', 'messaging.js'),
-    );
-    await compile(
-      resolve(__dirname, 'public', 'offline-sw.js'),
-      resolve(__dirname, '..', 'public', 'offline-sw.js'),
-    );
-    await compile(
-      resolve(__dirname, 'public', 'firebase-messaging-sw.js'),
-      resolve(__dirname, '..', 'public', 'firebase-messaging-sw.js'),
-    );
-    await compile(
-      resolve(__dirname, 'installation', 'index.js'),
-      resolve(__dirname, '..', 'installation', 'src', 'index.js'),
-    );
-    await compileCSS(
-      resolve(__dirname, 'installation', 'index.css'),
-      resolve(__dirname, '..', 'installation', 'src', 'index.css'),
-    );
-
-    console.log('Done');
-  } catch (err) {
-    console.error(err);
-  }
+  return Promise.all(files
+    .map(({src, dest}) => src.endsWith('.css') ?
+      compile(src, dest) :
+      compileCSS(src, dest)
+     ));
 }
 
-main();
+main()
+  .then(() => console.log('Done.'));

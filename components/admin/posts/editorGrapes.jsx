@@ -5,28 +5,27 @@ import { adminHideLoad, adminHideMenu } from '../../../store/actions';
 
 export default class Editor extends Component {
   constructor() {
-  super();
-  this.state = {
-    title: '',
-    description: '',
-    tags: '',
-    content: '',
-    image: '',
-    url: '',
-    postStatus: 'new',
-    category: '',
-    categories: [],
-    isSaved: false,
-    isPublished: false,
-    showImagesModal: false,
-    sending: false,
-  };
+    super();
+    this.state = {
+      title: '',
+      description: '',
+      tags: '',
+      content: '',
+      image: '',
+      url: '',
+      postStatus: 'new',
+      category: '',
+      categories: [],
+      isSaved: false,
+      isPublished: false,
+      showImagesModal: false,
+      sending: false,
+    };
 
-  this.editor = null;
+    this.editor = null;
 
-  this.componentDidMount = this.componentDidMount.bind(this);
-  this.componentWillUnmount = this.componentWillUnmount.bind(this);
-
+    this.componentDidMount = this.componentDidMount.bind(this);
+    this.componentWillUnmount = this.componentWillUnmount.bind(this);
   }
 
   async componentDidMount() {
@@ -49,15 +48,19 @@ export default class Editor extends Component {
       });
     }
 
-    ClassicEditor.create( document.querySelector( '#editor' ))
+    const ed = ClassicEditor.create( document.querySelector( '#editor' ), {
+      language: 'es',
+      rootName: 'main'
+    })
       .then(editor => {
+        console.log(editor)
         this.editor = editor;
-        this.editor.setData(content || '');
+        editor.setData(content || '<p>Nueva super entrada</p>')
         store.dispatch(adminHideLoad());
         store.dispatch(adminHideMenu());
 
         console.log("init")
-      });
+      }).catch(err => console.error(err));
 
   //var data = CKEDITOR.editor.getData();
   /*editor.on( 'change', function( evt ) {
