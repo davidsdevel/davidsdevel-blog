@@ -1,10 +1,8 @@
-const webpack = require("webpack");
 const {resolve} = require('path');
-const next = require('next')
 const TerserPlugin = require('terser-webpack-plugin');
 
-const task = webpack({
-    entry: resolve(__dirname, 'dist', 'test.js'),
+module.exports = {
+    entry: resolve(__dirname, 'test.js'),
     output: {
         filename: "test.js",
         path: resolve(__dirname, 'dist'),
@@ -28,10 +26,9 @@ const task = webpack({
         'express-session': 'express-session',
         'express-fileupload': 'express-fileupload',
         'express-ua-middleware': 'express-ua-middleware',
-        'express-ip': 'express-ip'
+        'express-ip': 'express-ip',
+        'connect-session-knex': 'connect-session-knex'
     },
     mode: 'production',
     target: 'node'
-})
-
-task.run(() => console.log('Finished'))
+}
