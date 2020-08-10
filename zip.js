@@ -6,7 +6,7 @@ var archiver = require('archiver');
 if (!fs.existsSync(__dirname + '/dist'))
     fs.mkdirSync(__dirname + '/dist');
 
-var output = fs.createWriteStream(__dirname + '/dist/example.zip');
+var output = fs.createWriteStream(__dirname + '/dist/master.zip');
 var archive = archiver('zip', {
   zlib: { level: 9 } // Sets the compression level.
 });
