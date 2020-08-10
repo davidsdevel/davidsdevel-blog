@@ -51,7 +51,7 @@ const Head = (props) => (
 
     <link rel="manifest" href="/manifest.json" />
     <script type="application/ld+json">
-      {{
+      {`{
 			"@context":"https://schema.org",
 			"@type":"Developer",
 			"url":"https://blog.davidsdevel.com",
@@ -65,7 +65,7 @@ const Head = (props) => (
 			"@id":"https://blog.davidsdevel.com/#developer",
 			"name":"Thinking for Innovation",
 			"logo":"http://blog.davidsdevel.com/images/davidsdevel-rombo.png"
-		}}
+		}`}
     </script>
   </NextHead>
 );
