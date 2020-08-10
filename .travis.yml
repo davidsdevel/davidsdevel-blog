@@ -5,6 +5,7 @@ node_js:
 stage:
   - github
   - heroku
+  - test
 
 jobs:
   include:
@@ -37,7 +38,7 @@ jobs:
           master: davidsdevel-blog-test
           davidsdevel: davidsdevel-blog
     
-    stage: test apps
-    script:
-      - curl https://demo.davidsdevel.tk
-      - curl https://davidsdevel-test.herokuapp.com
+    - stage: test
+      script:
+        - curl https://demo.davidsdevel.tk
+        - curl https://davidsdevel-test.herokuapp.com
