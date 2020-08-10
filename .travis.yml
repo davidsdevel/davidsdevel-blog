@@ -1,7 +1,33 @@
-deploy:
-  provider: releases
-  api_key: "15e7828749caaa2cd38c08ac3ffbc7f5db03b4da"
-  file: "./dist/master.zip"
-  skip_cleanup: true
-  on:
-    tags: true
+jobs:
+  include:
+    stage: github
+    script: yarn zip
+    deploy:
+      provider: releases
+      api_key: $GITHUB_API_KEY
+      file: "./dist/master.zip"
+      overwrite: true
+      file_glob: true
+      on:
+        branch: production
+        tags: true
+  
+    stage: heroku
+    script: yarn build
+    before_deploy:
+      rm -r components
+      rm -r pages
+      rm -r lib/client
+      rm -r src
+      rm -r store
+    deploy: &heroku
+      provider: heroku
+      api_key: $HEROKU_API_KEY
+      app:
+        master: davidsdevel-blog-test
+        davidsdevel: davidsdevel-blog
+    
+    stage: test apps
+    script:
+      curl https://demo.davidsdevel.tk
+      curl https://davidsdevel-test.herokuapp.com

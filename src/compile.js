@@ -97,11 +97,11 @@ function compileCSS(entry, output) {
 
 async function main() {
   return Promise.all(files
-    .map(({src, dest}) => src.endsWith('.css') ?
+    .map(({src, dest}) => !/\.css/.test(src) ?
       compile(src, dest) :
       compileCSS(src, dest)
      ));
 }
 
 main()
-  .then(() => console.log('Done.'));
+  .then(() => console.log('Done.'))

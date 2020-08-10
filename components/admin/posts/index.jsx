@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Head from 'next/head';
 import Editor from './editorGrapes';
 import store from '../../../store';
-import { adminHideLoad, adminShowLoad } from '../../../store/actions';
+import { adminHideLoad, adminShowLoad, adminShowMenu } from '../../../store/actions';
 
 class Posts extends Component {
   constructor() {
@@ -63,7 +63,7 @@ class Posts extends Component {
   }
 
   newPost() {
-    this.setState({ editting: true, editData: undefined });
+    this.setState({ editting: true, editData: {} });
 
     store.dispatch(adminShowLoad());
   }
@@ -129,6 +129,8 @@ class Posts extends Component {
         editting: false,
       });
     }
+    store.dispatch(adminShowMenu());
+
     this.fetchPosts();
   }
 

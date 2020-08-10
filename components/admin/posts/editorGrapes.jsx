@@ -28,7 +28,7 @@ export default class Editor extends Component {
     this.componentWillUnmount = this.componentWillUnmount.bind(this);
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     if (this.props.data) {
       const {
         ID, title, description, image, postStatus, url, content, category, tags, isPublished,
@@ -48,14 +48,17 @@ export default class Editor extends Component {
       });
     }
 
-    const ed = ClassicEditor.create( document.querySelector( '#editor' ), {
-      language: 'es',
+    ClassicEditor.create( document.querySelector( '#ck' ), {
+      language:'es',
       rootName: 'main'
     })
       .then(editor => {
+        let {content: editorContent} = this.state;
         console.log(editor)
         this.editor = editor;
-        editor.setData(content || '<p>Nueva super entrada</p>')
+        editor.set({
+          main: !!editorContent ? editorContent : '<p>Nueva super entrada</p>'
+        })
         store.dispatch(adminHideLoad());
         store.dispatch(adminHideMenu());
 
@@ -78,7 +81,7 @@ export default class Editor extends Component {
     } = this.state;
 
   return <div id='editor-container'>
-    <div id='editor'/>
+    <div id='ck'/>
     <aside id='options'>
       {
         categories.length > 0 && (
@@ -102,7 +105,7 @@ export default class Editor extends Component {
     #content {
       padding: 0 !important;
       width: 100% !important;
-      left:0;
+      left:0 !important;
     }
     #content > div:nth-child(1) {
       padding: 0 !important;
@@ -114,6 +117,13 @@ export default class Editor extends Component {
     .ck.ck-editor {
         width: 75% !important;
     }
+    .ck.ck-editor__main {
+      height: calc(100% - 41px);
+    }
+    .ck-rounded-corners .ck.ck-editor__main>.ck-editor__editable, .ck.ck-editor__main>.ck-editor__editable.ck-rounded-corners,
+    .ck.ck-editor__main>.ck-editor__editable:not(.ck-focused) {
+      height: 100%;
+    }
     `}</style>
     <style jsx>{`
       #options {
@@ -121,10 +131,12 @@ export default class Editor extends Component {
         width: 20%;
         display: flex;
         flex-direction: column;
+        justify-content: space-around;
         padding: 2.5%;
       }
       #editor-container {
         display: flex;
+        height: 100%
       }
      `}</style>
   </div>

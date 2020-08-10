@@ -15,6 +15,7 @@ installation/src
 public/firebase-messaging-sw.js
 public/messaging.js
 public/offline-sw.js
+/dist/
 
 # misc
 .DS_Store

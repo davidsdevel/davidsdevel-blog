@@ -51,10 +51,12 @@ class Admin extends Component {
           <link href="/grapesjs-preset-website.min.css" rel="stylesheet" defer/>
 
           <script src="//unpkg.com/grapesjs" />
+          <script src="//cdn.ckeditor.com/ckeditor5/21.0.0/classic/translations/es.js" async/>
           <script src="//cdn.ckeditor.com/ckeditor5/21.0.0/classic/ckeditor.js" async/>
           <script src='//unpkg.com/grapesjs-preset-newsletter' async/>
           <script src="/grapesjs-preset-website.js" async></script>
           <script src="/grapesjs-preset-ckeditor.js" async></script>
+
         </Head>
         {
 				auth
