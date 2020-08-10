@@ -4,7 +4,7 @@ const next = require('next')
 const TerserPlugin = require('terser-webpack-plugin');
 
 const task = webpack({
-    entry: resolve(__dirname, 'test.js'),
+    entry: resolve(__dirname, 'dist', 'test.js'),
     output: {
         filename: "test.js",
         path: resolve(__dirname, 'dist'),
