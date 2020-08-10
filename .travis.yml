@@ -25,18 +25,16 @@ jobs:
     - stage: heroku
       name: 'Heroku Deploy'
       script: yarn build
-      before_deploy:
-        - rm -r components
-        - rm -r pages
-        - rm -r lib/client
-        - rm -r src
-        - rm -r store
       deploy: &heroku
         provider: heroku
         api_key: $HEROKU_API_KEY
         app:
           master: davidsdevel-blog-test
           davidsdevel: davidsdevel-blog
+        on:
+          branch:
+            - master
+            - davidsdevel
     
     - stage: test
       script:
