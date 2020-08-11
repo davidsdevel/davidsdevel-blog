@@ -12,8 +12,6 @@ router
       const login = await req.db.login(email, password);
 
       if (login.pass) {
-        delete login.message;
-        delete login.pass;
 
         req.session.adminAuth = true;
         req.session.account = login;

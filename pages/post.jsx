@@ -14,7 +14,7 @@ class Post extends Component {
     try {
       let isSubscribe = false;
       const path = asPath.split('/');
-      const postPath = `${process.env.ORIGIN}/api/posts/single?ID=${query.ID}&fields=image,content,title,tags,updated,description,category,ID,description,published`;
+      const postPath = `${process.env.ORIGIN}/api/posts/single?ID=${query.ID}&fields=images,content,title,tags,updated,description,category,ID,description,published`;
       if (!query.isPreview) {
         try {
           const r = await fetch(postPath);
@@ -108,12 +108,12 @@ class Post extends Component {
     }
 
     const {
-      isSubscribe, pathname, image, content, title, tags, updated, description, category, ID, published,
+      isSubscribe, pathname, images, content, title, tags, updated, description, category, ID, published,
     } = this.props;
 
     return (
       <div>
-        <Head url={pathname} category={category} published={`${updated}`} title={title} tags={tags} image={image} description={description} />
+        <Head url={pathname} category={category} published={`${updated}`} title={title} tags={tags} images={images} description={description} />
 
         <header>
           <div id="header-shadow">
@@ -160,7 +160,7 @@ class Post extends Component {
         <style jsx>
           {`
 				header {
-					background-image: url(${image});
+					background-image: url(${images[0]});
 					height: 600px;
 					width: 100%;
 					background-position: center;

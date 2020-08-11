@@ -29,7 +29,7 @@ class Posts extends Component {
 
   async fetchPosts() {
     try {
-      const req = await fetch(`${process.env.ORIGIN}/api/posts/all-edit?fields=ID,title,postStatus,comments,views,url,tags,image,category`);
+      const req = await fetch(`${process.env.ORIGIN}/api/posts/all-edit?fields=ID,title,postStatus,comments,views,url,tags,images,category`);
 
       const { posts } = await req.json();
 
@@ -72,7 +72,7 @@ class Posts extends Component {
     try {
       store.dispatch(adminShowLoad());
 
-      const req = await fetch(`${process.env.ORIGIN}/api/posts/single-edit?ID=${ID}&fields=ID,title,description,image,postStatus,url,content,category,tags`);
+      const req = await fetch(`${process.env.ORIGIN}/api/posts/single-edit?ID=${ID}&fields=ID,title,description,images,postStatus,url,content,category,tags`);
       const editData = await req.json();
 
       const splitURL = editData.url.split('/');

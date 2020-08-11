@@ -5,7 +5,7 @@ const { existsSync, mkdirSync, unlinkSync } = require('fs');
 router
   .post('/upload/:type', (req, res) => {
     const { file } = req.files;
-    const { name, mime, width } = req.body;
+    const { name, mime } = req.body;
     const { type } = req.params;
 
     const path = join(__dirname, 'files');
@@ -14,7 +14,7 @@ router
     const filepath = join(path, name);
     file.mv(filepath, async () => {
       try {
-        const data = await req.db.uploadFile(type, name, mime, filepath, width);
+        const data = await req.db.uploadFile(type, name, mime, filepath);
 
         unlinkSync(filepath);
 

@@ -19,8 +19,8 @@ class Home extends Component {
     const blogData = await rdata.json();
 
     try {
-      const r = await fetch(`${process.env.ORIGIN}/api/posts/all?page=${page}&fields=description,title,image,url,comments,category,ID`);
-      const rmv = await fetch(`${process.env.ORIGIN}/api/posts/most-viewed?fields=description,title,image,url,comments,category,ID`);
+      const r = await fetch(`${process.env.ORIGIN}/api/posts/all?page=${page}&fields=description,title,images,url,comments,category,ID`);
+      const rmv = await fetch(`${process.env.ORIGIN}/api/posts/most-viewed?fields=description,title,images,url,comments,category,ID`);
 
       const { posts, next, prev } = await r.json();
 
@@ -146,7 +146,7 @@ class Home extends Component {
       title={recommended.title}
       content={recommended.description}
       url={recommended.url}
-      image={recommended.image}
+      image={recommended.images[0]}
       comments={recommended.comments}
       category={recommended.category}
       size="big"

@@ -6,12 +6,13 @@
     "yarn": "1.22.4"
   },
   "scripts": {
-    "start": "set NODE_ENV=production&& node src/compile && next build && node test",
+    "start": "node test",
     "start:dev": "node src/compile && node test",
     "start:test": "set NODE_ENV=production&& node src/compile && next build && node test",
     "build": "node src/compile && next build",
     "build:dev": "set NODE_ENV=development&& node src/compile && next build",
     "lint": "eslint -c .eslintrc.js .",
+    "test": "jest",
     "zip": "webpack && node zip"
   },
   "main": "server.js",
@@ -27,6 +28,7 @@
     "feed": "^4.1.0",
     "firebase": "^7.14.4",
     "firebase-admin": "^8.12.1",
+    "i18n-iso-countries": "^6.0.0",
     "isomorphic-fetch": "^2.2.1",
     "jimp": "^0.10.3",
     "knex": "^0.21.2",
@@ -53,6 +55,8 @@
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.0 || ^1.7.0",
     "jest": "^26.0.1",
+    "mysql": "^2.18.1",
+    "sqlite3": "^5.0.0",
     "terser": "^4.8.0",
     "terser-webpack-plugin": "^4.0.0",
     "webpack": "^4.44.1",

@@ -237,8 +237,11 @@ export default class CustomApp extends App {
                     transition: ease .3s;
                     border-radius: 5px;
                 }
+                button:disabled {
+                  filter: brightness(.3);
+                }
                 button.white:hover, button.black {
-                    background: black;
+                    background: #1d1d1d;
                     color: white;
                 }
                 button.gray {

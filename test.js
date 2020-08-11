@@ -141,7 +141,6 @@ async function initApp() {
             }
           }
         } catch (err) {
-          console.error("> Posts Category", err);
           return res.status(500).send(err.toString());
         }
 
@@ -167,10 +166,6 @@ async function initApp() {
         }
         return next()
       })
-      .get('/api/set/unload', (req, res) => {
-        console.log("Unload");
-        res.sendStatus(200);
-      })
       .get('*', (req, res) => handle(req, res))
       .listen(PORT, (err) => {
         if (err) throw new Error(err);
@@ -182,4 +177,3 @@ async function initApp() {
 }
 
 initApp();
-

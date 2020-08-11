@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const countries = require("i18n-iso-countries");
 
 /**
  * Parse
@@ -113,9 +114,14 @@ router
   .post('/:action', async (req, res, next) => {
     try {
       const { action } = req.params;
-      const { url, referer } = req.body;
+      const { url, referer, images } = req.body;
 
       console.log(req.ipInfo);
+
+      if (images) {
+        req.body.images = JSON.stringify(images);
+      }
+
       let id;
       switch (action) {
         case 'publish':
@@ -128,7 +134,7 @@ router
 
           if (req.session.adminAuth) { return res.send('success'); }
 
-          await req.posts.setView(url, referer, req.userAgent, 'Venezuela');
+          await req.posts.setView(url, referer, req.userAgent, countries.getName(req.ipInfo.country,'es'));
 
           return res.send('success');
         default: break;

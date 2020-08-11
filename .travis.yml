@@ -39,5 +39,5 @@ jobs:
     - stage: test
       name: "Testing deploy"
       script:
-        - curl https://demo.davidsdevel.tk
+        - curl https://davidsdevel-blog-test.herokuapp.com
         - curl https://davidsdevel-blog.herokuapp.com
