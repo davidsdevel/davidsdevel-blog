@@ -14,7 +14,7 @@ class MyUploadAdapter {
 
   // Aborts the upload process.
   abort() {
-    if ( this.xhr ) {
+    if ( this.fetch ) {
       this.fetch.abort();
     }
   }
@@ -45,6 +45,7 @@ class MyUploadAdapter {
 
       react.setState({
         isUploading: false,
+        isSaved: false,
         images: newData
       });
 

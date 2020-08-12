@@ -21,10 +21,13 @@ jobs:
         on:
           branch: production
           tags: true
+      after_deploy:
+        - echo Notification
   
     - stage: heroku
       name: 'Heroku Deploy'
       script: yarn build
+      before_deploy: yarn test
       deploy: &heroku
         provider: heroku
         api_key: $HEROKU_API_KEY

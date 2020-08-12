@@ -116,10 +116,8 @@ router
       const { action } = req.params;
       const { url, referer, images } = req.body;
 
-      console.log(req.ipInfo);
-
       if (images) {
-        req.body.images = JSON.stringify(images);
+        req.body.images = images.split(',');
       }
 
       let id;

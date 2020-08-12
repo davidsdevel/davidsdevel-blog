@@ -42,7 +42,7 @@ export default class Editor extends Component {
         ID: ID || '',
         title: title || '',
         description: description || '',
-        images: images || '',
+        images: !!images ? Object.assign([], images) : [],
         postStatus: postStatus || 'new',
         url: url || '',
         category: 'null',//category === 'null' ? categories[0].name : category,
@@ -108,8 +108,10 @@ export default class Editor extends Component {
       });
 
       const {
-        ID, title, description, tags, image, url, category,
+        ID, title, description, tags, images, url, category,
       } = this.state;
+
+      console.log(images);
 
       const content = this.editor.getData();
 
@@ -120,7 +122,7 @@ export default class Editor extends Component {
       urlEncoded.append('description', description);
       urlEncoded.append('tags', tags);
       urlEncoded.append('content', content);
-      urlEncoded.append('image', image);
+      urlEncoded.append('images', images.join(','));
       urlEncoded.append('url', url);
       urlEncoded.append('category', category);
 
@@ -174,6 +176,11 @@ export default class Editor extends Component {
           .replace(/ú|ù|ü|û/g, 'u')
           .replace(/ñ/g, "n")
       });
+    }
+
+    if (this.state.postStatus !== 'published') {
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => this.sendData('save'), 5000);
     }
   }
 

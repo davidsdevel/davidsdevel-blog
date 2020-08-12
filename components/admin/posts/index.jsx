@@ -124,6 +124,8 @@ class Posts extends Component {
         });
       }
     } else {
+      this.fetchPosts();
+
       this.setState({
         editData: {},
         editting: false,
@@ -162,8 +164,8 @@ class Posts extends Component {
             {posts.map((e) => (
               <li className="post" key={`post-${e.ID}`}>
                 {
-							e.image
-							  ? <div className="image" style={{ backgroundImage: `url(/resize-image?url=${e.image}&height=100)` }} />
+							!!e.images
+							  ? <div className="image" style={{ backgroundImage: `url(/resize-image?url=${e.images}&height=100)` }} />
 							  :							<div className="image-title">{e.title === null ? 'N' : e.title[0]}</div>
 						}
                 <div className="data">

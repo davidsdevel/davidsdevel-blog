@@ -14,12 +14,15 @@ class Config extends Component {
       urlID: '',
       title: '',
       description: '',
+      sending: false
     };
 
     this.addCategory = this.addCategory.bind(this);
     this.deleteCategory = this.deleteCategory.bind(this);
     this.handleInput = this.handleInput.bind(this);
     this.saveConfig = this.saveConfig.bind(this);
+    this.sendData = this.sendData.bind(this);
+
   }
 
   async addCategory() {
@@ -100,6 +103,60 @@ class Config extends Component {
     });
   }
 
+  sendData(cms) {
+    let input = document.getElementById('input-data');
+
+    if (input === null) {
+      input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', 'application/xml');
+      input.id = 'input-data';
+
+      input.onchange = ({ target }) => {
+        const { files } = target;
+        const file = files[0];
+
+        const reader = new FileReader();
+
+        reader.readAsText(file);
+        reader.onloadend = async (e) => {
+          try {
+            this.setState({
+              sending: true,
+            });
+            const formData = new FormData();
+            formData.append('data', e.target.result);
+            formData.append('cms', cms);
+
+            const req = await fetch('/api/blog/import-posts', {
+              method: 'POST',
+              body: formData,
+            });
+
+            if (req.status >= 200 && req.status < 300) {
+              const res = await req.text();
+              if (res === 'success') {
+                alert('Importado con éxito');
+                this.setState({
+                  sending: false,
+                });
+              }
+            } else if (req.status >= 400) {
+              alert('Error al importar');
+            }
+          } catch (err) {
+            console.error(err);
+            alert('Error al importar');
+
+            this.setState({
+              sending: false,
+            });
+          }
+        };
+      };
+    }
+  }
+
   async saveConfig() {
     try {
       this.setState({
@@ -165,7 +222,7 @@ class Config extends Component {
 
   render() {
     const {
-      canSave, categories, categoryName, categoryAlias, urlID, title, description,
+      canSave, categories, categoryName, categoryAlias, urlID, title, description, sending
     } = this.state;
 
     const Categories = () => (
@@ -253,6 +310,14 @@ class Config extends Component {
             <div className="selection">
               <input type="radio" onChange={this.handleInput} name="urlID" value="4" id="4" checked={urlID == 4} />
               <label htmlFor="4" className="option">/:year/:month/:day/:title</label>
+            </div>
+          </li>
+          <hr/>
+          <li>
+            <span className="sub-title">Datos</span>
+            <div>
+              <button className="black">Importar</button>
+              <button className="black">Exportar</button>
             </div>
           </li>
         </ul>

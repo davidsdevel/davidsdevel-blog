@@ -32,7 +32,7 @@ export default class CustomDocument extends Document {
                 <NextScript />
                 {
 							    process.env.NODE_ENV !== 'development' && (
-                    <script dangerouslySetInnerHTML={{ __html: `caches.open("offline-app").then(function (cache) {cache.addAll(${JSON.stringify(toCache)});});` }} />
+                    <script dangerouslySetInnerHTML={{ __html: `if (window.caches) { caches.open("offline-app").then(function (cache) {cache.addAll(${JSON.stringify(toCache)});}); }` }} />
 							    )
                 }
               </body>
