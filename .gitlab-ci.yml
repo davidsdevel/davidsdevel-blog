@@ -11,18 +11,42 @@ stages:
     - gem install dpl
     - yarn remove sqlite3
 
-.pg: &pg
+#Database testing
+pg-test:
   variables:
     POSTGRES_USER: root
     POSTGRES_PASSWORD: password
     POSTGRES_HOST_AUTH_METHOD: trust
     DATABASE_URL: postgres://root:password@postgres:5432/test
     DB_CLENT: pg
-
   services:
     - postgres:latest
+  stage: test
+  script:
+    - yarn add pg
+    - yarn test
 
-.mysql: &mysql
+pg-coverage:
+  variables:
+    POSTGRES_USER: root
+    POSTGRES_PASSWORD: password
+    POSTGRES_HOST_AUTH_METHOD: trust
+    DATABASE_URL: postgres://root:password@postgres:5432/test
+    DB_CLENT: pg
+  services:
+    - postgres:latest
+  stage: test
+  script:
+    - yarn add pg
+    - yarn test --coverage
+  after_script:
+    - zip -r coverage coverage.zip
+  artifacts:
+    paths:
+      - coverage.zip
+
+
+mysql-test:
   services:
     - mysql:latest
   variables:
@@ -30,45 +54,28 @@ stages:
     MYSQL_ROOT_PASSWORD: password
     DATABASE_URL: mysql://root:password@mysql:3306/test
     DB_CLENT: mysql
-
-#Database testing
-pg-test:
-  <<: *pg
-  stage: test
-  script:
-    - yarn add pg
-    - yarn test
-
-pg-coverage:
-  <<: *pg
-  stage: test
-  script:
-    - yarn add pg
-    - yarn test --coverage
-  after_script:
-    - zip -r coverage coverage.zip
-  artifacts:
-    paths
-      - coverage.zip
-
-mysql-coverage:
-  <<: *mysql
-  stage: test
-  script:
-    - yarn add pg
-    - yarn test --coverage
-  after_script:
-    - zip -r coverage coverage.zip
-  artifacts:
-    paths
-      - coverage.zip
-
-mysql-test:
-  <<: *mysql
   stage: test
   script:
     - yarn add mysql
     - yarn test
+
+mysql-coverage:
+  services:
+    - mysql:latest
+  variables:
+    MYSQL_DATABASE: test
+    MYSQL_ROOT_PASSWORD: password
+    DATABASE_URL: mysql://root:password@mysql:3306/test
+    DB_CLENT: mysql
+  stage: test
+  script:
+    - yarn add pg
+    - yarn test --coverage
+  after_script:
+    - zip -r coverage coverage.zip
+  artifacts:
+    paths:
+      - coverage.zip
 
 demo-deploy:
   image: ruby:latest
