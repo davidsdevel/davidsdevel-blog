@@ -11,38 +11,57 @@ stages:
     - gem install dpl
     - yarn remove sqlite3
 
-#Database testing
-pg-test:
+.pg: &pg
   variables:
-    PGHOST: localhost
-    PGPORT: 5432
-    PGDATABASE: test
-    PGUSER: root
+    POSTGRES_USER: root
     POSTGRES_PASSWORD: password
     POSTGRES_HOST_AUTH_METHOD: trust
-    DATABASE_URL: postgres://root:password@localhost:5432/test
+    DATABASE_URL: postgres://root:password@postgres:5432/test
     DB_CLENT: pg
 
   services:
     - postgres:latest
 
+.mysql: &mysql
+  services:
+    - mysql:latest
+  variables:
+    MYSQL_DATABASE: test
+    MYSQL_ROOT_PASSWORD: password
+    DATABASE_URL: mysql://root:password@mysql:3306/test
+    DB_CLENT: mysql
+
+#Database testing
+pg-test: *pg
   stage: test
   script:
     - yarn add pg
     - yarn test
 
-mysql-test:
+pg-coverage: *pg
   stage: test
-  services:
-    - mysql:latest
-  variables:
-    MYSQL_HOST: localhost
-    MYSQL_DATABASE: test
-    MYSQL_ROOT_PASSWORD: password
-    MYSQL_PWD: password
-    DATABASE_URL: mysql://root:password@localhost:3306/test
-    DB_CLENT: mysql
+  script:
+    - yarn add pg
+    - yarn test --coverage
+  after_script:
+    - zip -r coverage coverage.zip
+  artifacts:
+    paths
+      - coverage.zip
 
+mysql-coverage: *mysql
+  stage: test
+  script:
+    - yarn add pg
+    - yarn test --coverage
+  after_script:
+    - zip -r coverage coverage.zip
+  artifacts:
+    paths
+      - coverage.zip
+
+mysql-test: *mysql
+  stage: test
   script:
     - yarn add mysql
     - yarn test
@@ -56,17 +75,13 @@ demo-deploy:
   only:
     - master
 
-
-
 package:
   stage: production
   script:
     - yarn zip
-
   artifacts:
     paths:
     - dist/master.zip
-
   only:
     - production
     - tags
@@ -76,8 +91,8 @@ upload-cdn:
   stage: production
   script:
     - yarn upload
-
   only:
+    - master
     - production
     - tags
 
@@ -92,7 +107,6 @@ davidsdevel-deploy:
     - git add .
     - git commit -m "Updated .gitignore"
     - dpl --provider=heroku --app=davidsdevel-blog --api-key=$HEROKU_API_KEY --strategy=git
-
   only:
     - production
     - tags

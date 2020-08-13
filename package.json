@@ -12,7 +12,7 @@
     "compile": "node src/compile && next build",
     "build:dev": "set NODE_ENV=development&& node src/compile && next build",
     "lint": "eslint -c .eslintrc.js .",
-    "test": "jest",
+    "test": "jest --runInBand",
     "upload": "node src/compile && node uploadCDN",
     "zip": "webpack && node src/compile && node zip"
   },
