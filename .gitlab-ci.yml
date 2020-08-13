@@ -17,6 +17,7 @@ pg-test:
     POSTGRES_USER: root
     POSTGRES_PASSWORD: password
     POSTGRES_HOST_AUTH_METHOD: trust
+    POSTGRES_DB: test
     DATABASE_URL: postgres://root:password@postgres:5432/test
     DB_CLENT: pg
   services:
@@ -31,11 +32,15 @@ pg-coverage:
     POSTGRES_USER: root
     POSTGRES_PASSWORD: password
     POSTGRES_HOST_AUTH_METHOD: trust
+    POSTGRES_DB: test
     DATABASE_URL: postgres://root:password@postgres:5432/test
     DB_CLENT: pg
   services:
     - postgres:latest
   stage: test
+  before_script:
+    - apt-get update -qy
+    - apt-get install -y zip
   script:
     - yarn add pg
     - yarn test --coverage
@@ -68,8 +73,11 @@ mysql-coverage:
     DATABASE_URL: mysql://root:password@mysql:3306/test
     DB_CLENT: mysql
   stage: test
+  before_script:
+    - apt-get update -qy
+    - apt-get install -y zip
   script:
-    - yarn add pg
+    - yarn add mysql
     - yarn test --coverage
   after_script:
     - zip -r coverage coverage.zip
