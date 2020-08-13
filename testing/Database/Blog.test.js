@@ -1,10 +1,10 @@
-const Database = require("../../lib/server/database")
+const Database = require("../../lib/server/Database")
 
 const db = new Database();
 
-describe("Account Database Testing", () => {
+describe("Blog Database Testing", () => {
     beforeEach(async () => {
-        await db.connect('sqlite3');
+        await db.connect(process.env.DB_CLENT, process.env.DATABASE_URL);
         await db.init('David', 'Gonzalez', 'email@example.com', '1234');
     });
 

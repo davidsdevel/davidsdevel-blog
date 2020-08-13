@@ -1,10 +1,10 @@
-const Database = require("../../lib/server/database")
+const Database = require("../../lib/server/Database")
 
 const db = new Database();
 
 describe("Account Database Testing", () => {
     beforeEach(async () => {
-        await db.connect('sqlite3');
+        await db.connect(process.env.DB_CLENT, process.env.DATABASE_URL);
         await db.init('David', 'Gonzalez', 'email@example.com', '1234');
     });
 
@@ -20,7 +20,7 @@ describe("Account Database Testing", () => {
             password: 'MyEncryptedPassword'
         });
 
-        expect(ID).toBeGreaterThanOrEqual(2);
+        expect(ID).toBeGreaterThanOrEqual(1);
     });
     test('Should Return a promise with exists Email', () => {
         const Create = db.createColaborator({
