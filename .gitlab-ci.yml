@@ -32,13 +32,15 @@ stages:
     DB_CLENT: mysql
 
 #Database testing
-pg-test: *pg
+pg-test:
+  <<: *pg
   stage: test
   script:
     - yarn add pg
     - yarn test
 
-pg-coverage: *pg
+pg-coverage:
+  <<: *pg
   stage: test
   script:
     - yarn add pg
@@ -49,7 +51,8 @@ pg-coverage: *pg
     paths
       - coverage.zip
 
-mysql-coverage: *mysql
+mysql-coverage:
+  <<: *mysql
   stage: test
   script:
     - yarn add pg
@@ -60,7 +63,8 @@ mysql-coverage: *mysql
     paths
       - coverage.zip
 
-mysql-test: *mysql
+mysql-test:
+  <<: *mysql
   stage: test
   script:
     - yarn add mysql
