@@ -9,11 +9,12 @@
     "start": "node test",
     "start:dev": "node src/compile && node test",
     "start:test": "set NODE_ENV=production&& node src/compile && next build && node test",
-    "build": "node src/compile && next build",
+    "compile": "node src/compile && next build",
     "build:dev": "set NODE_ENV=development&& node src/compile && next build",
     "lint": "eslint -c .eslintrc.js .",
     "test": "jest",
-    "zip": "webpack && node zip"
+    "upload": "node src/compile && node uploadCDN",
+    "zip": "webpack && node src/compile && node zip"
   },
   "main": "server.js",
   "dependencies": {
@@ -47,6 +48,7 @@
     "@babel/preset-env": "^7.10.3",
     "archiver": "^5.0.0",
     "babel-loader": "^8.1.0",
+    "cloudinary": "^1.22.0",
     "cssnano": "^4.1.10",
     "eslint": "^5.16.0 || ^6.8.0",
     "eslint-config-airbnb": "latest",
