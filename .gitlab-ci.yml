@@ -15,7 +15,10 @@ stages:
 pg-test:
   variables:
     POSTGRES_DB: test
-    POSTGRES_USER: root
+    PGHOST: localhost
+    PGPORT: 5432
+    PGDATABASE: test
+    PGUSER: root
     POSTGRES_PASSWORD: password
     POSTGRES_HOST_AUTH_METHOD: trust
     DATABASE_URL: postgres://root:password@localhost:5432/test
