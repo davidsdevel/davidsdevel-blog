@@ -53,10 +53,6 @@ demo-deploy:
     - master
 
 
-#Production
-.only-prod: &prod
-  - production
-  - tags
 
 package:
   stage: production
@@ -67,7 +63,9 @@ package:
     paths:
     - dist/master.zip
 
-  only: *prod
+  only:
+    - production
+    - tags
     - triggers
 
 upload-cdn:
@@ -75,7 +73,9 @@ upload-cdn:
   script:
     - yarn upload
 
-  only: *prod
+  only:
+    - production
+    - tags
 
 davidsdevel-deploy:
   image: ruby:latest
@@ -88,4 +88,7 @@ davidsdevel-deploy:
     - git add .
     - git commit -m "Updated .gitignore"
     - dpl --provider=heroku --app=davidsdevel-blog --api-key=$HEROKU_API_KEY --strategy=git
-  only: *prod
+
+  only:
+    - production
+    - tags
