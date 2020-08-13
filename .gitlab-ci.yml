@@ -14,7 +14,6 @@ stages:
 #Database testing
 pg-test:
   variables:
-    POSTGRES_DB: test
     PGHOST: localhost
     PGPORT: 5432
     PGDATABASE: test
@@ -37,8 +36,10 @@ mysql-test:
   services:
     - mysql:latest
   variables:
+    MYSQL_HOST: localhost
     MYSQL_DATABASE: test
     MYSQL_ROOT_PASSWORD: password
+    MYSQL_PWD: password
     DATABASE_URL: mysql://root:password@localhost:3306/test
     DB_CLENT: mysql
 
