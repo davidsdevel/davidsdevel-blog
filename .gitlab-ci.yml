@@ -1,0 +1,91 @@
+image: node:lts
+
+stages:
+  - test
+  - staging
+  - production
+
+.pre-install: &pre-install
+    - apt-get update -qy
+    - apt-get install -y ruby-dev yarn
+    - gem install dpl
+    - yarn remove sqlite3
+
+#Database testing
+pg-test:
+  variables:
+    POSTGRES_DB: test
+    POSTGRES_USER: root
+    POSTGRES_PASSWORD: password
+    POSTGRES_HOST_AUTH_METHOD: trust
+    DATABASE_URL: postgres://root:password@localhost:8080/test
+    DB_CLENT: pg
+
+  services:
+    - postgres:latest
+
+  stage: test
+  script:
+    - yarn add pg
+    - yarn test
+
+mysql-test:
+  stage: test
+  services:
+    - mysql:latest
+  variables:
+    MYSQL_DATABASE: test
+    MYSQL_ROOT_PASSWORD: password
+    DATABASE_URL: mysql://root:password@localhost:8080/test
+    DB_CLENT: mysql
+
+  script:
+    - yarn add mysql
+    - yarn test
+
+demo-deploy:
+  image: ruby:latest
+  stage: staging
+  before_script: *pre-install
+  script:
+    - dpl --provider=heroku --app=davidsdevel-blog-test --api-key=$HEROKU_API_KEY --strategy=git
+  only:
+    - master
+
+
+#Production
+.only-prod: &prod
+  - production
+  - tags
+
+package:
+  stage: production
+  script:
+    - yarn zip
+
+  artifacts:
+    paths:
+    - dist/master.zip
+
+  only: *prod
+    - triggers
+
+upload-cdn:
+  stage: production
+  script:
+    - yarn upload
+
+  only: *prod
+
+davidsdevel-deploy:
+  image: ruby:latest
+  stage: production
+  before_script: *pre-install
+  script:
+    - rm .gitignore
+    - touch .gitignore
+    - echo "* \n !.next \n !public \n !app.json \n !index.js \n !Procfile \n !package.json \n !yarn.lock" >> .gitignore
+    - git add .
+    - git commit -m "Updated .gitignore"
+    - dpl --provider=heroku --app=davidsdevel-blog --api-key=$HEROKU_API_KEY --strategy=git
+  only: *prod
