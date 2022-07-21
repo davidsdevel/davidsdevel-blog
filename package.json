@@ -58,7 +58,7 @@
     "eslint-plugin-react-hooks": "^2.5.0 || ^1.7.0",
     "jest": "^26.0.1",
     "sqlite3": "^5.0.0",
-    "terser": "^4.8.0",
+    "terser": "^4.8.1",
     "terser-webpack-plugin": "^4.0.0",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
